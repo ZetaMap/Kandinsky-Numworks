@@ -10,7 +10,7 @@ Pratique si l'on veut tester son programme sans le mettre sur la calculette.
 [Ion module of Numworks](https://github.com/ZetaMap/Ion-numworks)
 
 ### Note
-Faire en sorte que l'écran se rafrechisse automatiquement. (faire en sorte de ne pas dépendre de la fonction 'display()' pour affichier la fenetre)
+Faire en sorte que l'écran se rafrechisse automatiquement. (faire en sorte de ne pas dépendre de la fonction 'display()' pour affichier la fenetre)<br>
 La fonction 'get_pixel()' ne fonctionne pas.
 
 ### Contenu utilisable
