@@ -1,49 +1,7 @@
 # Kandinsky-Numworks
-
-## Français
-
-### Description
-Un petit module permettant de faire la liaison du module kandinsky, de la Numworks, à une fenêtre Windows. 
-Pratique si l'on veut tester son programme sans le mettre sur la calculette.
-
-### Plus
-[Ion module of Numworks](https://github.com/ZetaMap/Ion-numworks)
-
-### Note
-Faire en sorte que l'écran se rafrechisse automatiquement. (faire en sorte de ne pas dépendre de la fonction 'display()' pour affichier la fenetre)<br>
-La fonction 'get_pixel()' ne fonctionne pas.
-
-### Contenu utilisable
-**get_pixel**:
-* Paramètres: **x**, **y**
-* Description: Retourne la couleur du pixel (x,y)
-
-**set_pixel**
-* Paramètres: **x**, **y**, **color**
-* Description: Colore le pixel (x,y)
-
-**color**
-* Paramètres: **r**, **g**, **b**
-* Description: Définit une couleur rgb
-
-**draw_string**
-* Paramètres: **text**, **x**, **y**, **color (optionnel)[par défaut : (0,0,0)]**, **background (optionnel)[par défaut : (255,255,255)]**
-* Description: Affiche un texte au pixel (x,y)
-
-**fill_rect**
-* Paramètres: **x**, **y**, **width**, **height**, **color**
-* Description: Remplit un rectangle au pixel (x,y)
-
-**display**
-* Paramètres:
-* Description: Affiche la fenêtre contenant les dessins. (fonction bloquante)
-
-
-## English (translated)
-
-### Description
 A small module allowing to link the kandinsky module, from the Numworks, to a Windows window. 
 Useful if you want to test your program without putting it on the calculator.
+/!\\**WARNING:** Windows works differently in window management .If you want to keep the window open, you will have to call the  function 'display()' at the end of your program, but it will block your program. If you do not call this function, the window will appear at the beginning of your program and will close at the end of it. /!\\
 
 ### More
 [Ion module of Numworks](https://github.com/ZetaMap/Ion-numworks)
@@ -62,7 +20,7 @@ Useful if you want to test your program without putting it on the calculator.
 * Description: Define a rgb color
 
 **draw_string**
-* Parameters: **text**, **x**, **y**, **color (optionnel)[par défaut : (0,0,0)]**, **background (optionnel)[par défaut : (255,255,255)]**
+* Parameters: **text**, **x**, **y**, **color (optionnel)[default : (0,0,0)]**, **background (optionnel)[default : (255,255,255)]**
 * Description: Display a text from pixel (x, y)
 
 **fill_rect**
@@ -71,4 +29,4 @@ Useful if you want to test your program without putting it on the calculator.
 
 **display**
 * Parameters:
-* Description: Displays the window containing the drawings. (blocking function) 
+* Description: Run an infinite loop (a little modified) allowing to keep the window open
