@@ -1,8 +1,8 @@
 # Kandinsky-Numworks
 A small module allowing to link the kandinsky module, from the Numworks, to a Windows window. 
 Useful if you want to test your program without putting it on the calculator. <br>
-/!\\**WARNING:** Windows works differently in window management. <br>
-If you want to keep the window open, you will have to call the  function 'display()' at the end of your program, but it will block your program. If you do not call this function, the window will appear at the beginning of your program and will close at the end of it. /!\\
+**/!\\WARNING:** Windows works differently in window management. <br>
+If you want to keep the window open, you will have to call the  function 'display()' at the end of your program, but it will block your program. If you do not call this function, the window will appear at the beginning of your program and will close at the end of it. **/!\\**
 
 ### More
 [Ion module of Numworks](https://github.com/ZetaMap/Ion-numworks)
