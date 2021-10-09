@@ -2,7 +2,7 @@
 A small module allowing to link the kandinsky module, from the Numworks, to a Windows window. 
 Useful if you want to test your program without putting it on the calculator. <br>
 **/!\\WARNING:** Windows works differently in window management. <br>
-If you want to keep the window open, you will have to call the  function 'display()' at the end of your program, but it will block your program. If you do not call this function, the window will appear at the beginning of your program and will close at the end of it. **/!\\**
+If you want to keep the window open, you will have to call the  function ``display()`` at the end of your program, but it will block your program. If you do not call this function, the window will appear at the beginning of your program and will close at the end of it. **/!\\**
 
 ### More
 [Ion module of Numworks](https://github.com/ZetaMap/Ion-numworks)
@@ -21,7 +21,7 @@ If you want to keep the window open, you will have to call the  function 'displa
 * Description: Define a rgb color
 
 **draw_string**
-* Parameters: **text**, **x**, **y**, **color (optionnel)[default : (0,0,0)]**, **background (optionnel)[default : (255,255,255)]**
+* Parameters: **text**, **x**, **y**, **color ``[default : (0,0,0)]``**, **background ``[default : (255,255,255)]``**
 * Description: Display a text from pixel (x, y)
 
 **fill_rect**
