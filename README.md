@@ -9,23 +9,23 @@ If you want to keep the window open, you will have to call the  function ``displ
 
 ### Usable content
 **get_pixel**:
-* Parameters: **x**, **y**
+* Parameters: ``x``, ``y``
 * Description: Return pixel (x, y) color
 
 **set_pixel**
-* Parameters: **x**, **y**, **color**
+* Parameters: ``x``, ``y``, ``color``
 * Description: Color pixel (x, y)
 
 **color**
-* Parameters: **r**, **g**, **b**
+* Parameters: ``r``, ``g``, ``b``
 * Description: Define a rgb color
 
 **draw_string**
-* Parameters: **text**, **x**, **y**, **color ``[default : (0,0,0)]``**, **background ``[default : (255,255,255)]``**
+* Parameters: ``text``, ``x``, ``y``, ``color`` **[default : (0,0,0)]**, ``background`` **[default : (255,255,255)]**
 * Description: Display a text from pixel (x, y)
 
 **fill_rect**
-* Parameters: **x**, **y**, **width**, **height**, **color**
+* Parameters: ``x``, ``y``, ``width``, ``height``, ``color``
 * Description: Fill a rectangle at pixel (x, y)
 
 **display**
