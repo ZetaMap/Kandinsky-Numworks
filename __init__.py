@@ -1,7 +1,16 @@
+"""A small module allowing to link the kandinsky module, from the Numworks, to a Windows window. 
+Useful if you want to test your program without putting it on the calculator.
+GitHub project: https://github.com/ZetaMap/Kandinsky-Numworks
+"""
+
+######### Imports #########
+
 from sys import path
 from tkinter import Tk, Canvas, font
-#from threading import Thread
 from math import floor
+
+
+######### Program #########
 
 __all__ = [
   "get_pixel", 
@@ -59,7 +68,8 @@ def fill_rect(x, y, width, height, color):
   #if Ks.FIRST_PIXEL: Ks.window()
   Ks.fill_rect(x+3, y+21, width, height, color)
   
-def display():
+def display_(func=None):
+  if func != None: Ks.canvas.after(1, func)
   Ks.root.mainloop()
 
 
@@ -67,6 +77,7 @@ def display():
 
 class KS:
   FIRST_PIXEL = True
+  first_ground = []
 
   def __init__(self):
     """Create the window if the fisrt pixel is colored"""
@@ -81,36 +92,38 @@ class KS:
     self.root.iconbitmap(path+"icon.ico")
     self.root.geometry("326x246+640+360")
     self.root.resizable(False, False)
-    self.draw_content()
+
+    self.first_ground.append(self.canvas.create_rectangle(2, 2, 323, 243))
+    self.first_ground.append(self.canvas.create_rectangle(3, 3, 322, 20, fill="#ffb531", outline="#ffb531"))
+    self.first_ground.append(self.canvas.create_text(8, 3, text="deg", fill="white", font=self.windowFont, anchor="nw"))
+    self.first_ground.append(self.canvas.create_text(160, 11, text="PYTHON", fill="white", font=self.windowFont))
+    self.first_ground.append(self.canvas.create_line(302, 7, 302, 15, fill="white"))
+    self.first_ground.append(self.canvas.create_rectangle(304, 7, 313, 14, fill="white", outline="white"))
+    self.first_ground.append(self.canvas.create_line(315, 7, 315, 15, fill="white"))
+    self.first_ground.append(self.canvas.create_line(316, 9, 316, 13, fill="white"))
+    self.canvas.pack()
+    self.canvas.update()
+
     self.root.protocol("WM_DELETE_WINDOW", default)
     self.FIRST_PIXEL = False
-
-  def draw_content(self):
-    self.canvas.create_rectangle(2, 2, 323, 243)
-    self.canvas.create_rectangle(3, 3, 322, 20, fill="#ffb531", outline="#ffb531")
-    self.canvas.create_text(8, 3, text="deg", fill="white", font=self.windowFont, anchor="nw")
-    self.canvas.create_text(160, 11, text="PYTHON", fill="white", font=self.windowFont)
-    self.canvas.create_line(302, 7, 302, 15, fill="white")
-    self.canvas.create_rectangle(304, 7, 313, 14, fill="white", outline="white")
-    self.canvas.create_line(315, 7, 315, 15, fill="white")
-    self.canvas.create_line(316, 9, 316, 13, fill="white")
-    self.canvas.pack()
 
 #  def window(self):
 #    pass
 
   def get_pixel(self, x, y):
-    if x < 3 or y < 20 or x > 322 or y > 242: return (0,0,0)
-    print(self.canvas.find_closest(x, y))
+    if x < 3 or y < 20 or x > 322 or y > 242: return (0, 0, 0)
+    return self.canvas.find_closest(x, y)
 
   def set_pixel(self, x, y, color):
     if x < 3 or y < 20 or x > 322 or y > 242: return
     self.canvas.create_line(x, y, x+1, y+1, fill=self.convert_color(color))
+    self.canvas.update()
 
   def draw_string(self, text, x, y, color, background):
     self.canvas.create_rectangle(x, y+1, x+len(text)*10, y+19, fill=self.convert_color(background), width=0)
     self.canvas.create_text(x, y, text=text, fill=self.convert_color(color), font=self.font, anchor="nw")
-    self.draw_content()
+    for i in self.first_ground: self.canvas.tag_raise(i)
+    self.canvas.update()
     
 
   def fill_rect(self, x, y, width, height, color):
@@ -120,7 +133,8 @@ class KS:
     if (y+height > 242 or y+height < 21) and height != 1: height = 243-y if y+height > 242 else 21-y
 
     self.canvas.create_rectangle(x, y, x+width, y+height, fill=self.convert_color(color), width=0)
-  
+    self.canvas.update()
+
   def convert_color(self, color, returnHex=True):
     color = list(color)
     if len(color) != 3: raise TypeError("Color needs 3 components")
@@ -196,7 +210,7 @@ for i in path:
     break
 Ks = KS()
 if not "Source Pixel Large" in font.families(Ks.root): print(
-"""RuntimeWarning: The font used by the module ('Source Pixel Large') is not installed on your system.
+"""RuntimeWarning: The font used by the module ('Source Pixel Large') is not installed on your system!
 /!\\ If you don't install it, the texts display will not be correct. /!\\
 To install it:
   1- open the indicated file: {}
@@ -207,10 +221,42 @@ To install it:
 ######### Example code #########
 
 if __name__ == '__main__':
-  fill_rect(319,0, 1, 221,(255,0,0))
-  fill_rect(0,221, 319, 1,(255,0,0))
-  fill_rect(0,0, 1, 222,(255,0,0))
-  set_pixel(319,221,(0,0,0))
-  set_pixel(0,221,(0,0,0))
-  draw_string("Hello World", 100, 100, (255,0,0), (0,0,0))
-  display()
+  """Source: https://my.numworks.com/python/andreanx/chromac
+  """
+  from cmath import *
+
+  def hsv2color(h, s=1, v=1):
+    h, c = (h/pi)%2, v*s
+    x, m, k = c*(1-abs((h%(2/3))*3-1)), v-c, int(h*3)
+    
+    return color(
+      round(255*(m+x*(k%3==1)+c*(k%5==0))), 
+      round(255*(m+c*(k==1 or k==2)+x*(k%3==0))), 
+      round(255*(m+x*(k%3==2)+c*(k==3 or k==4))))
+
+  def modsv(p,m): return not(m) or (p*m)%1
+
+  def chromac(xc=160, yc=110, rmax=110, ds=0, dv=0, tred=0, rev=False):
+    xc, yc = round(xc), round(yc)
+    
+    for y in range(-rmax,rmax+1):
+      xmin = round(sqrt(rmax**2-y**2).real)
+      
+      for x in range(-xmin,xmin+1):
+        z = complex(x,y)
+        r = abs(z)
+        if r <= rmax: set_pixel(
+          xc+x , yc+y,
+          hsv2color((phase(z)-tred)*(1-2*rev), 
+          modsv(r/rmax,ds),modsv(r/rmax,dv)))
+
+  def demo():
+    sw, sh, r = 320,220, 45
+    lx3, ly2 = [r,(sw-1)/2,sw-1-r], [r,sh-1-r]
+    lx2=[(lx3[0]+lx3[1])/2,(lx3[1]+lx3[2])/2]
+
+    for x in range(2): chromac(lx2[x], sh/2, r, -1, not(x)*-1, x*pi/4, x%2)
+    for y in range(2):
+      for x in range(3): chromac(lx3[x], ly2[y], r, not(y), x-1, (2+3*y+x)*pi/4, (x+y)%2)
+
+  display_(demo)
