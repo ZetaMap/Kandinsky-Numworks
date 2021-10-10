@@ -20,4 +20,4 @@ It is therefore necessary to make a conversion. To convert a color, you can use 
 
 ### Why use external fonts?
 To be as identical as possible to a result on the Numworks. <br>
-You can find the fonts used [here](https://github.com/numworks/epsilon/tree/master/kandinsky/fonts)
+You can find the fonts used [here](https://github.com/numworks/epsilon/tree/master/kandinsky/fonts).
