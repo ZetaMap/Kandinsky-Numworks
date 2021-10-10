@@ -21,3 +21,9 @@ It is therefore necessary to make a conversion. To convert a color, you can use 
 ### Why use external fonts?
 To be as identical as possible to a result on the Numworks. <br>
 You can find the fonts used [here](https://github.com/numworks/epsilon/tree/master/kandinsky/fonts).
+
+### Why recreate the Numworks interface?
+This can be useful, as it can serve as a guide for drawing.
+
+### Why all functions are linked to a class?
+To make the program more readable ("putting away your books allows you to find them more quickly"), and then I got used to programming like that (because of Java XD).
