@@ -6,7 +6,7 @@ Useful if you want to test your program without putting it on the calculator. <b
 If you want to keep the window open, you will have to call the  function ``display()`` at the end of your program, but it will block your program. If you do not call this function, the window will appear at the beginning of your program and will close at the end of it. **/!\\**
 
 ### More
-I also recreated the ion module of the Numworks, check it out here: [Ion module of Numworks](https://github.com/ZetaMap/Ion-numworks)
+I also recreated the ion module of the Numworks, check it out here: [Ion module of Numworks](https://github.com/ZetaMap/Ion-numworks)<br>
 If you have a question, check out the [FAQ](https://github.com/ZetaMap/Kandinsky-Numworks/blob/main/FAQ.md). And if you want to make a suggestion or your question is not answered, open an [Issue]().
 
 ### Usable content
