@@ -2,8 +2,7 @@
 This module depend to [Pygame](https://fr.wikibooks.org/wiki/Pygame/Introduction_%C3%A0_Pygame) module. To install it, click [here](https://github.com/ZetaMap/Kandinsky-Numworks/blob/main/FAQ.md#how-to-install-pygame) and follow steps. <br>
 A small module allowing to link the kandinsky module, from the Numworks, to a Windows window. 
 Useful if you want to test your program without putting it on the calculator. <br><br>
-**/!\\WARNING:** Windows works differently in window management. <br>
-If you want to keep the window open, you will have to call the  function ``display()`` at the end of your program, but it will block your program. If you do not call this function, the window will appear at the beginning of your program and will close at the end of it. **/!\\**
+**/!\\WARNING:** [Read this](https://github.com/ZetaMap/Kandinsky-Numworks/blob/main/FAQ.md#what-is-display-for) to understand the usefulness of ``display()``. **/!\\**
 
 ### More
 I also recreated the ion module of the Numworks, check it out here: [Ion module of Numworks](https://github.com/ZetaMap/Ion-numworks)<br>
