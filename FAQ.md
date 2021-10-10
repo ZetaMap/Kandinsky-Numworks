@@ -4,7 +4,7 @@ If don't work, write: ``python -m pip install pygame``. And if that still doesn'
 
 ### Why Pygame and not Tkinter?
 **Short description:** <br>
-Pygame is a python module for making video games, it includes management of the camera, graphics, sound, etc. (more info [here](https://fr.wikibooks.org/wiki/Pygame/Introduction_%C3%A0_Pygame)). While Tkinter is more focused on managing windows. <br><br>
+Pygame is a python module for making video games, it includes management of the camera, graphics, sound, etc. (more info [here](https://en.wikipedia.org/wiki/Pygame)). While Tkinter is more focused on managing windows (more info [here](https://en.wikipedia.org/wiki/Tkinter). <br><br>
 At first, I wanted to do this module on Tkinter, but a big problem bothered me. The window refresh took a very long time and consumes a lot of power. <br>
 So I switched to Pygame because, seeing that this module is very well known, easy to use and made for creating games, the window refresh would necessarily be faster (at the same time a game that lags a lot, it is not very practical XD).
 
@@ -18,4 +18,6 @@ Numworks works differently in color management, as its screen can only display *
 It is therefore necessary to make a conversion. To convert a color, you can use the function ``color()`` but you don't have to because, by default, the module does the conversions directly. <br>
 **Example:** ``color(255, 255, 255) [White color] --> Return (248, 252, 248)``
 
-
+### Why use external fonts?
+To be as identical as possible to a result on the Numworks. <br>
+You can find the fonts used [here](https://github.com/numworks/epsilon/tree/master/kandinsky/fonts)
