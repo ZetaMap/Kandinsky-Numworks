@@ -1,8 +1,8 @@
 # Kandinsky-Numworks
 This module depend to [Pygame](https://fr.wikibooks.org/wiki/Pygame/Introduction_%C3%A0_Pygame) module. To install it, click [here]() and follow steps. <br>
 A small module allowing to link the kandinsky module, from the Numworks, to a Windows window. 
-Useful if you want to test your program without putting it on the calculator. <br>
-**/!\\WARNING:** Windows works differently in window management. <br><br>
+Useful if you want to test your program without putting it on the calculator. <br><br>
+**/!\\WARNING:** Windows works differently in window management. <br>
 If you want to keep the window open, you will have to call the  function ``display()`` at the end of your program, but it will block your program. If you do not call this function, the window will appear at the beginning of your program and will close at the end of it. **/!\\**
 
 ### More
