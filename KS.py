@@ -3,11 +3,10 @@
 try: # Check if pygame is present
   import pygame
   del pygame
-except (ModuleNotFoundError, ImportError): raise ModuleNotFoundError("""
+except ImportError: raise ImportError("""
 >>> Pygame module is not installed on your system, and kandinsky depend to this module.
 To install Pygame follow steps on the GitHub project: https://github.com/ZetaMap/Kandinsky-Numworks""")
 
-from os import getcwd
 from pygame import QUIT, display as screen, image, draw, event, init
 from pygame.font import Font
 from math import floor
@@ -21,7 +20,7 @@ class KS:
 
   def __init__(self):
     init()
-    path = getcwd()+'\\'
+    path = __file__[:__file__.rindex('\\')]+'\\'
       
     self.root, self.windowFont, self.font = screen.set_mode(self.SCREEN), Font(path+"small_font.ttf", 12), Font(path+"large_font.ttf", 16)
     screen.set_caption("kandinsky - Numworks")
@@ -102,6 +101,7 @@ class KS:
     while run: 
       for i in event.get():
         if i.type == QUIT: run = False
+      screen.flip()
 
 Ks = KS()
 

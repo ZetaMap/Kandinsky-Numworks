@@ -2,7 +2,8 @@
 Useful if you want to test your program without putting it on the calculator.
 The [GitHub project](https://github.com/ZetaMap/Kandinsky-Numworks), and if you have any questions, check out the [FAQ](https://github.com/ZetaMap/Kandinsky-Numworks/blob/main/FAQ.md)
 """
-from .KS import Ks
+try: from .KS import Ks
+except: from KS import Ks
 
 
 __all__ = [
@@ -42,5 +43,5 @@ def display():
 ######### Example code #########
 
 if __name__ == '__main__':
-  import demo
-  del demo
+  try: from .demo import *
+  except ImportError: from demo import *
