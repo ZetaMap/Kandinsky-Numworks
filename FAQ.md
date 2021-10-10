@@ -6,7 +6,7 @@ If don't work, write: ``python -m pip install pygame``. And if that still doesn'
 **Short description:** Pygame is a python module for making video games, it includes management of the camera, graphics, sound, etc. (more info [here](https://en.wikipedia.org/wiki/Pygame)). <br>
 While Tkinter is more focused on managing windows (more info [here](https://en.wikipedia.org/wiki/Tkinter)). <br><br>
 At first, I wanted to do this module on Tkinter, but a big problem bothered me. The window refresh took a very long time and consumes a lot of power. <br>
-So I switched to Pygame because, seeing that this module is very well known, easy to use and made for creating games, the window refresh would necessarily be faster (at the same time a game that lags a lot, it is not very practical XD).
+So I switched to Pygame because, seeing that this module is very well known, easy to use and made for creating games, the window refresh would necessarily be faster (a game that lags a lot, it is not very practical XD).
 
 ### What is display() for?
 Windows works differently in window management.<br>
