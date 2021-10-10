@@ -9,26 +9,26 @@ I also recreated the ion module of the Numworks, check it out here: [Ion module 
 If you have a question, check out the [FAQ](https://github.com/ZetaMap/Kandinsky-Numworks/blob/main/FAQ.md). And if you have a suggestion or your question is not answered, open an [Issue](https://github.com/ZetaMap/Kandinsky-Numworks/issues/new).
 
 ### Usable content
-**get_pixel**:
+**get_pixel()**:
 * Parameters: ``x``, ``y``
 * Description: Return pixel (x, y) color
 
-**set_pixel**
+**set_pixel():**
 * Parameters: ``x``, ``y``, ``color``
 * Description: Color pixel (x, y)
 
-**color**
+**color():**
 * Parameters: ``r``, ``g``, ``b``
 * Description: Define a rgb color
 
-**draw_string**
+**draw_string():**
 * Parameters: ``text``, ``x``, ``y``, ``color`` **[default : (0,0,0)]**, ``background`` **[default : (255,255,255)]**
 * Description: Display a text from pixel (x, y)
 
-**fill_rect**
+**fill_rect():**
 * Parameters: ``x``, ``y``, ``width``, ``height``, ``color``
 * Description: Fill a rectangle at pixel (x, y)
 
-**display**
+**display():**
 * Parameters:
 * Description: Run an infinite loop (a little modified) allowing to keep the window open
