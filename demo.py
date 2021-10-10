@@ -5,6 +5,9 @@ Source: https://my.numworks.com/python/andreanx/chromac
 from kandinsky import color, set_pixel, display
 from cmath import pi, phase, sqrt
 
+print("""This is a demo code
+Source: https://my.numworks.com/python/andreanx/chromac""")
+
 def hsv2color(h, s=1, v=1):
   h, c = (h/pi)%2, v*s
   x, m, k = c*(1-abs((h%(2/3))*3-1)), v-c, int(h*3)
