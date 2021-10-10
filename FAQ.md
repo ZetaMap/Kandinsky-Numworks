@@ -1,3 +1,5 @@
+# FAQ
+
 ### How to install Pygame?
 To install Pygame: open the [Command Prompt](https://www.howtogeek.com/235101/10-ways-to-open-the-command-prompt-in-windows-10/) and write: ``pip install pygame``. <br>
 If don't work, write: ``python -m pip install pygame``. And if that still doesn't work, follow steps [here](https://docs.python.org/3/installing/index.html).
@@ -28,5 +30,5 @@ This can be useful, as it can serve as a guide for drawing.
 ### Why all functions are linked to a class?
 To make the program more readable ("putting away your books allows you to find them more quickly"), and then I got used to programming like that (because of Java XD).
 
-## Are you French ?
+### Are you French ?
 Yes, I'm French and my English is bad, that's why I use a translator XD.
