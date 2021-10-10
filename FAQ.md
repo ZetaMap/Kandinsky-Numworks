@@ -27,3 +27,6 @@ This can be useful, as it can serve as a guide for drawing.
 
 ### Why all functions are linked to a class?
 To make the program more readable ("putting away your books allows you to find them more quickly"), and then I got used to programming like that (because of Java XD).
+
+## Are you French ?
+Yes, I'm French and my English is bad, that's why I use a translator XD.
