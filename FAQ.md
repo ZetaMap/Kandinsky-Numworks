@@ -10,4 +10,4 @@ If you do not call this function, the window will appear at the beginning of you
 ### Why convert colors?
 Numworks works differently in color management, as its screen can only display **262,144** colors compared to **16,000,000** colors for a regular screen. <br>
 It is therefore necessary to make a conversion. To convert a color, you can use the function ``color()`` but you don't have to because, by default, the module does the conversions directly. <br>
-**Example: ** ``color(255, 255, 255) [White color] --> Return (248, 252, 248)``
+**Example:** ``color(255, 255, 255) [White color] --> Return (248, 252, 248)``
