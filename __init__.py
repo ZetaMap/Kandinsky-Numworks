@@ -1,9 +1,16 @@
 """A small module allowing to link the kandinsky module, from the Numworks, to a Windows window. 
 Useful if you want to test your program without putting it on the calculator.
-GitHub project: https://github.com/ZetaMap/Kandinsky-Numworks
+The [GitHub project](https://github.com/ZetaMap/Kandinsky-Numworks), and if you have any questions, check out the [FAQ](https://github.com/ZetaMap/Kandinsky-Numworks/blob/main/FAQ.md)
 """
 
 ######### Imports #########
+
+try: # Check if pygame is present
+  import pygame
+  del pygame
+except (ModuleNotFoundError, ImportError): raise ModuleNotFoundError("""
+>>> Pygame module is not installed on your system, and kandinsky depend to this module.
+To install Pygame follow steps on the GitHub project: https://github.com/ZetaMap/Kandinsky-Numworks""")
 
 from os import getcwd
 from pygame import QUIT, display as screen, image, draw, event, init
@@ -61,6 +68,7 @@ def fill_rect(x, y, width, height, color):
   Ks.fill_rect(x, y+Ks.TOP_SIZE, width, height, convert_color(color))
   
 def display():
+  """Run an infinite loop (a little modified) allowing to keep the window open"""
   run = True
   while run: 
     for i in event.get():
@@ -139,9 +147,7 @@ def convert_color(color):
     if color[i] > 255: color[i] %= 256
   return (floor(color[0] / 8) * 8, floor(color[1] / 4) * 4, floor(color[2] / 8) * 8)
 
-"""Function taken from module: Python_Upgrade. 
-link: https://github.com/ZetaMap/Python_Upgrade
-"""
+"""Function taken from module: [Python_Upgrade](https://github.com/ZetaMap/Python_Upgrade)"""
 def type_test(_object, _type, canBeNone=False, withError=True, contentException=None):
   """Allows you to test an object ('_object') with a type or a type list ('_type'), 
   and tell it if we want it to return an error or the correct type ('withError'), by default 'withError' = True.
@@ -194,7 +200,7 @@ if __name__ == '__main__':
   """Source: https://my.numworks.com/python/andreanx/chromac
   """
   
-  from cmath import *
+  from cmath import pi, phase, sqrt
 
   def hsv2color(h, s=1, v=1):
     h, c = (h/pi)%2, v*s
@@ -228,5 +234,5 @@ if __name__ == '__main__':
   for x in range(2): chromac(lx2[x], sh/2, r, -1, not(x)*-1, x*pi/4, x%2)
   for y in range(2):
     for x in range(3): chromac(lx3[x], ly2[y], r, not(y), x-1, (2+3*y+x)*pi/4, (x+y)%2)
-  
+
   display()
