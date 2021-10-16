@@ -50,11 +50,12 @@ class KS:
   def set_pixel(self, x, y, color):
     type_test(x, int)
     type_test(y, int)
-    type_test(color, [tuple, list])
     
     if y < self.TOP_SIZE: return
     draw.line(self.root, convert_color(color), (x, y), (x, y))
     screen.flip()
+    for i in event.get():
+        if i.type == QUIT: screen.quit()
 
   def color(self, r, g, b):
     type_test(r, int)
@@ -67,20 +68,19 @@ class KS:
     type_test(text, str)
     type_test(x, int)
     type_test(y, int)
-    type_test(color, [tuple, list])
-    type_test(background, [tuple, list])
 
     draw.rect(self.root, convert_color(background), (x, y+2, len(text)*10, 18))
     self.root.blit(self.font.render(text, True, convert_color(color)), (x, y))
     if y < self.TOP_SIZE: self.draw_content()
     screen.flip()
+    for i in event.get():
+        if i.type == QUIT: screen.quit()
   
   def fill_rect(self, x, y, width, height, color):
     type_test(x, int)
     type_test(y, int)
     type_test(width, int)
     type_test(height, int)
-    type_test(color, [tuple, list])  
       
     if width < 0: 
       x += width
@@ -95,6 +95,8 @@ class KS:
     
     draw.rect(self.root, convert_color(color), (x, y, width, height))
     screen.flip()
+    for i in event.get():
+        if i.type == QUIT: screen.quit()
 
   def display(self):
     run = True
@@ -107,7 +109,10 @@ Ks = KS()
 
 
 def convert_color(color):
-  if type(color) != list: color = list(color)
+  type_test(color, [tuple, list, str])
+
+  if type(color) == str: return color
+  elif type(color) != list: color = list(color)
   if len(color) != 3: raise TypeError("Color needs 3 components")
   
   for i in range(len(color)):
