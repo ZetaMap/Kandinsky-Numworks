@@ -22,7 +22,7 @@ If you have a question, check out the [FAQ](https://github.com/ZetaMap/Kandinsky
 * Description: Define a rgb color
 
 **draw_string():**
-* Parameters: ``text``, ``x``, ``y``, ``color`` **[default : (0,0,0)]**, ``background`` **[default : (255,255,255)]**
+* Parameters: ``text``, ``x``, ``y``, ``color`` **[default : (0,0,0)]**, ``background`` **[default : (248,252,248)]**
 * Description: Display a text from pixel (x, y)
 
 **fill_rect():**
