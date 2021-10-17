@@ -1,11 +1,10 @@
 ######### Imports #########
 
-try: # Check if pygame is present
-  import pygame
-  del pygame
+try: import pygame # Check if pygame is present
 except ImportError: raise ImportError("""
 >>> Pygame module is not installed on your system, and kandinsky depend to this module.
 To install Pygame follow steps on the GitHub project: https://github.com/ZetaMap/Kandinsky-Numworks""")
+else: del pygame
 
 from pygame import QUIT, display as screen, image, draw, event, init
 from pygame.font import Font
@@ -17,18 +16,19 @@ from math import floor
 class KS:
   TOP_SIZE = 19
   SCREEN = (320, 241)
+  path = __file__[:__file__.rindex('\\')]+'\\'
+  quit = False
 
   def __init__(self):
     init()
-    path = __file__[:__file__.rindex('\\')]+'\\'
-      
-    self.root, self.windowFont, self.font = screen.set_mode(self.SCREEN), Font(path+"small_font.ttf", 12), Font(path+"large_font.ttf", 16)
+    self.quit = False
+    self.root, self.windowFont, self.font = screen.set_mode(self.SCREEN), Font(self.path+"small_font.ttf", 12), Font(self.path+"large_font.ttf", 16)
     screen.set_caption("kandinsky - Numworks")
-    screen.set_icon(image.load(path+"icon.ico"))
+    screen.set_icon(image.load(self.path+"icon.ico"))
     
     self.root.fill((255, 255, 255))
     self.draw_content()
-    screen.update()
+    self.refresh()
 
   def draw_content(self):
     draw.line(self.root, (0, 0, 0), (0, 0), (self.SCREEN[0], 0))
@@ -41,6 +41,7 @@ class KS:
     draw.line(self.root, (255, 255, 255), (314, 8), (314, 11))
 
   def get_pixel(self, x, y):
+    if self.quit: return
     type_test(x, int)
     type_test(y, int)
 
@@ -48,14 +49,13 @@ class KS:
     return convert_color(self.root.get_at((x, y))[:-1])
 
   def set_pixel(self, x, y, color):
+    if self.quit: self.__init__()
     type_test(x, int)
     type_test(y, int)
     
     if y < self.TOP_SIZE: return
     draw.line(self.root, convert_color(color), (x, y), (x, y))
-    screen.flip()
-    for i in event.get():
-        if i.type == QUIT: screen.quit()
+    self.refresh()
 
   def color(self, r, g, b):
     type_test(r, int)
@@ -65,6 +65,7 @@ class KS:
     return convert_color((r, g, b))
 
   def draw_string(self, text, x, y, color, background):
+    if self.quit: self.__init__()
     type_test(text, str)
     type_test(x, int)
     type_test(y, int)
@@ -72,11 +73,10 @@ class KS:
     draw.rect(self.root, convert_color(background), (x, y+2, len(text)*10, 18))
     self.root.blit(self.font.render(text, True, convert_color(color)), (x, y))
     if y < self.TOP_SIZE: self.draw_content()
-    screen.flip()
-    for i in event.get():
-        if i.type == QUIT: screen.quit()
+    self.refresh()
   
   def fill_rect(self, x, y, width, height, color):
+    if self.quit: self.__init__()
     type_test(x, int)
     type_test(y, int)
     type_test(width, int)
@@ -94,16 +94,19 @@ class KS:
     elif y+height <= self.TOP_SIZE: return
     
     draw.rect(self.root, convert_color(color), (x, y, width, height))
-    screen.flip()
-    for i in event.get():
-        if i.type == QUIT: screen.quit()
+    self.refresh()
 
   def display(self):
-    run = True
-    while run: 
-      for i in event.get():
-        if i.type == QUIT: run = False
+    while not self.quit: self.refresh()
+    
+  def refresh(self):
+    try:
       screen.flip()
+      for i in event.get():
+        if i.type == QUIT: 
+          screen.quit()
+          self.quit = True
+    except: self.quit = True
 
 Ks = KS()
 
