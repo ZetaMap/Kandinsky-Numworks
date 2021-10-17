@@ -1,8 +1,13 @@
 # FAQ
 
 ### How to install Pygame?
-To install Pygame: open the [Command Prompt](https://www.howtogeek.com/235101/10-ways-to-open-the-command-prompt-in-windows-10/) and write: ``pip install pygame``. <br>
-If don't work, write: ``python -m pip install pygame``. And if that still doesn't work, follow steps [here](https://docs.python.org/3/installing/index.html).
+To install Pygame: open the [Command Prompt](https://www.howtogeek.com/235101/10-ways-to-open-the-command-prompt-in-windows-10/) and type: ``pip install pygame``. <br>
+If don't work, write: ``py -m pip install pygame``. And if that still doesn't work, follow steps [here](https://docs.python.org/3/installing/index.html).
+
+### How to install this module?
+To install this module, it's simple: open the [Command Prompt](https://www.howtogeek.com/235101/10-ways-to-open-the-command-prompt-in-windows-10/) and type ``pip install kandinsky``. <br>
+If don't work, type: ``py -m pip install kandinsky``. And if that still doesn't work, follow steps [here](https://docs.python.org/3/installing/index.html). <br>
+And if you want to run the [module demo](https://github.com/ZetaMap/Kandinsky-Numworks/demo.py), type ``py -m kandinsky`` in the Command Prompt. Normally a Snake game will launch and you could play it. =)
 
 ### Why Pygame and not Tkinter?
 **Short description:** Pygame is a python module for making video games, it includes management of the camera, graphics, sound, etc. (more info [here](https://en.wikipedia.org/wiki/Pygame)). <br>
