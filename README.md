@@ -1,15 +1,15 @@
 # Kandinsky-Numworks
-**This module depend to [Pygame](https://fr.wikibooks.org/wiki/Pygame/Introduction_%C3%A0_Pygame) module. To install it, click [here](FAQ.md#how-to-install-pygame) and follow steps.** <br>
+**This module depend to [Pygame](https://fr.wikibooks.org/wiki/Pygame/Introduction_%C3%A0_Pygame) module. To install it, click [here](https://github.com/ZetaMap/Kandinsky-Numworks/blob/main/FAQ.md#how-to-install-pygame) and follow steps.** <br>
 A small module allowing to link the kandinsky module, from the Numworks, to a window. 
 Useful if you want to test your program without putting it on the calculator. <br>
-**/!\\WARNING:** [Read this](FAQ.md#what-is-display-for) to understand the usefulness of ``display()``. **/!\\**
+**/!\\WARNING:** [Read this](https://github.com/ZetaMap/Kandinsky-Numworks/blob/main/FAQ.md#what-is-display-for) to understand the usefulness of ``display()``. **/!\\**
 
 ### Installation
-You now have the option to install this module on [pypi.org](https://pypi.org). For that, follow the steps [here](FAQ.md#how-to-install-this-module).
+You now have the option to install this module on [pypi.org](https://pypi.org/project/kandinsky/). For that, follow the steps [here](https://github.com/ZetaMap/Kandinsky-Numworks/blob/main/FAQ.md#how-to-install-this-module).
 
 ### More
 I also recreated the ion module of the Numworks, check it out here: [Ion module of Numworks](https://github.com/ZetaMap/Ion-numworks)<br>
-If you have a question, check out the [FAQ](FAQ.md). And if you have a suggestion or your question is not answered, open an [Issue](https://github.com/ZetaMap/Kandinsky-Numworks/issues/new).
+If you have a question, check out the [FAQ](https://github.com/ZetaMap/Kandinsky-Numworks/blob/main/FAQ.md). And if you have a suggestion or your question is not answered, open an [Issue](https://github.com/ZetaMap/Kandinsky-Numworks/issues/new).
 
 ### Usable content
 **get_pixel()**:
