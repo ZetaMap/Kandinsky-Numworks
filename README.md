@@ -5,7 +5,7 @@ Useful if you want to test your program without putting it on the calculator. <b
 **/!\\WARNING:** [Read this](https://github.com/ZetaMap/Kandinsky-Numworks/blob/main/FAQ.md#what-is-display-for) to understand the usefulness of ``display()``. **/!\\**
 
 ### Installation
-You now have the option to install this module on pypi.org. For that, follow the steps [here](https://github.com/ZetaMap/Kandinsky-Numworks/blob/main/FAQ.md#how-to-install-this-module).
+You now have the option to install this module on [pypi.org](https://pypi.org). For that, follow the steps [here](FAQ.md#how-to-install-this-module).
 
 ### More
 I also recreated the ion module of the Numworks, check it out here: [Ion module of Numworks](https://github.com/ZetaMap/Ion-numworks)<br>
