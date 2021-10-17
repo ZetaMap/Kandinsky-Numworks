@@ -51,7 +51,7 @@ class KS:
     return convert_color(self.root.get_at((x, y))[:-1])
 
   def set_pixel(self, x, y, color):
-    if self.quit: self.__init__()
+    if self.quit: return
     type_test(x, int)
     type_test(y, int)
     
@@ -67,7 +67,7 @@ class KS:
     return convert_color((r, g, b))
 
   def draw_string(self, text, x, y, color, background):
-    if self.quit: self.__init__()
+    if self.quit: return
     type_test(text, str)
     type_test(x, int)
     type_test(y, int)
@@ -78,7 +78,7 @@ class KS:
     self.refresh()
   
   def fill_rect(self, x, y, width, height, color):
-    if self.quit: self.__init__()
+    if self.quit: return
     type_test(x, int)
     type_test(y, int)
     type_test(width, int)
@@ -99,16 +99,17 @@ class KS:
     self.refresh()
 
   def display(self):
-    while not self.quit: self.refresh()
+    while not self.quit: self.refresh(False)
     
-  def refresh(self):
-    try:
-      screen.flip()
+  def refresh(self, withError=True):
+    try: screen.flip()
+    except: self.quit = True
+    else: 
       for i in event.get():
         if i.type == QUIT: 
           screen.quit()
           self.quit = True
-    except: self.quit = True
+          if withError: raise RuntimeError("kandinsky window destroyed")
 
 Ks = KS()
 
@@ -124,7 +125,7 @@ def convert_color(color):
     if color[i] > 255: color[i] %= 256
   return (floor(color[0] / 8) * 8, floor(color[1] / 4) * 4, floor(color[2] / 8) * 8)
 
-"""Function taken from module: [Python_Upgrade](https://github.com/ZetaMap/Python_Upgrade)"""
+"""Function taken from module [Python_Upgrade](https://github.com/ZetaMap/Python_Upgrade)"""
 def type_test(_object, _type, canBeNone=False, withError=True, contentException=None):
   """Allows you to test an object ('_object') with a type or a type list ('_type'), 
   and tell it if we want it to return an error or the correct type ('withError'), by default 'withError' = True.
