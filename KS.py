@@ -13,6 +13,8 @@ from math import floor
 
 ######### Main class #########
 
+__all__ = []
+
 class KS:
   TOP_SIZE = 19
   SCREEN = (320, 241)

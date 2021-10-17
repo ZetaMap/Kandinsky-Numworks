@@ -5,7 +5,6 @@ The [GitHub project](https://github.com/ZetaMap/Kandinsky-Numworks), and if you 
 try: from .KS import Ks
 except: from KS import Ks
 
-
 __all__ = [
   "get_pixel", 
   "set_pixel", 
