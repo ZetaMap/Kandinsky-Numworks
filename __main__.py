@@ -1,2 +1,4 @@
-try: from .demo import *
-except (ImportError, ValueError): from demo import *
+try: from .util.demo import *
+except ImportError: 
+  try: from util.demo import *
+  except: print("Error: demo.py can't be load!")
