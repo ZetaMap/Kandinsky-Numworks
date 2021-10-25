@@ -24,7 +24,8 @@ class KS:
   SCREEN = (320, 256)
   PATH = __file__[:__file__.rindex('\\')]+'\\'
   quit = False
-  numworks_mode = True
+  mode = 0
+  modes = ("Numworks mode", "Omega mode", 'Machine power')
 
   def __init__(self):
     self.root = screen.set_mode(self.SCREEN)
@@ -39,15 +40,22 @@ class KS:
 
   def draw_content(self):
     draw.rect(self.root, "white", (0, 0, 320, 15))
-    self.root.blit(self.windowFont.render("M+CTRL: turn on/off Numworks refresh mode", True, "black"), (2, 0))
+    self.root.blit(self.windowFont.render("M+CTRL: to change the refresh mode", True, "black"), (2, 0))
     draw.line(self.root, "black", (0, 15), (self.SCREEN[0], 15))
-    draw.rect(self.root, "#ffb531", (0, 16, self.SCREEN[0], 18))
-    self.root.blit(self.windowFont.render("deg", True, "white"), (5, 16))
+    draw.rect(self.root, "#ffb531" if self.mode == 0 or self.mode == 2 else "#c53431", (0, 16, self.SCREEN[0], 18))
+    self.root.blit(self.windowFont.render("deg" if self.mode == 0 or self.mode == 2 else "sym/deg", True, "white"), (5, 16))
     self.root.blit(self.windowFont.render("PYTHON", True, "white"), (139, 17))
-    draw.line(self.root, "white", (300, 21), (300, 28))
-    draw.rect(self.root, "white", (302, 21, 10, 8))
-    draw.line(self.root, "white", (313, 21), (313, 28))
-    draw.line(self.root, "white", (314, 23), (314, 26))
+    if self.mode == 0 or self.mode == 2:
+      draw.line(self.root, "white", (300, 21), (300, 28))
+      draw.rect(self.root, "white", (302, 21, 10, 8))
+      draw.line(self.root, "white", (313, 21), (313, 28))
+      draw.line(self.root, "white", (314, 23), (314, 26))
+    else:
+      draw.line(self.root, "white", (260, 21), (260, 28))
+      draw.rect(self.root, "white", (262, 21, 10, 8))
+      draw.line(self.root, "white", (273, 21), (273, 28))
+      draw.line(self.root, "white", (274, 23), (274, 26))
+      self.root.blit(self.windowFont.render("12:00", True, "white"), (280, 17))
 
   def get_pixel(self, x, y):
     if self.quit: return
@@ -112,7 +120,8 @@ class KS:
     try: screen.flip()
     except: self.quit = True
     else: 
-      if self.numworks_mode: wait(10)
+      if self.mode == 0: wait(2)
+      elif self.mode == 1: wait(1)
 
       for e in event.get():
         if e.type == QUIT: 
@@ -122,18 +131,18 @@ class KS:
         
         elif e.type == KEYDOWN: 
           if key.get_mods() & KMOD_CTRL and key.get_pressed()[K_m]:
-            self.numworks_mode = not self.numworks_mode
-            if self.numworks_mode: screen.set_caption(self.APP_NAME+": Numworks mode")
-            else: screen.set_caption(self.APP_NAME)
+            self.mode += 1
+            if self.mode == 3: self.mode = 0
+            screen.set_caption(self.APP_NAME+": "+self.modes[self.mode])
+            self.draw_content()
 
   def convert_color(self, color):
     type_test(color, [tuple, list, str])
 
     if type(color) == str: 
       self.root.set_at((0, 0), color)
-      color = self.root.get_at((0, 0))
+      color = self.root.get_at((0, 0))[:-1]
       self.root.set_at((0, 0), "white")
-      return self.convert_color(color[:-1])
     elif type(color) == tuple: color = list(color)
     if len(color) != 3: raise TypeError("Color needs 3 components")
     
