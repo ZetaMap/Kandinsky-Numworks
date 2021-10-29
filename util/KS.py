@@ -23,6 +23,7 @@ class KS:
   TOP_SIZE = 34
   SCREEN = (320, 256)
   PATH = __file__[:__file__.rindex('\\')]+'\\'
+  WHITE = (248,252,248)
   quit = False
   mode = 0
   modes = ("Numworks mode", "Omega mode", 'Machine power')
@@ -30,11 +31,11 @@ class KS:
   def __init__(self):
     self.root = screen.set_mode(self.SCREEN)
     self.windowFont, self.font = Font(self.PATH+"small_font.ttf", 12), Font(self.PATH+"large_font.ttf", 16)
-    
+
     screen.set_caption(self.APP_NAME)
     screen.set_icon(image.load(self.PATH+"icon.ico"))
 
-    self.root.fill("white")
+    self.root.fill(self.WHITE)
     self.draw_content()
     self.refresh()
 
@@ -43,19 +44,19 @@ class KS:
     self.root.blit(self.windowFont.render("M+CTRL: to change the refresh mode", True, "black"), (2, 0))
     draw.line(self.root, "black", (0, 15), (self.SCREEN[0], 15))
     draw.rect(self.root, "#ffb531" if self.mode == 0 or self.mode == 2 else "#c53431", (0, 16, self.SCREEN[0], 18))
-    self.root.blit(self.windowFont.render("deg" if self.mode == 0 or self.mode == 2 else "sym/deg", True, "white"), (5, 16))
-    self.root.blit(self.windowFont.render("PYTHON", True, "white"), (139, 17))
+    self.root.blit(self.windowFont.render("deg" if self.mode == 0 or self.mode == 2 else "sym/deg", True, self.WHITE), (5, 16))
+    self.root.blit(self.windowFont.render("PYTHON", True, self.WHITE), (139, 17))
     if self.mode == 0 or self.mode == 2:
-      draw.line(self.root, "white", (300, 21), (300, 28))
-      draw.rect(self.root, "white", (302, 21, 10, 8))
-      draw.line(self.root, "white", (313, 21), (313, 28))
-      draw.line(self.root, "white", (314, 23), (314, 26))
+      draw.line(self.root, self.WHITE, (300, 21), (300, 28))
+      draw.rect(self.root, self.WHITE, (302, 21, 10, 8))
+      draw.line(self.root, self.WHITE, (313, 21), (313, 28))
+      draw.line(self.root, self.WHITE, (314, 23), (314, 26))
     else:
-      draw.line(self.root, "white", (260, 21), (260, 28))
-      draw.rect(self.root, "white", (262, 21, 10, 8))
-      draw.line(self.root, "white", (273, 21), (273, 28))
-      draw.line(self.root, "white", (274, 23), (274, 26))
-      self.root.blit(self.windowFont.render("12:00", True, "white"), (280, 17))
+      draw.line(self.root, self.WHITE, (260, 21), (260, 28))
+      draw.rect(self.root, self.WHITE, (262, 21, 10, 8))
+      draw.line(self.root, self.WHITE, (273, 21), (273, 28))
+      draw.line(self.root, self.WHITE, (274, 23), (274, 26))
+      self.root.blit(self.windowFont.render("12:00", True, self.WHITE), (280, 17))
 
   def get_pixel(self, x, y):
     if self.quit: return
@@ -71,7 +72,7 @@ class KS:
     type_test(y, int)
     
     if y < self.TOP_SIZE: return
-    draw.line(self.root, self.convert_color(color), (x, y), (x, y))
+    self.root.set_at((x, y), self.convert_color(color))
     self.refresh()
 
   def color(self, r, g, b):
@@ -81,14 +82,20 @@ class KS:
 
     return self.convert_color((r, g, b))
 
+  def drawString(self, text, x, y, color, background):
+    draw.rect(self.root, self.convert_color(background), (x, y+2, len(text)*10, 18))
+    self.root.blit(self.font.render(text, True, self.convert_color(color)), (x, y))
+
   def draw_string(self, text, x, y, color, background):
     if self.quit: return
     type_test(text, str)
     type_test(x, int)
     type_test(y, int)
 
-    draw.rect(self.root, self.convert_color(background), (x, y+2, len(text)*10, 18))
-    self.root.blit(self.font.render(text, True, self.convert_color(color)), (x, y))
+    text = text.replace('\r', '').replace('\t', "    ").split('\n')
+    self.drawString(text[0], x, y, color, background)
+    for i in range(1, len(text)): self.drawString(text[i], 0, y+i*18, color, background)
+
     if y < self.TOP_SIZE: self.draw_content()
     self.refresh()
   
@@ -142,7 +149,7 @@ class KS:
     if type(color) == str: 
       self.root.set_at((0, 0), color)
       color = self.root.get_at((0, 0))[:-1]
-      self.root.set_at((0, 0), "white")
+      self.root.set_at((0, 0), self.WHITE)
     elif type(color) == tuple: color = list(color)
     if len(color) != 3: raise TypeError("Color needs 3 components")
     
