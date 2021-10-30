@@ -18,23 +18,35 @@ __all__ = [
 
 def get_pixel(x, y):
   """Return pixel (x, y) color"""
-  return __Ks.get_pixel(x, y+__Ks.TOP_SIZE)
+  return __Ks.get_pixel(x, y)
   
 def set_pixel(x, y, color):
   """Color pixel (x, y)"""
-  __Ks.set_pixel(x, y+__Ks.TOP_SIZE, color)
+  try: __Ks.set_pixel(x, y, color)
+  except Exception as e: 
+    raise \
+      e.with_traceback(None)
 
 def color(r, g, b):
   """Define a rgb color"""
-  return __Ks.color(r, g, b)
+  try: return __Ks.color(r, g, b)
+  except Exception as e: 
+    raise \
+      e.with_traceback(None)
 
 def draw_string(text, x, y, color=(0,0,0), background=(248,252,248)):
   """Display a text from pixel (x, y)"""
-  __Ks.draw_string(text, x, y+__Ks.TOP_SIZE-2, color, background)
+  try: __Ks.draw_string(text, x, y-2, color, background)
+  except Exception as e: 
+    raise \
+      e.with_traceback(None)
 
 def fill_rect(x, y, width, height, color):
   """Fill a rectangle at pixel (x, y)"""
-  __Ks.fill_rect(x, y+__Ks.TOP_SIZE, width, height, color)
+  try: __Ks.fill_rect(x, y, width, height, color)
+  except Exception as e: 
+    raise \
+      e.with_traceback(None)
   
 def display():
   """Run an infinite loop (a little modified) allowing to keep the window open"""

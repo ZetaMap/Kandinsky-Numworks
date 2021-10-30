@@ -26,7 +26,7 @@ class KS:
   WHITE = (248,252,248)
   quit = False
   mode = 0
-  modes = ("Numworks mode", "Omega mode", 'Machine power')
+  modes = ("Numworks mode", "Omega mode", "Machine power")
 
   def __init__(self):
     self.root = screen.set_mode(self.SCREEN)
@@ -60,25 +60,25 @@ class KS:
 
   def get_pixel(self, x, y):
     if self.quit: return
-    type_test(x, int)
-    type_test(y, int)
+    self.type_test(x)
+    self.type_test(y)
 
-    if y < self.TOP_SIZE: return (0, 0, 0)
-    return self.convert_color(self.root.get_at((x, y))[:-1])
+    if y < 0: return (0, 0, 0)
+    return self.convert_color(self.root.get_at((x, y+self.TOP_SIZE))[:-1])
 
   def set_pixel(self, x, y, color):
     if self.quit: return
-    type_test(x, int)
-    type_test(y, int)
-    
-    if y < self.TOP_SIZE: return
-    self.root.set_at((x, y), self.convert_color(color))
+    self.type_test(x)
+    self.type_test(y)
+
+    if y < 0: return
+    self.root.set_at((x, y+self.TOP_SIZE), self.convert_color(color))
     self.refresh()
 
   def color(self, r, g, b):
-    type_test(r, int)
-    type_test(g, int)
-    type_test(b, int)
+    self.type_test(r)
+    self.type_test(g)
+    self.type_test(b)
 
     return self.convert_color((r, g, b))
 
@@ -88,10 +88,11 @@ class KS:
 
   def draw_string(self, text, x, y, color, background):
     if self.quit: return
-    type_test(text, str)
-    type_test(x, int)
-    type_test(y, int)
+    self.type_test(text, "str")
+    self.type_test(x)
+    self.type_test(y)
 
+    y += self.TOP_SIZE
     text = text.replace('\r', '').replace('\t', "    ").split('\n')
     self.drawString(text[0], x, y, color, background)
     for i in range(1, len(text)): self.drawString(text[i], 0, y+i*18, color, background)
@@ -101,11 +102,12 @@ class KS:
   
   def fill_rect(self, x, y, width, height, color):
     if self.quit: return
-    type_test(x, int)
-    type_test(y, int)
-    type_test(width, int)
-    type_test(height, int)
-      
+    self.type_test(x)
+    self.type_test(y)
+    self.type_test(width)
+    self.type_test(height)
+    
+    y += self.TOP_SIZE
     if width < 0: 
       x += width
       width *= -1
@@ -144,64 +146,38 @@ class KS:
             self.draw_content()
 
   def convert_color(self, color):
-    type_test(color, [tuple, list, str])
+    self.type_test(color, "color")
 
     if type(color) == str: 
-      self.root.set_at((0, 0), color)
+      try:self.root.set_at((0, 0), color)
+      except ValueError as e: 
+        e.args = ("invalid syntax for number",)
+        raise
       color = self.root.get_at((0, 0))[:-1]
-      self.root.set_at((0, 0), self.WHITE)
+      self.root.set_at((0, 0), "white")
     elif type(color) == tuple: color = list(color)
-    if len(color) != 3: raise TypeError("Color needs 3 components")
     
     for i in range(len(color)):
+      self.type_test(color[i])
       if color[i] > 255: color[i] %= 256
     return (floor(color[0] / 8) * 8, floor(color[1] / 4) * 4, floor(color[2] / 8) * 8)
 
+  def type_test(self, _object, mode="int"):
+    _type = type(_object)
+    
+    if mode == "int": 
+      if _type != int: raise TypeError("can't convert {} to int".format(_type.__name__))
+    
+    elif mode == "color":
+      if _type == int: raise TypeError("Int are not colors")
+      elif _type == str: return
+      elif _type != tuple and _type != list: 
+        raise TypeError("object '{}' isn't a tuple or list".format(_type.__name__))
+      elif len(_object) != 3: raise TypeError("Color needs 3 components")
+
+    elif mode == "str":
+      if _type != str: raise TypeError("can't convert '{}' object to str implicitly".format(_type.__name__))
+    
+    else: raise ValueError("invalid mode")
+
 Ks = KS()
-
-
-"""Function taken from module [Python_Upgrade](https://github.com/ZetaMap/Python_Upgrade)"""
-def type_test(_object, _type, canBeNone=False, withError=True, contentException=None):
-  """Allows you to test an object ('_object') with a type or a type list ('_type'), 
-  and tell it if we want it to return an error or the correct type ('withError'), by default 'withError' = True.
-
-  \nIt is also possible to tell it if the object can be None ('canBeNone') 
-  and/or if you want to ignore a content ('contentException').
-  """
-  ### v Testing fonction v ###  
-  if not callable(_type) and type(_type) == list:
-    if len(_type) == 0: raise IndexError("the type list must have at least one occurrence")
-    for i in _type: 
-      if not callable(i): raise TypeError("the list must only contain types")
-  else: _type = [_type]
-  ### ^ Testing fonction ^ ###
-
-  if canBeNone:
-    for i in _type:
-      if _object == None or type(_object) == i: 
-        correct = i
-        break
-      elif _object == contentException: 
-        correct = True
-        break
-      else: correct = False
-  else:
-    for i in _type:
-      if type(_object) == i: 
-        correct = i
-        break
-      elif contentException != None and _object == contentException:
-        correct = True
-        break
-      else: correct = False
-
-  if withError: 
-    if correct != False: return correct
-    else:
-      typeList = ""
-      for i in range(len(_type)): typeList += "'"+_type[i].__name__+("', " if i != len(_type)-2 else "' or ")
-      error = "'{}' is not valid as type argument {}".format(type(_object).__name__, typeList.rstrip(" ,"))
-      raise TypeError(error)
-  else:
-    if correct: return True
-    else: return False
