@@ -63,7 +63,7 @@ class KS:
     self.type_test(x)
     self.type_test(y)
 
-    if y < 0: return (0, 0, 0)
+    if y < 0 or x < 0 or x >= self.SCREEN[0] or y+self.TOP_SIZE >= self.SCREEN[1]: return (0, 0, 0)
     return self.convert_color(self.root.get_at((x, y+self.TOP_SIZE))[:-1])
 
   def set_pixel(self, x, y, color):
@@ -178,6 +178,6 @@ class KS:
     elif mode == "str":
       if _type != str: raise TypeError("can't convert '{}' object to str implicitly".format(_type.__name__))
     
-    else: raise ValueError("invalid mode")
+    else: raise ValueError("invalid type test mode")
 
 Ks = KS()
