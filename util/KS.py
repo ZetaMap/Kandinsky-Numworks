@@ -23,7 +23,7 @@ class KS:
   TOP_SIZE = 34
   SCREEN = (320, 256)
   PATH = __file__[:__file__.rindex('\\')]+'\\'
-  WHITE = (248,252,248)
+  WHITE = (248, 252, 248)
   quit = False
   mode = 0
   modes = ("Numworks mode", "Omega mode", "Machine power")
@@ -160,6 +160,9 @@ class KS:
     for i in range(len(color)):
       self.type_test(color[i])
       if color[i] > 255: color[i] %= 256
+      elif color[i] < 0: 
+        color[i] *= -1
+        if color[i] > 255: color[i] %= 256
     return (floor(color[0] / 8) * 8, floor(color[1] / 4) * 4, floor(color[2] / 8) * 8)
 
   def type_test(self, _object, mode="int"):
