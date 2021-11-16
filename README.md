@@ -25,7 +25,7 @@ If you have a question, check out the [FAQ](https://github.com/ZetaMap/Kandinsky
 * Description: Define a rgb color
 
 **draw_string():**
-* Parameters: ``text``, ``x``, ``y``, ``color`` **[default : (0,0,0)]**, ``background`` **[default : (248,252,248)]**
+* Parameters: ``text``, ``x``, ``y``, ``color`` **[default: (0,0,0)]**, ``background`` **[default: (248,252,248)]**
 * Description: Display a text from pixel (x, y)
 
 **fill_rect():**
@@ -33,5 +33,6 @@ If you have a question, check out the [FAQ](https://github.com/ZetaMap/Kandinsky
 * Description: Fill a rectangle at pixel (x, y)
 
 **display():**
-* Parameters:
-* Description: Run an infinite loop (a little modified) allowing to keep the window open
+* Parameters: ``justRefresh`` **[default: False]**
+* Description: Run an infinite loop (a little modified) allowing to keep the window open. <br>
+If justRefresh == True: Just refresh the screen and don't run the loop.
