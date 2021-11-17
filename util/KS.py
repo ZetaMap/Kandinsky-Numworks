@@ -92,7 +92,7 @@ class KS:
     self.type_test(x)
     self.type_test(y)
 
-    y += self.TOP_SIZE
+    y += self.TOP_SIZE-2
     text = text.replace('\r', '').replace('\t', "    ").split('\n')
     self.drawString(text[0], x, y, color, background)
     for i in range(1, len(text)): self.drawString(text[i], 0, y+i*18, color, background)

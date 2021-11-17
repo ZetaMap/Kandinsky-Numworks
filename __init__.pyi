@@ -13,4 +13,4 @@ def draw_string(
   color: _ColorInput=(), 
   background: _ColorInput=()) -> None: pass
 def fill_rect(x: int, y: int, width: int, height: int, color: _ColorInput) -> None: pass
-def display() -> NoReturn: pass
+def display() -> NoReturn | None: pass

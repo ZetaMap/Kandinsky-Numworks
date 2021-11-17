@@ -18,7 +18,10 @@ __all__ = [
 
 def get_pixel(x, y):
   """Return pixel (x, y) color"""
-  return __Ks.get_pixel(x, y)
+  try: return __Ks.get_pixel(x, y)
+  except Exception as e:
+    raise \
+      e.with_traceback(None)
   
 def set_pixel(x, y, color):
   """Color pixel (x, y)"""
@@ -36,7 +39,7 @@ def color(r, g, b):
 
 def draw_string(text, x, y, color=(0,0,0), background=(248,252,248)):
   """Display a text from pixel (x, y)"""
-  try: __Ks.draw_string(text, x, y-2, color, background)
+  try: __Ks.draw_string(text, x, y, color, background)
   except Exception as e: 
     raise \
       e.with_traceback(None)
@@ -48,10 +51,16 @@ def fill_rect(x, y, width, height, color):
     raise \
       e.with_traceback(None)
   
-def display():
-  """Run an infinite loop (a little modified) allowing to keep the window open"""
-  __Ks.display()
-
+def display(justRefresh=False):
+  """Run an infinite loop (a little modified) allowing to keep the window open
+  If justRefresh == True: Just refresh the screen and don't run the loop.
+  """
+  try: 
+    if justRefresh: __Ks.refresh()
+    else: __Ks.display()
+  except Exception as e:
+    raise \
+      e.with_traceback(None)
 
 ######### Example code #########
 
@@ -59,4 +68,7 @@ if __name__ == '__main__':
   try: from .util.demo import *
   except ImportError: 
     try: from util.demo import *
-    except: pass
+    except ImportError: print("Error: demo.py can't be load!")
+    except Exception as e:
+      raise \
+        e.with_traceback(None)
