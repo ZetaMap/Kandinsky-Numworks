@@ -17,7 +17,7 @@ So I switched to Pygame because, seeing that this module is very well known, eas
 
 ### What is display() for?
 Windows works differently in window management.<br>
-If you want to keep the window open, you will have to call the function ``display()`` at the end of your program, but it will block your program. <br>
+If you want to keep the window open, you will have to call the function ``display()`` at the end of your program, but it will block your program. To avoid this, you can use it with the argument True (``display(True)``) which will just refresh the screen without blocking the program. <br>
 If you do not call this function, the window will appear at the beginning of your program and will close at the end of it.<br>
 
 ### Why convert colors?
