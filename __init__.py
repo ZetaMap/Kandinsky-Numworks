@@ -2,10 +2,7 @@
 Useful if you want to test your program without putting it on the calculator.
 The [GitHub project](https://github.com/ZetaMap/Kandinsky-Numworks), and if you have any questions, check out the [FAQ](https://github.com/ZetaMap/Kandinsky-Numworks/blob/main/FAQ.md)
 """
-try: from .util.KS import Ks as __Ks
-except: 
-  try: from util.KS import Ks as __Ks
-  except: pass
+from .util.KS import Ks as __Ks
 
 __all__ = [
   "get_pixel", 
@@ -61,14 +58,3 @@ def display(justRefresh=False):
   except Exception as e:
     raise \
       e.with_traceback(None)
-
-######### Example code #########
-
-if __name__ == '__main__':
-  try: from .util.demo import *
-  except ImportError: 
-    try: from util.demo import *
-    except ImportError: print("Error: demo.py can't be load!")
-    except Exception as e:
-      raise \
-        e.with_traceback(None)

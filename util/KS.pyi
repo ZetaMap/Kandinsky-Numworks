@@ -1,6 +1,6 @@
-from typing import NoReturn, List, Tuple, Literal
+from typing import NoReturn, List, Tuple, Literal, Union
 
-_ColorInput = Tuple[int, int, int] | List[int, int, int] | str
+_ColorInput = Union[Tuple[int, int, int], List[int, int, int], str]
 _ColorOutput = Tuple[int, int, int]
 
 class KS:
@@ -28,5 +28,5 @@ class KS:
   def refresh(withError: bool=True) -> None: pass
   def convert_color(color: _ColorInput) -> _ColorOutput: pass
   def type_test(
-    _object: int | _ColorInput,
+    _object: Union[int, _ColorInput],
     mode: Literal["int", "color", "str"]="int") -> None: pass
