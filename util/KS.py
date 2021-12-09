@@ -41,7 +41,7 @@ class KS:
 
   def draw_content(self):
     draw.rect(self.root, "white", (0, 0, 320, 15))
-    self.root.blit(self.windowFont.render("M+CTRL: to change the refresh mode", True, "black"), (2, 0))
+    self.root.blit(self.windowFont.render("CTRL+M: to change the refresh mode", True, "black"), (2, 0))
     draw.line(self.root, "black", (0, 15), (self.SCREEN[0], 15))
     draw.rect(self.root, "#ffb531" if self.mode == 0 or self.mode == 2 else "#c53431", (0, 16, self.SCREEN[0], 18))
     self.root.blit(self.windowFont.render("deg" if self.mode == 0 or self.mode == 2 else "sym/deg", True, self.WHITE), (5, 16))
@@ -158,11 +158,11 @@ class KS:
     elif type(color) == tuple: color = list(color)
     
     for i in range(len(color)):
-      self.type_test(color[i])
-      if color[i] > 255: color[i] %= 256
-      elif color[i] < 0: 
-        color[i] *= -1
-        if color[i] > 255: color[i] %= 256
+      if type(color[i]) == float: color[i] = floor(color[i])
+      else: self.type_test(color[i])
+
+      if color[i] < 0: color[i] = 0
+      elif color[i] > 255: color[i] %= 256
     return (floor(color[0] / 8) * 8, floor(color[1] / 4) * 4, floor(color[2] / 8) * 8)
 
   def type_test(self, _object, mode="int"):
