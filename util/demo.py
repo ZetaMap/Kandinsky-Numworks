@@ -1,309 +1,117 @@
 """This is a demo code
-Source: https://my.numworks.com/python/golem64/snake
+Source: https://my.numworks.com/python/zetamap/snake_lite
 """
 print("""This is a demo code
-Source: https://my.numworks.com/python/golem64/snake""")
+Source: https://my.numworks.com/python/zetamap/snake_lite""")
 __all__ = []
 
 #############################################################
 
-#Version 1.7 STABLE
-#Tip: You should try to press
-#some keys in the menu...
-from random import *
-from kandinsky import *
+from random import randint as ri
+from kandinsky import fill_rect as fr, draw_string as ds
 from ion import *
 from time import *
-#from pomme import * 
-def oscolor():
-  try:
-    get_keys()
-  except:
-    return 'orange'
-  else:
-    return 'red'
-def lastPos(i,x,y):
-  if i[-1]==3:
-    pos=[x-10,y]
-  elif i[-1]==2:
-    pos=[x,y-10]
-  elif i[-1]==0:
-    pos=[x+10,y]
-  elif i[-1]==1:
-    pos=[x,y+10]
-  pos[0],pos[1]=checkTeleport(pos[0],pos[1])
-  return pos
-def newApple(appleC,bgC):
-  applex=randint(0,31)*10+4
-  appley=randint(0,21)*10+5
-  while get_pixel(applex,appley)!=bgC:
-    applex=randint(0,31)*10+4
-    appley=randint(0,21)*10+5
-  fill_rect(applex-4,appley-4,10,10,appleC)
-  return applex,appley
-def checkTeleport(x,y):
-  if x<4:
-    x=314
-  if x>314:
-    x=4
-  if y<5:
-    y=215
-  if y>215:
-    y=5
-  return x,y
-def getMove(u):
-  for k in range(4):
-    if keydown(k)==True and u+k!=3: return k
-  return u
-def clearDraw(): fill_rect(0,0,320,222,(255,255,255))
-def clearHome(): print('\n'*13)
-def redraw():
-  draw_string("(DELETE to exit)",0,0)
-  printLetter([1,1,1,1,0,0,1,1,1,0,0,1,1,1,1],70,80,10,(0,204,0))
-  fill_rect(95,80,2,4,(0,0,0))
-  fill_rect(95,86,2,4,(0,0,0))
-  fill_rect(100,84,4,2,(255,0,0))
-  fill_rect(104,82,2,2,(255,0,0))
-  fill_rect(104,86,2,2,(255,0,0))
-  printLetter([1,1,1,1,0,1,1,0,1,1,0,1,1,0,1],110,80,10,(0,0,0))
-  printLetter([1,1,1,1,0,1,1,1,1,1,0,1,1,0,1],150,80,10,(0,0,0))
-  printLetter([1,0,1,1,0,1,1,1,0,1,0,1,1,0,1],190,80,10,(0,0,0))
-  printLetter([1,1,1,1,0,0,1,1,1,1,0,0,1,1,1],230,80,10,(0,0,0))
-def printLetter(letter,x,y,size,color):
-  for yi in range(5):
-    for xi in range(3):
-      if letter[yi*3+xi]==1:
-        fill_rect(x+(xi*size),y+(yi*size),size,size,color)
-def menu():
-  clearDraw()
-  printLetter([1,1,1,1,0,1,1,0,1,1,0,1,1,0,1],110,80,10,(0,0,0))
-  printLetter([1,1,1,1,0,1,1,1,1,1,0,1,1,0,1],150,80,10,(0,0,0))
-  printLetter([1,0,1,1,0,1,1,1,0,1,0,1,1,0,1],190,80,10,(0,0,0))
-  printLetter([1,1,1,1,0,0,1,1,1,1,0,0,1,1,1],230,80,10,(0,0,0))
-  anim=[1,1,1,1,1,1,1,1,1,4,4,3,3,4,4,1,1]
-  ax=0
-  ay=120
-  aendx=-110
-  aendy=120
-  u=1
-  aback=0
-  for i in range(len(anim)):
-    ax=ax+((anim[i]==1)-(anim[i]==3))*10
-    ay=ay+((anim[i]==2)-(anim[i]==4))*10
-    if aendx<0:
-      aendx=aendx+10
-    else:
-      aendx=aendx+((anim[i-11]==1)-(anim[i-11]==3))*10
-      aendy=aendy+((anim[i-11]==2)-(anim[i-11]==4))*10
-      fill_rect(aendx,aendy,10,10,(255,255,255))
-    fill_rect(ax,ay,10,10,(0,204,0))
-#    aback=lastPos(anim,ax,ay)
-#    if u==26 or u==24:
-#      fill_rect(ax-1,ay-1,3,1,(0,0,0))
-#      fill_rect(ax-1,ay+1,3,1,(0,0,0))
-#      fill_rect(aback[0],aback[1],10,10,(0,204,0))
-#    elif u==34 or u==25:
-#      fill_rect(ax-1,ay-1,1,3,(0,0,0))
-#      fill_rect(ax+1,ay-1,1,3,(0,0,0))
-#      fill_rect(aback[0]-2,aback[1]-2,5,5,(0,204,0))
-    sleep(0.05)
-  fill_rect(ax+5,ay,2,4,(0,0,0))
-  fill_rect(ax+5,ay+6,2,4,(0,0,0))
-  fill_rect(ax+10,ay+4,4,2,(255,0,0))
-  fill_rect(ax+14,ay+2,2,2,(255,0,0))
-  fill_rect(ax+14,ay+6,2,2,(255,0,0))
-  draw_string("(DELETE to exit)",0,0)
-  draw_string("> Play <",125,140,oscolor())
-  draw_string("  Options  ",110,165)
-  darkMode=0
-  Speed=0.05
-  power=5
-  score=1
-  exit=0
-  sel=1
-  while keydown(KEY_OK)!=True and exit==0:
-    if keydown(KEY_DOWN) and sel==1:
-      draw_string("  Play  ",125,140)
-      draw_string("> Options <",110,165,oscolor())
-      sel=2
-    elif keydown(KEY_UP) and sel==2:
-      draw_string("> Play <",125,140,oscolor())
-      draw_string("  Options  ",110,165)
-      sel=1
-    if keydown(KEY_LEFTPARENTHESIS) and keydown(KEY_RIGHTPARENTHESIS):
-      draw_string("Dark mode enabled !",80,195)
-      darkMode=1
-    if keydown(KEY_BACKSPACE):
-      exit=1  
-    sleep(0.1)
-  if sel==2 and exit!=1:
-    fill_rect(0,130,300,60,(255,255,255))
-    Speed=0.05
-    power=5
-    score=1
-    draw_string("Speed:"+str(Speed),50,140,oscolor(),'white')
-    draw_string("Power:+"+str(power),200,140)
-    draw_string("Score:+"+str(score),50,170)
-    draw_string("Play",220,170)
-    sel=1
+HEX=lambda v,l=4: '0'*(l-len(hex(v)[2:]))+hex(v)[2:]
+INT=lambda v: int("0x"+v,16)
+COMPRESS=lambda f,l=2,i=2: INT(''.join([HEX(f(ii),l) for ii in range(i)]))
+def UNCOMPRESS(v,l=2,i=2):
+  v=HEX(v,l*i)
+  return [INT(v[l*ii:l*(ii+1)]) for ii in range(i)]
+class Snake:
+  c=[(50,50,50),(240,240,240),(0,255,0),"green","red","blue","red"]
+  def __init__(s,leader_board=(),speed=10,power=2,size=10,score=1,inf_snake=False,gost=False,darkmode=True,rainbow=False,walls=True):
+    if inf_snake: power=float("inf")
+    if not darkmode: s.c[0],s.c[1]=s.c[1],s.c[0]
+    try: get_keys()
+    except NameError: s.c[6]="orange"
+    s.lb,s.s,s.p,s.m,s.ti,s.g,s.go,s.r,s.w,s.bo=leader_board,1/speed,power,score,size,(320//size-1,220//size-1),gost,rainbow,walls,1 if walls else 0
+  def nc(s):
+    s.ch=[ri(s.bo,s.g[i]-s.bo) for i in range(2)]
+    while COMPRESS(lambda i: s.ch[i]) in s.b: s.c=[ri(s.bo,s.g[i]-s.bo) for i in range(2)]
+    fr(s.ch[0]*s.ti,2+s.ch[1]*s.ti,s.ti,s.ti,s.c[4])
+  def dl(s):
+    fr(0,2,320,220,"black")
+    fr(0,2,(s.g[0]+1)*s.ti,(s.g[1]+1)*s.ti,s.c[5 if s.w else 0])
+    if s.w: fr(s.ti//2,2+s.ti//2,s.g[0]*s.ti,s.g[1]*s.ti,s.c[0])
+  def dt(s,text,x,y):
+    for i,l in enumerate(text.replace('\t', "    ")):
+      ds(l,x+10*i,y,s.c[1],s.c[0])
+      if l!=' ': sleep(0.02)
+  def ub(s,line1,line2):
+    fr(20,82,280,50,s.c[4])
+    fr(25,87,270,40,s.c[0])
+    s.dt(line1,25,87)
+    s.dt(line2,25,107)
     sleep(0.2)
-    while keydown(KEY_OK)!=True or sel!=4:
-      if keydown(KEY_RIGHT):
-        sel=sel+1
-      elif keydown(KEY_DOWN):
-        sel=sel+2
-      elif keydown(KEY_LEFT):
-        sel=sel-1
-      elif keydown(KEY_UP):
-        sel=sel-2
-      if sel<0:
-        sel=0
-      if sel>4:
-        sel=4
-      if sel==1:
-        draw_string("Speed:"+str(Speed),50,140,oscolor(),'white')
-        draw_string("Power:+"+str(power),200,140)
-        draw_string("Score:+"+str(score),50,170)
-        draw_string("Play",220,170)
-        if keydown(KEY_OK):
-          clearHome()
-          Speed=input("Speed:")
-          redraw()
-      elif sel==2:
-        draw_string("Speed:"+str(Speed),50,140)
-        draw_string("Power:+"+str(power),200,140,oscolor(),'white')
-        draw_string("Score:+"+str(score),50,170)
-        draw_string("Play",220,170)
-        if keydown(KEY_OK):
-          clearHome()
-          power=int(input("Power:+"))
-          redraw()
-      elif sel==3:
-        draw_string("Speed:"+str(Speed),50,140)
-        draw_string("Power:+"+str(power),200,140)
-        draw_string("Score:+"+str(score),50,170,oscolor(),'white')
-        draw_string("Play",220,170)
-        if keydown(KEY_OK):
-          clearHome()
-          score=int(input("Score:"))
-          redraw()
-      elif sel==4:
-        draw_string("Speed:"+str(Speed),50,140)
-        draw_string("Power:+"+str(power),200,140)
-        draw_string("Score:+"+str(score),50,170)
-        draw_string("Play",220,170,oscolor(),'white')
-      if (keydown(KEY_LEFTPARENTHESIS) and keydown(KEY_RIGHTPARENTHESIS)) or darkMode==1:
-        draw_string("Dark mode enabled !",80,195)
-        darkMode=1
-      if keydown(KEY_BACKSPACE):
-        exit=1
-        break
-      sleep(0.1)
-  if exit!=1:
-    if darkMode==1:
-      launch(1,Speed,power,score)
-    elif darkMode==0:
-      launch(0,Speed,power,score)
-  elif exit==1:
-    clearDraw()
-    return
-def launch(darkmode=0,speed=0.05,applePower=5,appleScore=1):
-  bgC=(248,252,248)
-  borderC=(0,0,0)
-  snakeC=(0,204,0)
-  appleC=(248,0,0)
-  if darkmode==1:
-    bgC=(0,0,0)
-    borderC=(0,0,204)
-  fill_rect(0,0,320,222,bgC)
-#  fill_rect(315,0,5,222,borderC)
-#  fill_rect(0,0,5,222,borderC)
-#  fill_rect(0,0,320,1,(197,52,49))
-  fill_rect(0,221,320,1,(0,0,0))
-  try:
-    get_keys()
-  except:
-    fill_rect(0,0,320,1,(255,181,49))
-  else:
-    fill_rect(0,0,320,1,(197,52,49))
-  snake=[3,3,3,3,3]
-  x=154
-  y=115
-  endx=104
-  endy=115
-  u,v=3,3
-  length=5
-  applex,appley=newApple(appleC,bgC)
-  score,touched=0,0
-  while touched!=borderC and touched!=snakeC:
-    if keydown(0) or keydown(1) or keydown(2) or keydown(3):
-      u=getMove(u)
-    if keydown(KEY_BACKSPACE):
-      while keydown(KEY_BACKSPACE):
-        sleep(0.1)
-      while keydown(KEY_BACKSPACE)!=True:
-        sleep(0.1)
-      while keydown(KEY_BACKSPACE):
-        sleep(0.1)
-    snake.append(u)
-    if x==applex and y==appley:
-      length=length+float(applePower)
-      applex,appley=newApple(appleC,bgC)
-      score=score+int(appleScore)
-    x=x+((u==3)-(u==0))*10
-    y=y+((u==2)-(u==1))*10
-    x,y=checkTeleport(x,y)
-    if length:
-      length=length-1
-    else:
-      snake.remove(snake[0])
-      endx=endx+((v==3)-(v==0))*10
-      endy=endy+((v==2)-(v==1))*10
-      endx,endy=checkTeleport(endx,endy)
-      v=snake[0]
-      fill_rect(endx-4,endy-4,10,10,bgC)
-    touched=get_pixel(x,y)
-    if x<0 or x>320 or y<0 or y>220:
-      touched=borderC
-    if touched!=appleC and touched!=bgC:
-      touched=borderC
-    fill_rect(x-4,y-4,10,10,snakeC)
-    back=lastPos(snake,x,y)
-    if u==3 or u==0:
-      fill_rect(x,y-4,2,4,(0,0,0))
-      fill_rect(x,y+2,2,4,(0,0,0))
-      fill_rect(back[0]-4,back[1]-4,10,10,snakeC)
-    elif u==2 or u==1:
-      fill_rect(x-4,y,4,2,(0,0,0))
-      fill_rect(x+2,y,4,2,(0,0,0))
-      fill_rect(back[0]-4,back[1]-4,10,10,snakeC)
-    sleep(float(speed))
-# EPILEPSY WARNING !!!
-#    snakeC=(randint(0,255),randint(0,255),randint(0,255))
-    while snakeC==appleC or snakeC==bgC:
-       snakeC=(randint(0,255),randint(0,255),randint(0,255))
-  #  beau()
-    if len(snake)==640:
-      if darkmode==1:
-        draw_string("You win !",120,100,'white','black')
-        draw_string("(You reached the max length)",20,120,'white','black')
-      else:
-        draw_string("You win !",120,100)
-        draw_string("(You reached the max length)",20,120) 
-      touched=borderC
-  if darkmode==1:
-    draw_string("Score:"+str(score),10,10,'white','black')
-    draw_string("(OK=play again, DELETE=Menu)",10,30,'white','black')
-  else:
-    draw_string("Score:"+str(score),10,10)
-    draw_string("(OK=play again, DELETE=Menu)",10,30)
-  choice=0
-  while choice==0:
-    if keydown(KEY_OK):
-      choice=1
-      launch(darkmode,speed,applePower,appleScore)
-    elif keydown(KEY_BACKSPACE):
-      choice=2
-      menu()
-  print("Score:",score)
-menu()
+    while True:
+      if keydown(KEY_OK): return True
+      elif keydown(KEY_BACKSPACE): return False
+  def wake_up(s):
+    s.t=monotonic()
+    s.ta,s.te=(s.b[-1], UNCOMPRESS(s.b[-1])),UNCOMPRESS(s.b[0])
+    if keydown(KEY_UP) and s.d[1]!=1: s.d=[0,-1]
+    elif keydown(KEY_LEFT) and s.d[0]!=1: s.d=[-1,0]
+    elif keydown(KEY_DOWN) and s.d[1]!=-1: s.d=[0,1]
+    elif keydown(KEY_RIGHT) and s.d[0]!=-1: s.d=[1,0]
+    fr(s.te[0]*s.ti,2+s.te[1]*s.ti,s.ti,s.ti,[ri(0,255) for i in range(3)] if s.r else s.c[3])
+    for x in range(len(s.b)-1,0,-1): s.b[x]=s.b[x-1]
+    s.b[0]=COMPRESS(lambda i: (s.te[i]+s.d[i])%s.g[i])
+    if s.a>0:
+      s.b.append(s.ta[0])
+      s.a-=1
+    elif s.ta[0] not in s.b: fr(s.ta[1][0]*s.ti,2+s.ta[1][1]*s.ti,s.ti,s.ti,s.c[0])
+    if s.b[0]==COMPRESS(lambda i: s.ch[i]):
+      s.a,s.sc=s.a+s.p,s.sc+s.m
+      s.nc()
+    s.te=UNCOMPRESS(s.b[0])
+    if not s.go:
+      if s.w and (s.te[0]==0 or s.te[1]==0 or s.te[0]==s.g[0] or s.te[1]==s.g[1]): return False
+      for x in range(1,len(s.b)):
+        if s.b[x]==s.b[0]: return False
+    fr(s.te[0]*s.ti,2+s.te[1]*s.ti,s.ti,s.ti,s.c[2])
+    ds(str(s.sc),7,7,s.c[1],s.c[0])
+    return True
+  def start(s):
+    fr(0,0,320,2,s.c[6])
+    try:
+      while True:
+        s.b,s.a,s.d,s.sc=[COMPRESS(lambda i: s.g[i]//2)],4,(1,0),0
+        s.dl()
+        s.nc()
+        while s.wake_up():
+          if keydown(KEY_BACKSPACE):
+            s.ub("\t\tGame Paused!","  (OK, DELETE = Continue)")
+            sleep(0.2)
+            s.dl()
+            fr(s.ch[0]*s.ti,2+s.ch[1]*s.ti,s.ti,s.ti,s.c[4])
+            for i in s.b: 
+              s.te=UNCOMPRESS(i)
+              fr(s.te[0]*s.ti,2+s.te[1]*s.ti,s.ti,s.ti,[ri(0,255) for i in range(3)] if s.r else s.c[3])
+          while monotonic()-s.t<s.s: pass
+        if not s.ub(' '*(3-len(str(s.sc))//2)+"You lose!\tScore: "+str(s.sc),"(OK = Retry, DELETE = Quit)"): break
+      s.te=0
+      print("Your score:",s.sc,"\nLeader board: (default settings)")
+      for i,sc in enumerate(s.lb):
+        if len(sc[0])>s.te: s.te=len(sc[0])
+        print(' '+str(i+1)+'-',sc[0]+':',sc[1])
+      fr(0,2,320,220,s.c[0])
+      s.dt("Your score: "+str(s.sc),5,7)
+      s.dt("Leader board:",5,32)
+      for i,sc in enumerate(s.lb): s.dt(sc[0]+':'+' '*(s.te-len(sc[0])+2)+str(sc[1]),60,52+20*i)
+      l=['>'*i+' '*(4-i)+s.lb[0][0]+':'+' '*(s.te-len(s.lb[0][0])+2)+str(s.lb[0][1])+' '*(4-i)+'<'*i for i in range(4)]
+      while not keydown(KEY_OK) and not keydown(KEY_BACKSPACE):
+        for i in l:
+          sleep(0.2)
+          if keydown(KEY_OK) or keydown(KEY_BACKSPACE): break
+          ds(i,20,52,s.c[6],s.c[0])
+    except KeyboardInterrupt: input(">>> ")
+    
+Snake(( # Leader board: ("name", score),
+  ("Alteur", 38),
+  ("ZetaMap", 30),
+
+), # Game settings: power, speed, size, score, inf_snake, darkmode, rainbow, gost, walls
+#  walls=False,
+#  size=5, # 1 -> 80
+#  darkmode=False
+).start()

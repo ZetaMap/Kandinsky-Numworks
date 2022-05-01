@@ -1,1 +1,1 @@
-python util\demo.py
+python -m kandinsky

@@ -5,6 +5,7 @@ _ColorOutput = Tuple[int, int, int]
 
 def get_pixel(x: int, y: int) -> _ColorOutput: pass
 def set_pixel(x: int, y: int, color: _ColorInput) -> None: pass
+def color(color: _ColorInput) -> _ColorOutput: pass
 def color(r: int, g: int, b: int) -> _ColorOutput: pass
 def draw_string(
   text: str, 
