@@ -3,7 +3,6 @@
 **This module depend to [Pygame](https://fr.wikibooks.org/wiki/Pygame/Introduction_%C3%A0_Pygame) module. To install it, click [here](https://github.com/ZetaMap/Kandinsky-Numworks/blob/main/FAQ.md#how-to-install-pygame) and follow steps.** <br>
 A small module allowing to link the kandinsky module, from the Numworks, to a window. 
 Useful if you want to test your program without putting it on the calculator. <br>
-**/!\\WARNING:** [Read this](https://github.com/ZetaMap/Kandinsky-Numworks/blob/main/FAQ.md#what-is-display-for) to understand the usefulness of ``display()``. **/!\\**
 
 ### Installation
 You now have the option to install this module on [pypi.org](https://pypi.org/project/kandinsky/). For that, follow the steps [here](https://github.com/ZetaMap/Kandinsky-Numworks/blob/main/FAQ.md#how-to-install-this-module).
@@ -33,7 +32,3 @@ If you have a question, check out the [FAQ](https://github.com/ZetaMap/Kandinsky
 * Parameters: ``x``, ``y``, ``width``, ``height``, ``color``
 * Description: Fill a rectangle at pixel (x, y)
 
-**display():**
-* Parameters: ``justRefresh`` **[default: False]**
-* Description: Run an infinite loop (a little modified) allowing to keep the window open. <br>
-If justRefresh == True: Just refresh the screen and don't run the loop.

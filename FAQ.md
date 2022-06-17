@@ -15,11 +15,6 @@ While Tkinter is more focused on managing windows (more info [here](https://en.w
 At first, I wanted to do this module on Tkinter, but a big problem bothered me. The window refresh took a very long time and consumes a lot of power. <br>
 So I switched to Pygame because, seeing that this module is very well known, easy to use and made for creating games, the window refresh would necessarily be faster (a game that lags a lot, it is not very practical XD).
 
-### What is display() for?
-Windows works differently in window management.<br>
-If you want to keep the window open, you will have to call the function ``display()`` at the end of your program, but it will block your program. To avoid this, you can use it with the argument True (``display(True)``) which will just refresh the screen without blocking the program. <br>
-If you do not call this function, the window will appear at the beginning of your program and will close at the end of it.<br>
-
 ### Why convert colors?
 Numworks works differently in color management, as its screen can only display **262,144** colors compared to **16,000,000** colors for a regular screen. <br>
 It is therefore necessary to make a conversion. To convert a color, you can use the function ``color()`` but you don't have to because, by default, the module does the conversions directly. <br>
