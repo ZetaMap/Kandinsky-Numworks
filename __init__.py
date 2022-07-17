@@ -10,7 +10,10 @@ __all__ = [
   "color", 
   "draw_string", 
   "fill_rect",
+  "quit"
 ]
+__Core = __Core()
+
 
 def get_pixel(x, y):
   """Return pixel (x, y) color"""
@@ -43,3 +46,7 @@ def fill_rect(x, y, width, height, color):
   _, err = __Core.event_fire(__Core.fill_rect, x, y, width, height, color)
   if err != None:
     raise err
+
+def quit():
+  """Close manualy the window without notifying the user"""
+  __Core.stoped = True
