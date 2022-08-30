@@ -1,28 +1,15 @@
 # FAQ
 
-### How to install Pygame?
-To install Pygame: open the [Command Prompt](https://www.howtogeek.com/235101/10-ways-to-open-the-command-prompt-in-windows-10/) and type: ``pip install pygame``. <br>
-If don't work, write: ``py -m pip install pygame``. And if that still doesn't work, follow steps [here](https://docs.python.org/3/installing/index.html).
+### How to install PySDL2?
+To install Pysdl2 and sdl2 library, open an sell and run: ``pip install pysdl2 pysdl2-dll``. If doesn't work, follow steps [here](https://pysdl2.readthedocs.io/en/latest/install.html).
 
 ### How to install this module?
-To install this module, it's simple: open the [Command Prompt](https://www.howtogeek.com/235101/10-ways-to-open-the-command-prompt-in-windows-10/) and type ``pip install kandinsky``. <br>
-If don't work, type: ``py -m pip install kandinsky``. And if that still doesn't work, follow steps [here](https://docs.python.org/3/installing/index.html). <br>
-And if you want to run the [module demo](demo.py), type ``py -m kandinsky`` in the Command Prompt. Normally a Snake game will launch and you could play it. =)
-
-### Why Pygame and not Tkinter?
-**Short description:** Pygame is a python module for making video games, it includes management of the camera, graphics, sound, etc. (more info [here](https://en.wikipedia.org/wiki/Pygame)). <br>
-While Tkinter is more focused on managing windows (more info [here](https://en.wikipedia.org/wiki/Tkinter)). <br><br>
-At first, I wanted to do this module on Tkinter, but a big problem bothered me. The window refresh took a very long time and consumes a lot of power. <br>
-So I switched to Pygame because, seeing that this module is very well known, easy to use and made for creating games, the window refresh would necessarily be faster (a game that lags a lot, it is not very practical XD).
-
-### What is display() for?
-Windows works differently in window management.<br>
-If you want to keep the window open, you will have to call the function ``display()`` at the end of your program, but it will block your program. To avoid this, you can use it with the argument True (``display(True)``) which will just refresh the screen without blocking the program. <br>
-If you do not call this function, the window will appear at the beginning of your program and will close at the end of it.<br>
+To install this module, it's simple: open tan shell and run ``pip install kandinsky``. <br>
+And if you want to run the [module demo](demo.py), run ``python -m kandinsky``. Normally a Snake game will launch and you could play it. =)
 
 ### Why convert colors?
-Numworks works differently in color management, as its screen can only display **262,144** colors compared to **16,000,000** colors for a regular screen. <br>
-It is therefore necessary to make a conversion. To convert a color, you can use the function ``color()`` but you don't have to because, by default, the module does the conversions directly. <br>
+Numworks works differently in color management, as its screen can only display **65,536** *(256/8\*256/4\*256/8)* colors compared to **16,000,000** colors for a regular screen. <br>
+It is therefore necessary to make a conversion. To convert a color, you can use the function ``color()`` but you don't have to, by default the all methods does the conversions directly. <br>
 **Example:** ``color(255, 255, 255) [White color] --> Return (248, 252, 248)``
 
 ### Why use external fonts?

@@ -1,8 +1,10 @@
 """A small module allowing to link the kandinsky module, from the Numworks, to a Windows window. 
 Useful if you want to test your program without putting it on the calculator.
 The [GitHub project](https://github.com/ZetaMap/Kandinsky-Numworks), and if you have any questions, check out the [FAQ](https://github.com/ZetaMap/Kandinsky-Numworks/blob/main/FAQ.md)
+In addition, this module also emulates the drawing speed, and has [many other features](https://github.com/ZetaMap/Kandinsky-Numworks/blob/main/README.md#additional-features).
 """
-from .util.Core import Core as __Core
+
+from util.Core import Core as __Core
 
 __all__ = [
   "get_pixel", 
