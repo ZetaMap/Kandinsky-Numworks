@@ -87,7 +87,7 @@ class Snake:
             for i in s.b: 
               s.te=UNCOMPRESS(i)
               fr(s.te[0]*s.ti,2+s.te[1]*s.ti,s.ti,s.ti,[ri(0,255) for i in range(3)] if s.r else s.c[3])
-          while monotonic()-s.t<s.s: pass
+          while monotonic()-s.t<s.s: sleep(0.0001)
         if not s.ub(' '*(3-len(str(s.sc))//2)+"You lose!\tScore: "+str(s.sc),"(OK = Retry, DELETE = Quit)"): break
       s.te=0
       print("Your score:",s.sc,"\nLeader board: (default settings)")
