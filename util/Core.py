@@ -40,10 +40,10 @@ from sdl2 import SDL_Delay
 from sdl2.ext import quit as sdl_quit
 from threading import Thread
 from random import randint
+from time import monotonic_ns
 
 # Internal libraries
 from .stuff import *
-from .time.GS_timing import micros
 
 
 ######### Main code #########
@@ -80,14 +80,14 @@ class Core(Thread):
     if self.stoped: raise RuntimeError("kandinsky window destroyed")
     elif not self.is_alive(): raise RuntimeError(f"an error has occurred in thread '{self.name}'")
     
-    self.time = micros()
+    self.time = monotonic_ns()//1000
 
   def sleep(self, delay_us):
     ratio = Gui.data.model*Gui.data.ratio*(randint(900, 1100)/1000) # multiplie random ratio between 0.9 and 1.1 to simulate speed of python
     delay = delay_us*ratio//1
 
     self.print_debug("Delay", "input =", delay_us, "µs, ratio ≃", str(round(ratio, 6))+", output =", delay, "µs")
-    while micros()-self.time < delay: pass
+    while monotonic_ns()//1000-self.time < delay: pass
 
   def int_test(self, *objects):
     err = [type(i).__name__ for i in objects if type(i) != int]
