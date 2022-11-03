@@ -25,7 +25,7 @@ register_X_browsers()
 # Settings
 class Vars:
   app_name = "KandinskyCore"
-  path = os.path.dirname(__file__)
+  path = os.path.dirname(__file__)+"/"
   image_formats = [("PNG", ".png"), ("Bitmap", ".bmp"), ("All files", ".*")]
   if os.name != "posix": image_formats.insert(1, ("JPEG", (".jpg", ".jpeg")))
   head_size = 19
@@ -58,11 +58,17 @@ class Gui:
     Gui.tkmaster = tkmaster
 
     Gui.header = Frame(tkmaster, width=Vars.area[0], height=Vars.head_size)
+    Gui.screen = Frame(tkmaster, width=Vars.area[0], height=Vars.area[1])
+    Gui.header.pack()
+    Gui.screen.pack()
+    tkmaster.update()
+
     Gui.header_window = Window('',(0,0))
     Gui.header_window.window = SDL_CreateWindowFrom(Gui.header.winfo_id())
     Gui.header_renderer = Renderer(Gui.header_window)
 
-    Gui.screen = Frame(tkmaster, width=Vars.area[0], height=Vars.area[1])
+    
+
     Gui.screen_window = Window('',(0,0))
     Gui.screen_window.window = SDL_CreateWindowFrom(Gui.screen.winfo_id())
     Gui.screen_renderer = Renderer(Gui.screen_window)
@@ -90,7 +96,7 @@ class Gui:
     ## OS menu
     Gui.os_mode = IntVar(value=1)
     new = Menu(tearoff=False)
-    new.add_radiobutton(label="PC",       variable=Gui.os_mode, value=0)#, image=PhotoImage(file="icons/pc.png"))
+    new.add_radiobutton(label="PC",       variable=Gui.os_mode, value=0)
     new.add_radiobutton(label="Numworks", variable=Gui.os_mode, value=1)
     new.add_radiobutton(label="Omega",    variable=Gui.os_mode, value=2)
     new.add_radiobutton(label="Upsilon",  variable=Gui.os_mode, value=3)
@@ -114,10 +120,8 @@ class Gui:
     if not Gui.tkmaster: raise RuntimeError("an instance must be created")
 
     # More config
-    Gui.header.pack()
-    Gui.screen.pack()
     Gui.tkmaster.title(Vars.app_name)
-    Gui.tkmaster.iconphoto(False, PhotoImage(file=os.path.join(Vars.path, "icons/emulator.png")))
+    Gui.tkmaster.iconphoto(False, PhotoImage(file=os.path.join(Vars.path, "icons/app.png")))
     Gui.tkmaster.resizable(False, False)
     Gui.tkmaster.config(menu=Gui.menu)
     Gui.tkmaster.eval('tk::PlaceWindow . center')

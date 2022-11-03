@@ -3,7 +3,7 @@ from sdl2.sdlimage import IMG_SavePNG_RW, IMG_Load, IMG_SaveJPG_RW
 from sdl2.ext.ttf import FontManager
 
 from configparser import ConfigParser
-from os import name
+import os
 
 __all__ = [
   "Constants",
@@ -44,32 +44,33 @@ magic draw ratio (first draw):
 """
 
 class Constants:
-  base_name=__module__.split('.')[0]
-  path = __file__[:__file__.rindex(base_name)+len(base_name)+1]
+  base_name=__module__.split('.')[1]
+  path = __file__[:__file__.rindex(base_name)+len(base_name)+1]+"data/"
+  # Test if path correct
+  if not os.path.exists(path): path = __file__[:__file__.rindex(base_name)]+"data/"
 
   app_name = "Kandinsky Emulator"
   app_icon = None
-  head_size = 19
+  head_size = 18
   screen = (320, 222)
 
   image_formats = [("PNG", ".png"), ("Bitmap", ".bmp"), ("All files", ".*")]
-  if name != "posix": image_formats.insert(1, ("JPEG", (".jpg", ".jpeg")))
+  if os.name != "posix": image_formats.insert(1, ("JPEG", (".jpg", ".jpeg")))
 
 
 class Config:
-  open = lambda path, mode="w": SDL_RWFromFile(path.encode("utf-8"), bytes(mode, "utf-8"))
+  open = lambda path, mode='w': SDL_RWFromFile(path.encode("utf-8"), bytes(mode, "utf-8"))
   save_image = lambda surface, path: (SDL_SaveBMP_RW(surface, Config.open(path), 1) if path.endswith(".bmp") else 
-                                      IMG_SaveJPG_RW(surface, Config.open(path), 1, 80) if name != "posix" and path.endswith((".jpg", ".jpeg")) else
+                                      IMG_SaveJPG_RW(surface, Config.open(path), 1, 80) if os.name != "posix" and path.endswith((".jpg", ".jpeg")) else
                                       IMG_SavePNG_RW(surface, Config.open(path), 1))
 
-  small_font = FontManager(Constants.path+"fonts/small_font.ttf", 12)
-  large_font = FontManager(Constants.path+"fonts/large_font.ttf", 16)
+  font = FontManager(Constants.path+"font.ttf", 16)
 
   os_list = (
-    {"name": "PC",       "ratio": 0,   "color": "#4a4a4a", "unit": "deg",     "clock": False, "battery": "high"},
-    {"name": "Numworks", "ratio": 1,   "color": "#ffb531", "unit": "deg",     "clock": False, "battery": "low" },
-    {"name": "Omega",    "ratio": 0.8, "color": "#c53431", "unit": "sys/deg", "clock": False, "battery": "low" },
-    {"name": "Upsilon",  "ratio": 0.9, "color": "#7ea2ce", "unit": "sys/deg", "clock": False, "battery": "high"},
+    {"name": "PC",       "ratio": 0,   "color": "#4a4a4a", "head": "head1.png"},
+    {"name": "Numworks", "ratio": 1,   "color": "#ffb531", "head": "head1.png"},
+    {"name": "Omega",    "ratio": 0.8, "color": "#c53431", "head": "head2.png"},
+    {"name": "Upsilon",  "ratio": 0.9, "color": "#7ea2ce", "head": "head3.png"},
   )
 
   model_list = (
@@ -77,6 +78,7 @@ class Config:
     {"name": "n0110", "ratio": 1},
     {"name": "n0120", "ratio": 0, "disabled": True },
   )
+
 
 
 # Class for some data

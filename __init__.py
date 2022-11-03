@@ -4,7 +4,8 @@ The [GitHub project](https://github.com/ZetaMap/Kandinsky-Numworks), and if you 
 In addition, this module also emulates the drawing speed, and has [many other features](https://github.com/ZetaMap/Kandinsky-Numworks/blob/main/README.md#additional-features).
 """
 
-from util.Core import Core as __Core
+try: from .util.Core import Core as __Core
+except ImportError: from util.Core import Core as __Core
 
 __all__ = [
   "get_pixel", 

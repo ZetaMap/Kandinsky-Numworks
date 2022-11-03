@@ -1,4 +1,4 @@
-try: import util.demo
+try: from .util.demo import *
 except ImportError as e: 
   if e.msg.lower() == "no module named 'ion'": print("""
 >>> Ion module is not installed on your system.

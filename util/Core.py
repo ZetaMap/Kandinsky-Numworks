@@ -1,16 +1,18 @@
 ######### Environ config #########
-from os import environ
+import os
 
-DEBUG = 'KANDINSKY_ENABLE_DEBUG' in environ #or True 
+DEBUG = 'KANDINSKY_ENABLE_DEBUG' in os.environ #or True 
 
-NO_GUI = 'KANDINSKY_NO_GUI' in environ
+NO_GUI = 'KANDINSKY_NO_GUI' in os.environ
 
 DEFAULT_OS = 1
-try: START_OS = int(environ.get('KANDINDKY_START_OS', DEFAULT_OS)) # '0': PC, '1': Numworks, '2': Omega, '3': Upsilon
+# '0': PC, '1': Numworks, '2': Omega, '3': Upsilon
+try: START_OS = int(os.environ.get('KANDINDKY_START_OS', DEFAULT_OS)) 
 except ValueError: START_OS = DEFAULT_OS
 
 DEFAULT_MODEL = 1
-try: START_MODEL = int(environ.get('KANDINDKY_START_MODEL', DEFAULT_MODEL)) # '0': n0100, '1': n0110, '2': n0120
+# '0': n0100, '1': n0110, '2': n0120
+try: START_MODEL = int(os.environ.get('KANDINDKY_START_MODEL', DEFAULT_MODEL))
 except ValueError: START_MODEL = DEFAULT_MODEL
 
 
@@ -25,13 +27,17 @@ try:
   sdl2.ext.image._sdl_image_init()
 
 except ImportError as e:
-  e.args = ("""
->>> PySDL2 or PySDL2-dll module is not installed on your system, and kandinsky depend to it.
+  e.args = ("""PySDL2 or PySDL2-dll module is not installed on your system, and kandinsky depend to it.
 >>> To install it follow steps on the GitHub project: https://github.com/ZetaMap/Kandinsky-Numworks""",)
   raise
 
+try: import tkinter
+except ImportError as e:
+  e.args = ("tkinter is not installed. "+("please reinstall python with complements modules" if os.name == "nt" else "install it with 'sudo apt install python3-tk'"),)
+  raise
+
 # Cleanup namespaces
-del environ, sdl2, warnings
+del os, sdl2, tkinter, warnings
 
 
 ######### Imports #########
@@ -40,10 +46,8 @@ from sdl2 import SDL_Delay
 from sdl2.ext import quit as sdl_quit
 from threading import Thread
 from random import randint
-
-# Internal libraries
+from time import monotonic_ns
 from .stuff import *
-from .time.GS_timing import micros
 
 
 ######### Main code #########
@@ -59,13 +63,14 @@ class Core(Thread):
     while Gui.paused and self.is_alive(): pass # Wait a little to synchronize it
 
   def quit_app(self):
-    self.stoped = True 
-    self.paused = False # Now all calls of kandinsky raise an error
-    
-    Gui.header.close()
-    Gui.screen.close()
-    sdl_quit()
-    self.root.quit()
+    if not self.stoped:
+      self.stoped = True 
+      self.paused = False # Now all calls of kandinsky raise an error
+
+      Gui.head.close()
+      Gui.screen.close()
+      sdl_quit()
+      self.root.quit()
 
   def print_debug(self, type, *messages, type_length=5, **args):
     if DEBUG: print("DEBUG:", type+' '*(type_length-len(type))+':', *messages, **args)
@@ -80,14 +85,14 @@ class Core(Thread):
     if self.stoped: raise RuntimeError("kandinsky window destroyed")
     elif not self.is_alive(): raise RuntimeError(f"an error has occurred in thread '{self.name}'")
     
-    self.time = micros()
+    self.time = monotonic_ns()//1000
 
   def sleep(self, delay_us):
     ratio = Gui.data.model*Gui.data.ratio*(randint(900, 1100)/1000) # multiplie random ratio between 0.9 and 1.1 to simulate speed of python
     delay = delay_us*ratio//1
 
     self.print_debug("Delay", "input =", delay_us, "µs, ratio ≃", str(round(ratio, 6))+", output =", delay, "µs")
-    while micros()-self.time < delay: pass
+    while monotonic_ns()//1000-self.time < delay: pass
 
   def int_test(self, *objects):
     err = [type(i).__name__ for i in objects if type(i) != int]
@@ -120,7 +125,7 @@ class Core(Thread):
 
   def _drawString(self, text, x, y, color, background):
     Draw.rect(self.drawable, background, (x, y, len(text)*10, 18))
-    Draw.blit(self.drawable, Config.large_font.render(text, color=color), (x, y-2))
+    Draw.blit(self.drawable, Config.font.render(text, color=color), (x, y-2))
 
   def draw_string(self, text, x, y, color, background):
     if type(text) != str: raise TypeError(f"can't convert '{type(text).__name__}' object to str implicitly")
@@ -141,7 +146,7 @@ class Core(Thread):
     if width < 0:  x, width = x+width, -width
     if height < 0: y, height = y+height, -height
     
-    Draw.rect(Gui.screen.get_surface(), Colors.convert(color), (x, y, width, height))
+    Draw.rect(self.drawable, Colors.convert(color), (x, y, width, height))
     self.sleep(130+width*height/20+width*height*0.02)
 
   def event_loop(self):
@@ -151,10 +156,10 @@ class Core(Thread):
     Gui.config(NO_GUI)
     self.root.protocol("WM_DELETE_WINDOW", self.quit_app)
 
-    # Get drawable surface and default color
+    # Set surfaces
     self.drawable = Gui.screen.get_surface()
-    Draw.rect(self.drawable, Colors.black, (0, 0, Constants.screen[0], Constants.head_size))
-    Draw.rect(self.drawable, Colors.white, (0, 0, *Constants.screen))
+    Draw.rect(self.drawable, Colors.white)
+    Gui.update_data()
 
     Gui.paused = False # Initialization finished, unpause events
 
@@ -163,14 +168,10 @@ class Core(Thread):
         self.quit_app() 
         return  
       
-      Gui.header.refresh()
-      Gui.screen.refresh()  
-      self.root.update_idletasks()  
-      self.root.update()
-      Gui.header_frame.update()
-      Gui.screen_frame.update()
-
-      SDL_Delay(60)# Not exactly 60 FPS
+      Gui.head.refresh()
+      Gui.screen.refresh()
+      try: Gui.refresh()
+      except AttributeError: pass
 
   def event_fire(self, method, *arg, **kwargs):
     try: 

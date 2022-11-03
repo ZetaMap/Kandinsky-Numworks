@@ -1,6 +1,4 @@
-__all__ = ["Colors"]
-
-ROUND_TO_MULTIPLE = (8, 4, 8)
+COLOR_ROUND_MULTIPLIER = (8, 4, 8)
 
 class Colors:
   red     = (248, 0,   0)
@@ -23,7 +21,8 @@ class Colors:
     _type = type(rgbOrName)
 
     if _type == str: 
-      if hasattr(Colors, rgbOrName): color = getattr(Colors, rgbOrName)
+      if rgbOrName.startswith("__"): pass
+      elif hasattr(Colors, rgbOrName): color = getattr(Colors, rgbOrName)
       elif rgbOrName.startswith('#'):
         if len(rgbOrName) != 7: raise ValueError("RGB hex values are 6 bytes long")
 
@@ -43,5 +42,5 @@ class Colors:
     elif _type == int: raise ValueError("Int are not colors")
     else: raise TypeError(f"object '{_type.__name__}' isn't a tuple or list")
 
-    if len(color) > 0: return tuple([0 if color[i] < 0 else color[i]%256//ROUND_TO_MULTIPLE[i]*ROUND_TO_MULTIPLE[i] for i in range(len(color))])
+    if len(color) > 0: return tuple([0 if color[i] < 0 else color[i]%256//COLOR_ROUND_MULTIPLIER[i]*COLOR_ROUND_MULTIPLIER[i] for i in range(len(color))])
     else: raise ValueError("invalid syntax for number")
