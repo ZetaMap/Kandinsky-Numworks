@@ -65,7 +65,7 @@ class Gui:
     Gui.os_mode = IntVar(value=start_os[0] if 0 <= start_os[0] <= max else start_os[1])
     new = Menu(tearoff=False)
     for i, mode in enumerate(Config.os_list): 
-      new.add_radiobutton(label=mode["name"], variable=Gui.os_mode, value=i)
+      new.add_radiobutton(label=mode["name"], variable=Gui.os_mode, value=i, command=Gui.update_data)
       Config.os_list[i]["head"] = load_image(Constants.path+Config.os_list[i]["head"])
     Gui.menu.add_cascade(label="OS", menu=new)
 
@@ -74,7 +74,7 @@ class Gui:
     Gui.model_mode = IntVar(value=start_model[0] if 0 <= start_model[0] <= max else start_model[1])
     new = Menu(tearoff=False)
     for i, mode in enumerate(Config.model_list): 
-      new.add_radiobutton(label=mode["name"], variable=Gui.model_mode, value=i, 
+      new.add_radiobutton(label=mode["name"], variable=Gui.model_mode, value=i, command=Gui.update_data, 
                           **({"state": "disabled", "activebackground": "#F0F0F0"} if mode.get("disabled", False) else {}))
     Gui.menu.add_cascade(label="Model", menu=new)
 
@@ -94,10 +94,12 @@ class Gui:
     Gui.created()
     int_var.set(int_var.get()+1)
     if int_var.get() > max: int_var.set(0)
+    
     Gui.update_data()
 
   def update_data():
     Gui.created()
+    #print(Gui.data)
     Gui.data(**Config.os_list[Gui.os_mode.get()], model=Config.model_list[Gui.model_mode.get()]["ratio"])
     surf = Gui.head.get_surface()
     Draw.rect(surf, Gui.data.color)
@@ -119,8 +121,8 @@ class Gui:
     Gui.refresh()
 
     # Bind shorcuts
-    Gui.tkmaster.bind("<Control-o>", lambda _: Gui.update_value(Gui.os_mode, len(Config.os_list)))
-    Gui.tkmaster.bind("<Control-m>", lambda _: Gui.update_value(Gui.model_mode, len(Config.model_list)))
+    Gui.tkmaster.bind("<Control-o>", lambda _: Gui.update_value(Gui.os_mode, len(Config.os_list)-1))
+    Gui.tkmaster.bind("<Control-m>", lambda _: Gui.update_value(Gui.model_mode, len(Config.model_list)-1))
     Gui.tkmaster.bind("<Control-s>", lambda _: Gui.screenshot())
     def state(_=None): 
       Gui.paused = not Gui.paused
