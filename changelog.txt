@@ -1,19 +1,9 @@
-Update file tree for 'ready to compile' (now just run builder.py to build and install library)
-Fix SDL error when GUI interact after call quit()
-Fix minor bug in debug mode
-Fix quit method not work
-Change name syntax for environ choses 
-Added all Omega methods
-Added all Upsilon methods
-> (new methods are added with chose of os)
-Fix some display bug
-Fix demo script don't start
-Fix PC mode enable with shortcut CTRL+M
-implement of ion module in this library
+Fix shortcut commands not work
+Fix window icon not show
+add an message to user when script is finished
 
 TODO:
 random time error loop when window close in python shell mode on Windows 10
 parameter ``font`` of draw_string() for Upsilon not work for moment
 screen refresh stop when user interact with GUI
-open a window to inform the user that the script is finished
 calculate speed for new methods

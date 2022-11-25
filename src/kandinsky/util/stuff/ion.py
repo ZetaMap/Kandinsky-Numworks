@@ -1,4 +1,4 @@
-from sdl2.keyboard import SDL_GetKeyboardState
+from sdl2.keyboard import SDL_GetKeyboardState, SDL_GetKeyboardFocus
 from sdl2.keycode import *
 from random import randint, random
 
@@ -17,10 +17,13 @@ class KeyData:
     self.codes.append(new_code)
     return self
 
+  def test_code(self, code):
+    return SDL_GetKeyboardFocus() and SDL_GetKeyboardState(code)
+
   def is_pressed(self, code=None):
-    if code is None: return all([1 for i in self.codes if SDL_GetKeyboardState(i)])
+    if code is None: return all([1 for i in self.codes if self.test_code(i)])
     elif code < 0 or code > len(self.codes): return False
-    else: return SDL_GetKeyboardState(self.codes[code])
+    else: return self.test_code(self.codes[code])
 
 class Ion:
   """Ion integration of numworks
@@ -45,7 +48,7 @@ class Ion:
     KeyData("EXP", SDLK_, 18),
     KeyData("LN",  SDLK_, 19),
     KeyData("LOG", SDLK_, 20),
-    KeyData("IMAGINARY", SDLK_, 21),
+    KeyData("IMAGINARY", SDLK_i, 21),
     KeyData("COMMA",   SDLK_COMMA, 22),
     KeyData("POWER",   SDLK_CARET, 23).add_code(SDLK_KP_POWER),
     KeyData("SINE",    SDLK_s, 24, "sin"),

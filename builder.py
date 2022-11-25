@@ -3,16 +3,20 @@ from setuptools import find_packages
 from os import listdir, path as os_path, remove, mkdir, system
 
 # Setup files files environ
+
+def clear(path):
+  try:
+    if os_path.exists(path): remove(path)
+  except: pass
 print("Cleaning files ...")
-try: 
-  mkdir("src/kandinsky.egg-info")
-  remove("build")
-  remove("dist")
-  remove("setup.py")
-  remove("src/kandinsky/__pycache__")
-  remove("src/kandinsky/util/__pycache__")
-  remove("src/kandinsky/util/stuff/__pycache__")
-except: pass
+if not os_path.exists("src/kandinsky.egg-info"): mkdir("src/kandinsky.egg-info")
+clear("build")
+clear("dist")
+clear("setup.py")
+clear("src/kandinsky/__pycache__")
+clear("src/kandinsky/util/__pycache__")
+clear("src/kandinsky/util/stuff/__pycache__")
+
 DOC=""
 with open("src/kandinsky/README.md", "rt", encoding="utf-8") as f:
   with open("README.md", "wt", encoding="utf-8") as ff: ff.write(f.read())
@@ -41,7 +45,7 @@ METADATA = {
     'Operating System :: MacOS :: MacOS X',
   ],
   "package_dir": {"": "src"},
-  "include_dirs": find_packages(where="src", include=".*"),
+  "include_dirs": find_packages(where="src", exclude="__pycache__", include="*.*"),
   "install_requires": ["pysdl2", "pysdl2-dll"],
   "include_package_data": True
 }
@@ -57,13 +61,13 @@ def find_all(path='', exclude=[]):
 
 # add all files in SOURCES.txt
 with open("src/kandinsky.egg-info/SOURCES.txt", 'w') as f: 
-  for i in find_all(exclude=["__pycache__", "publish.bat", "builder.py", ".git", ".github"]): f.write(i+'\n')
+  for i in find_all(exclude=["__pycache__", "publish.bat", "builder.py", ".git", ".github", "dist"]): f.write(i+'\n')
 
 # replace __version__ in __init__.py
 with open("src/kandinsky/__init__.py") as f: new_content = f.readlines()
 for i in range(len(new_content)):
   if "__version__" in new_content[i]:
-    new_content[i] = f"__version__ = '{METADATA['version']}'\n"
+    new_content[i] = f"__version__ = \"{METADATA['version']}\"\n"
     break  
 with open("src/kandinsky/__init__.py", 'w') as f: f.writelines(new_content)
 

@@ -2,7 +2,7 @@ from tkinter import Tk, Frame, Menu, IntVar
 from tkinter.dialog import Dialog
 from tkinter.filedialog import asksaveasfilename
 
-from sdl2 import SDL_CreateWindowFrom
+from sdl2 import SDL_CreateWindowFrom, SDL_WINDOW_OPENGL
 from sdl2.ext import Window, load_image
 
 from os import getcwd
@@ -92,10 +92,11 @@ class Gui:
 
   def update_value(int_var, values):
     Gui.created()
-    if not values.get("disabled", False):
-      int_var.set(int_var.get()+1)
-      if int_var.get() > len(values)-1: int_var.set(0)
+    v = int_var.get()+1
+    if v > len(values)-1: v = 0
 
+    if not values[v].get("disabled", False):
+      int_var.set(v)
       Gui.update_data()
 
   def update_data():
@@ -115,7 +116,7 @@ class Gui:
 
     # Config main window
     Gui.tkmaster.title(Constants.app_name)
-    #Gui.tkmaster.iconphoto(True, Constants.path+"app.ico")
+    Gui.tkmaster.iconbitmap(default=Constants.path+"app.ico")
     Gui.tkmaster.resizable(False, False)
     if not no_gui: Gui.tkmaster.config(menu=Gui.menu)
     Gui.tkmaster.eval('tk::PlaceWindow . center')
@@ -166,4 +167,7 @@ class Gui:
     Gui.paused = False # Screenshot finished, unpause events
 
   def askscriptend():
-    return Dialog(Gui.tkmaster, {"title": "Script end", "text": "Script ended! Close window?", "bitmap": "question", "default": 0, "strings": ("Yes", "No")}).num
+    return not Dialog(Gui.tkmaster, {
+      "title": "Script end", "text": "Script ended! \nClose window?".ljust(50), 
+      "bitmap": "question", "default": 0, "strings": ("Yes", "No")
+    }).num

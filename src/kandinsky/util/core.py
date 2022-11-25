@@ -53,11 +53,10 @@ __all__ = [
 
 ######### Imports #########
 from tkinter import Tk
-from sdl2 import SDL_Delay
 from sdl2.ext import quit as sdl_quit
-from threading import Thread
+from threading import Thread, main_thread
 from random import randint
-from time import monotonic_ns
+from time import monotonic_ns, sleep
 from math import sqrt
 from .stuff import *
 
@@ -66,6 +65,7 @@ from .stuff import *
 class Core(Thread): 
   stoped = False
   drawable = None
+  asknoclose = False
 
   def __init__(self):
     Gui.paused = True # Pause events to give the time of thread to initialize
@@ -94,7 +94,7 @@ class Core(Thread):
     self.print_debug("Event", " "+method.__name__, (*args, *[f"{k}={'v' if type(v) == str else v}" for k, v in kwargs.items()]), sep='')
 
     if Gui.paused: self.print_debug("Pause", "waiting...")
-    while Gui.paused and self.is_alive(): SDL_Delay(1)
+    while Gui.paused and self.is_alive(): sleep(0.001)
 
     if self.stoped: raise RuntimeError("kandinsky window destroyed")
     elif not self.is_alive(): raise RuntimeError(f"an error has occurred in thread '{self.name}'")
@@ -106,7 +106,8 @@ class Core(Thread):
     delay = delay_us*ratio//1
 
     self.print_debug("Delay", "input =", delay_us, "µs, ratio ≃", str(round(ratio, 6))+", output =", delay, "µs")
-    while monotonic_ns()//1000-self.time < delay: pass
+    if ratio > 0:
+      while monotonic_ns()//1000-self.time < delay: pass
 
 ### methods when used
   def get_pixel(self, x, y):
@@ -162,7 +163,7 @@ class Core(Thread):
 
   def wait_vblank(self):
     """why this?"""
-    while not self.refreshed: pass
+    while not self.refreshed: sleep(0.0001)
 
   def get_keys(self):
     """Don't tell me about this XD, it's omega"""
@@ -267,6 +268,7 @@ class Core(Thread):
     Gui.config(NO_GUI)
     self.OS_MODE = Gui.os_mode.get()
     self.root.protocol("WM_DELETE_WINDOW", self.quit_app)
+    #register(Gui.askscriptend) # Register a callback at end of script
 
     # Set surfaces
     self.drawable = Gui.screen.get_surface()
@@ -279,13 +281,16 @@ class Core(Thread):
       if self.stoped:
         self.quit_app() 
         return  
+      elif not self.asknoclose and not main_thread().is_alive():
+        if Gui.askscriptend(): self.stoped = True
+        else: self.asknoclose = True
       
       self.refreshed = False
       Gui.head.refresh()
       Gui.screen.refresh()
       try: Gui.refresh()
       except AttributeError: pass
-      SDL_Delay(1)
+      sleep(0.01)
       self.refreshed = True
 
   def event_fire(self, method, *arg, **kwargs):
@@ -295,7 +300,3 @@ class Core(Thread):
     except (Exception, BaseException) as e: 
       return None, Exception.with_traceback(KeyboardInterrupt(type(e).__name__+": "+e.args[0]) if isinstance(e, BaseException) else e, 
                                             e.__traceback__.tb_next if DEBUG else None)
-
-
-######### Register to end of script #########
-...
