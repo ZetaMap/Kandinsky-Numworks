@@ -13,16 +13,15 @@ jobs:
       - uses: actions/checkout@v2
       
       - name: gh login
-        run: |
-          echo "token: ${{ secrets.STATS_TOKEN }}"
-          echo "${{ secrets.STATS_TOKEN }}" | gh auth login --with-token
-
+        run: echo "${{ secrets.STATS_TOKEN }}" | gh auth login --with-token
+        
       - name: parse latest clone count
         run: |
           curl --user "${{ github.actor }}:${{ secrets.STATS_TOKEN }}" \
             -H "Accept: application/vnd.github.v3+json" \
             https://api.github.com/repos/${{ github.repository }}/traffic/clones \
             > clone.json
+            
       - name: create gist and download previous count
         id: set_id
         run: |
@@ -46,10 +45,12 @@ jobs:
               echo ::set-output name=GIST::$gist_id
               cp clone.json clone_before.json
           fi 
+          
       - name: update clone.json
         run: |
           curl https://raw.githubusercontent.com/MShawon/github-clone-count-badge/master/main.py > main.py
           python3 main.py
+          
       - name: Update gist with latest count
         run: |
           content=$(sed -e 's/\\/\\\\/g' -e 's/\t/\\t/g' -e 's/\"/\\"/g' -e 's/\r//g' "clone.json" | sed -E ':a;N;$!ba;s/\r{0,1}\n/\\n/g')
@@ -66,6 +67,7 @@ jobs:
           echo "Markdown: [![GitHub Clones]($shields$url&logo=github)]($repo)"
           echo "HTML: <a href='$repo'><img alt='GitHub Clones' src='$shields$url&logo=github'></a>"
           echo "--------------------------------"
+          
       - name: Push
         uses: ad-m/github-push-action@master
         with:
