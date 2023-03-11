@@ -49,19 +49,20 @@ class Constants:
   # Test if path correct
   if not os.path.exists(path): path = __file__[:__file__.rindex(base_name)]+"data/"
 
+  is_windows = os.name != "posix"
   app_name = "Kandinsky Emulator"
   app_icon = None
   head_size = 18
   screen = (320, 222)
 
   image_formats = [("PNG", ".png"), ("Bitmap", ".bmp"), ("All files", ".*")]
-  if os.name != "posix": image_formats.insert(1, ("JPEG", (".jpg", ".jpeg")))
+  if is_windows: image_formats.insert(1, ("JPEG", (".jpg", ".jpeg")))
 
 
 class Config:
   open = lambda path, mode='w': SDL_RWFromFile(path.encode("utf-8"), bytes(mode, "utf-8"))
   save_image = lambda surface, path: (SDL_SaveBMP_RW(surface, Config.open(path), 1) if path.endswith(".bmp") else 
-                                      IMG_SaveJPG_RW(surface, Config.open(path), 1, 70) if os.name != "posix" and path.endswith((".jpg", ".jpeg")) else
+                                      IMG_SaveJPG_RW(surface, Config.open(path), 1, 70) if Constants.is_windows and path.endswith((".jpg", ".jpeg")) else
                                       IMG_SavePNG_RW(surface, Config.open(path), 1))
 
   font = FontManager(Constants.path+"font.ttf", 16)

@@ -13,5 +13,5 @@ class Draw:
 
   def get_at(source, x, y):
     bpp = source.format.contents.BytesPerPixel
-    pixel = hex(cast(byref(cast(source.pixels, POINTER(Uint8)).contents, bpp*source.w*y+x*bpp), POINTER(c_uint)).contents.value)
-    return int(pixel[2:4], 16), int(pixel[4:6], 16),int(pixel[6:8], 16)
+    pixel = cast(byref(cast(source.pixels, POINTER(Uint8)).contents, bpp*source.w*y+x*bpp), POINTER(c_uint)).contents.value
+    return (pixel&0xff0000)>>8, (pixel&0x00ff00)>>4, (pixel&0x0000ff)>>0

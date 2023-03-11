@@ -26,7 +26,7 @@ with open("src/kandinsky/README.md", "rt", encoding="utf-8") as f:
 print("Generating setup.py ...")
 METADATA = {
   "name": "kandinsky",
-  "version": "2.2.dev1",
+  "version": "2.3.dev1",
   "author": "ZetaMap",
   "description": "A small module allowing to link the kandinsky module, from the Numworks, to a window.",
   "license": 'MIT',

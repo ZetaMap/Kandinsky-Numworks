@@ -27,14 +27,14 @@ try:
   sdl2.ext.ttf._ttf_init()
   sdl2.ext.image._sdl_image_init()
 
-except ImportError as e:
+except (ImportError, ModuleNotFoundError) as e:
   e.args = ("""PySDL2 or PySDL2-dll module is not installed on your system, and kandinsky depend to it.
 >>> To install it follow steps on the GitHub project: https://github.com/ZetaMap/Kandinsky-Numworks
 >>> or type 'pip install pysdl2 pysdl2-dll""",)
   raise
 
 try: import tkinter
-except ImportError as e:
+except (ImportError, ModuleNotFoundError) as e:
   e.args = ("tkinter is not installed. "+("please reinstall python with complements modules" if os.name == "nt" else "install it with 'sudo apt install python3-tk'"),)
   raise
 
@@ -145,12 +145,11 @@ class Core(Thread):
     
     color = Colors.convert(color)
     background = Colors.convert(background)
-    stext = len(text)
-    text = text.replace('\t', "    ").splitlines()
+    if '\0' in text: text = text[:text.index('\0')]
 
-    self._drawString(text[0], x, y, color, background)
-    for i in range(1, len(text)): self._drawString(text[i], 0, y+i*18, color, background)
-    self.sleep(86*(stext+(stext>=5)//1.2))
+    for i, l in enumerate(text.replace('\r', '').replace('\f', '\x01').replace('\b', '\x01').replace('\v', '\x01').replace('\t', "    ").splitlines()): 
+      self._drawString(l, x*(not i), y+i*18, color, background)
+    self.sleep(86*(len(text)+(len(text)>=5)//1.2))
   
   def fill_rect(self, x, y, width, height, color):
     Tests.int_test(x, y, width, height)
@@ -263,13 +262,23 @@ class Core(Thread):
 
   def event_loop(self):
     self.root = Tk()
-
-    Gui(self.root, (OS_MODE, DEFAULT_OS), (MODEL_MODE, DEFAULT_MODEL))
-    Gui.config(NO_GUI)
-    self.OS_MODE = Gui.os_mode.get()
-    self.root.protocol("WM_DELETE_WINDOW", self.quit_app)
-    #register(Gui.askscriptend) # Register a callback at end of script
-
+    
+    try:
+      Gui(self.root, (OS_MODE, DEFAULT_OS), (MODEL_MODE, DEFAULT_MODEL))
+      Gui.config(NO_GUI)
+      self.OS_MODE = Gui.os_mode.get()
+      self.root.protocol("WM_DELETE_WINDOW", self.quit_app)
+    except RuntimeError as e:
+      # Handle multiple import of library
+      # Library cannot open new tkinter root windows while another is opened but it can open another if previous is destroyed
+      # Note: no data from the previous window can be restored to new one
+      if "main thread is not in main loop" in e.args:
+        import warnings
+        warnings.warn("multiple creation of window is not permitted", ImportWarning)
+        del warnings
+      else: self.print_debug("ERROR", type(e).__name__+": "+e.args[0])
+      return
+      
     # Set surfaces
     self.drawable = Gui.screen.get_surface()
     Draw.rect(self.drawable, Colors.white)
@@ -290,7 +299,7 @@ class Core(Thread):
       Gui.screen.refresh()
       try: Gui.refresh()
       except AttributeError: pass
-      sleep(0.01)
+      sleep(0.001)
       self.refreshed = True
 
   def event_fire(self, method, *arg, **kwargs):
@@ -298,5 +307,6 @@ class Core(Thread):
       self.verify(method, *arg, **kwargs)
       return method(*arg, **kwargs), None
     except (Exception, BaseException) as e: 
-      return None, Exception.with_traceback(KeyboardInterrupt(type(e).__name__+": "+e.args[0]) if isinstance(e, BaseException) else e, 
-                                            e.__traceback__.tb_next if DEBUG else None)
+      return None, Exception.with_traceback(
+        KeyboardInterrupt(type(e).__name__+": "+' '.join(e.args)) if isinstance(e, BaseException) else e, 
+        e.__traceback__.tb_next if DEBUG else None)

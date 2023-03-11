@@ -1,9 +1,17 @@
 Fix shortcut commands not work
 Fix window icon not show
 add an message to user when script is finished
+fix bug in get_pixel()
+fix bug in draw_string() with some escape characters
+add ion implementation for get_keys() method and ion-numworks module
+add new button to Help menu to see the correspondence between the keys of numworks and pc
+fix some display issues of GUI on Linux
+handle multiple import of library
+fixed bug when open directory after take screenshot on some linux distribution, is open web browser instead of file explorer
+fixed game resuming after taking a screenshot while paused
 
 TODO:
-random time error loop when window close in python shell mode on Windows 10
-parameter ``font`` of draw_string() for Upsilon not work for moment
-screen refresh stop when user interact with GUI
-calculate speed for new methods
+at random time, error loop when window closed in python shell mode on Windows
+parameter ``font`` of draw_string() for Upsilon not implemented for moment
+screen refresh stops when user interact with the GUI on Windows
+calculate speed for upsilon and omega methods

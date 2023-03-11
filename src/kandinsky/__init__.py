@@ -19,7 +19,7 @@ __all__ = [
   "draw_string",
   "fill_rect",
 
-  #new only for Computer
+  #only for PC
   "quit",
 
   #omega
@@ -79,7 +79,7 @@ def fill_rect(x, y, width, height, color):
   if err != None:
     raise err
 
-# new method of kandinsky, only on Computer
+# new method of kandinsky, only on PC
 def quit():
   """Close manualy the window without notifying the user"""
   _, err = __Core.event_fire(__Core.quit_app)
@@ -126,7 +126,7 @@ def fill_polygon(points, color):
     raise err
 
 def get_palette():
-  """Get upsilon theme palette"""
+  """Get theme palette"""
   pal, err = __Core.event_fire(__Core.get_palette)
   if err != None:
     raise err

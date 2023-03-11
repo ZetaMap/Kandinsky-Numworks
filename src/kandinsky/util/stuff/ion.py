@@ -1,91 +1,91 @@
-from sdl2.keyboard import SDL_GetKeyboardState, SDL_GetKeyboardFocus
+from sdl2.keyboard import SDL_GetKeyboardState, SDL_GetScancodeFromKey
 from sdl2.keycode import *
 from random import randint, random
 
 __all__ = ["Ion"]
-SDLK_ = None # temporaly, TODO: find keys for specials numworks keys
 
-
-class KeyData:
-  def __init__(self, name, code, ion_code=None, display_name=None, filler="KEY_"):
-    self.name = filler+name
-    self.codes = [code]
-    self.ion_code = ion_code if ion_code else code
+class IonKey:
+  def __init__(self, name, code_or_codes, ion_code, display_name=None, computer_equivalent=None, name_filler="KEY_"):
+    self.name = name_filler+name
+    if type(code_or_codes) in (tuple, list):
+      assert len(code_or_codes), "list of codes must have minimum 1 code"
+      self.codes = tuple(code_or_codes)
+    else: (code_or_codes,)
+    self.ion_code = ion_code
     self.display_name = display_name if display_name else name.lower()
+    self.computer_name = computer_equivalent if computer_equivalent else self.display_name.title()
 
-  def add_code(self, new_code):
-    self.codes.append(new_code)
-    return self
+  def is_pressed(self, index=None):
+    pressed = SDL_GetKeyboardState(None)
+    if index is None: return any([1 for i in self.codes if pressed[SDL_GetScancodeFromKey(i)]])
+    elif index < 0 or index > len(self.codes)-1: return False
+    else: return bool(pressed[SDL_GetScancodeFromKey(self.codes[index])])
 
-  def test_code(self, code):
-    return SDL_GetKeyboardFocus() and SDL_GetKeyboardState(code)
-
-  def is_pressed(self, code=None):
-    if code is None: return all([1 for i in self.codes if self.test_code(i)])
-    elif code < 0 or code > len(self.codes): return False
-    else: return self.test_code(self.codes[code])
 
 class Ion:
   """Ion integration of numworks
-  Why here? because sdl2 is defined here, and ion-numworks module will use this if present
+  Why in this library? because sdl2 is used here, and ion-numworks module will use this class if this library is present
   """
 
   KEYS = [
-    KeyData("LEFT",  SDLK_LEFT,  0),
-    KeyData("RIGHT", SDLK_RIGHT, 1),
-    KeyData("DOWN",  SDLK_DOWN,  2),
-    KeyData("UP",    SDLK_UP,    3),
-    KeyData("OK",    SDLK_, 4, "OK"),
-    KeyData("BACK",  SDLK_, 5),
-    KeyData("HOME",  SDLK_, 6),
-    KeyData("ONOFF", SDLK_, 7, "onOff"),
-    KeyData("SHIFT", SDLK_LSHIFT, 12).add_code(SDLK_RSHIFT),
-    KeyData("ALPHA", SDLK_LCTRL,  13).add_code(SDLK_RCTRL),
-    KeyData("XNT",   SDLK_x, 14),
-    KeyData("VAR",   SDLK_, 15),
-    KeyData("TOOLBOX",   SDLK_, 16),
-    KeyData("BACKSPACE", SDLK_DELETE, 17),
-    KeyData("EXP", SDLK_, 18),
-    KeyData("LN",  SDLK_, 19),
-    KeyData("LOG", SDLK_, 20),
-    KeyData("IMAGINARY", SDLK_i, 21),
-    KeyData("COMMA",   SDLK_COMMA, 22),
-    KeyData("POWER",   SDLK_CARET, 23).add_code(SDLK_KP_POWER),
-    KeyData("SINE",    SDLK_s, 24, "sin"),
-    KeyData("COSINE",  SDLK_c, 25, "cos"),
-    KeyData("TANGENT", SDLK_t, 26, "tan"),
-    KeyData("PI",      SDLK_p, 27),
-    KeyData("SQRT",    SDLK_, 28),
-    KeyData("SQUARE",  SDLK_SYSREQ, 29),
-    KeyData("SEVEN",   SDLK_7, 30, '7').add_code(SDLK_KP_7),
-    KeyData("EIGHT",   SDLK_8, 31, '8').add_code(SDLK_KP_8),
-    KeyData("NINE",    SDLK_9, 32, '9').add_code(SDLK_KP_9),
-    KeyData("LEFTPARENTHESIS",  SDLK_LEFTPAREN,  33, '('),
-    KeyData("RIGHTPARENTHESIS", SDLK_RIGHTPAREN, 34, ')'),
-    KeyData("FOUR", SDLK_4, 36, '4').add_code(SDLK_KP_4),
-    KeyData("FIVE", SDLK_5, 37, '5').add_code(SDLK_KP_5),
-    KeyData("SIX",  SDLK_6, 38, '6').add_code(SDLK_KP_6),
-    KeyData("MULTIPLICATION", SDLK_ASTERISK, 39, '*').add_code(SDLK_KP_MULTIPLY),
-    KeyData("DIVISION",       SDLK_SLASH,    40, '/').add_code(SDLK_KP_DIVIDE),
-    KeyData("ONE",   SDLK_1,      42, '1').add_code(SDLK_KP_1),
-    KeyData("TWO",   SDLK_2,      43, '2').add_code(SDLK_KP_2),
-    KeyData("THREE", SDLK_3,      44, '3').add_code(SDLK_KP_3),
-    KeyData("PLUS",  SDLK_PLUS,   45, '+').add_code(SDLK_KP_PLUS),
-    KeyData("MINUS", SDLK_MINUS,  46, '-').add_code(SDLK_KP_MINUS),
-    KeyData("ZERO",  SDLK_0,      48, '0').add_code(SDLK_KP_0),
-    KeyData("DOT",   SDLK_PERIOD, 49, '.').add_code(SDLK_KP_PERIOD),
-    KeyData("EE",    SDLK_, 50, "EE"),
-    KeyData("ANS",   SDLK_, 51, "Ans"),
-    KeyData("EXE" ,  SDLK_RETURN, 52, "EXE").add_code(SDLK_KP_ENTER)
+    IonKey("LEFT",  SDLK_LEFT,   0),
+    IonKey("RIGHT", SDLK_RIGHT,  1),
+    IonKey("DOWN",  SDLK_DOWN,   2),
+    IonKey("UP",    SDLK_UP,     3),
+    IonKey("OK",    SDLK_INSERT, 4, "OK",    "Insert"),
+    IonKey("BACK",  SDLK_DELETE, 5, None,    "Delete"),
+    IonKey("HOME",  SDLK_ESCAPE, 6, None,    "Escape"),
+    IonKey("ONOFF", SDLK_END,    7, "onOff", "End"),
+    IonKey("SHIFT", (SDLK_LSHIFT, SDLK_RSHIFT), 12),
+    IonKey("ALPHA", (SDLK_LCTRL, SDLK_RCTRL),   13, None, "CTRL"),
+    IonKey("XNT",   SDLK_x,      14, None, 'X'),
+    IonKey("VAR",   SDLK_v,      15, None, 'V'),
+    IonKey("TOOLBOX",   SDLK_QUOTEDBL, 16, None, '"'),
+    IonKey("BACKSPACE", (SDLK_BACKSPACE, SDLK_KP_BACKSPACE), 17),
+    IonKey("EXP",   SDLK_e,      18, None, 'E'),
+    IonKey("LN",    SDLK_n,      19, None, 'N'),
+    IonKey("LOG",   SDLK_l,      20, None, 'L'),
+    IonKey("IMAGINARY", SDLK_i,  21, None, 'I'),
+    IonKey("COMMA",   (SDLK_COMMA, SDLK_KP_COMMA), 22, None, ','),
+    IonKey("POWER",   (SDLK_CARET, SDLK_KP_POWER), 23, None, '^'),
+    IonKey("SINE",    SDLK_s, 24, "sin", 'S'),
+    IonKey("COSINE",  SDLK_c, 25, "cos", 'C'),
+    IonKey("TANGENT", SDLK_t, 26, "tan", 'T'),
+    IonKey("PI",      SDLK_p, 27, None,  'P'),
+    IonKey("SQRT",    SDLK_r, 28, None,  'R'),
+    IonKey("SQUARE",  (SDLK_GREATER, SDLK_KP_GREATER), 29, None, ">"),
+    IonKey("SEVEN",   (SDLK_7, SDLK_KP_7), 30, '7'),
+    IonKey("EIGHT",   (SDLK_8, SDLK_KP_8), 31, '8'),
+    IonKey("NINE",    (SDLK_9, SDLK_KP_9), 32, '9'),
+    IonKey("LEFTPARENTHESIS",  (SDLK_LEFTPAREN, SDLK_KP_LEFTPAREN),   33, '('),
+    IonKey("RIGHTPARENTHESIS", (SDLK_RIGHTPAREN, SDLK_KP_RIGHTPAREN), 34, ')'),
+    IonKey("FOUR",  (SDLK_4, SDLK_KP_4),   36, '4'),
+    IonKey("FIVE",  (SDLK_5, SDLK_KP_5),   37, '5'),
+    IonKey("SIX",   (SDLK_6, SDLK_KP_6),   38, '6'),
+    IonKey("MULTIPLICATION", (SDLK_ASTERISK, SDLK_KP_MULTIPLY), 39, '*'),
+    IonKey("DIVISION",       (SDLK_SLASH, SDLK_KP_DIVIDE),      40, '/'),
+    IonKey("ONE",   (SDLK_1, SDLK_KP_1),   42, '1'),
+    IonKey("TWO",   (SDLK_2, SDLK_KP_2),   43, '2'),
+    IonKey("THREE", (SDLK_3, SDLK_KP_3),   44, '3'),
+    IonKey("PLUS",  (SDLK_PLUS, SDLK_KP_PLUS),      45, '+'),
+    IonKey("MINUS", (SDLK_MINUS, SDLK_KP_MINUS),    46, '-'),
+    IonKey("ZERO",  (SDLK_0, SDLK_KP_0),            48, '0'),
+    IonKey("DOT",   (SDLK_PERIOD, SDLK_KP_PERIOD),  49, '.'),
+    IonKey("EE",    (SDLK_EXCLAIM, SDLK_KP_EXCLAM), 50, "EE", '!'),
+    IonKey("ANS",   SDLK_a,   51, "Ans", 'A'),
+    IonKey("EXE" ,  (SDLK_RETURN, SDLK_KP_ENTER),   52, "EXE", "Return"),
   ]
   brightness = 240
   
+  def _apply_keys_to_module(module):
+    module.__dict__.update({k.name: k.ion_code for k in Ion.KEYS})
+
   def get_keys():
     return set([key.display_name for key in Ion.KEYS if key.is_pressed()])
 
   def keydown(key):
-    for i in Ion.KEYS:
-      if i.ion_code == key: return i.is_pressed()
+    for k in Ion.KEYS:
+      if k.ion_code == key: return k.is_pressed()
     return False
 
   def battery():
@@ -103,54 +103,3 @@ class Ion:
 
   def get_brightness():
     return Ion.brightness
-
-"""Some keyboard keys found
-
-https://github.com/Tatone26/Numworks-python-games/
-KEY_EXE = "space"
-KEY_UP = "up"
-KEY_DOWN = "down"
-KEY_RIGHT = "right"
-KEY_LEFT = "left"
-KEY_OK = "return"
-KEY_BACK = "delete"
-KEY_HOME = "windows"
-KEY_ONOFF = "echap"
-KEY_SHIFT = "shift"
-KEY_ALPHA = "ctrl"
-KEY_XNT = "n"
-KEY_VAR = "F1"
-KEY_TOOLBOX = "F2"
-KEY_EXP = "e"
-KEY_LN = "z"
-KEY_LOG = "l"
-KEY_IMAGINARY = "i"
-KEY_COMMA = ","
-KEY_POWER = "^"
-KEY_SINE = "s"
-KEY_COSINE = "c"
-KEY_TANGENT = "t"
-KEY_PI = "p"
-KEY_SQRT = "_"
-KEY_SQUARE = "²"
-KEY_EIGHT = "eight"
-KEY_SEVEN = "seven"
-KEY_NINE = "nine"
-KEY_ONE = "one"
-KEY_TWO = "two"
-KEY_THREE = "three"
-KEY_RIGHTPARENTHESIS = ")"
-KEY_LEFTPARENTHESIS = "("
-KEY_FOUR = "four"
-KEY_FIVE = "five"
-KEY_SIX = "six"
-KEY_MULTIPLICATION = "multiplication"
-KEY_DIVISION = "division"
-KEY_MINUS = "minus"
-KEY_PLUS = "plus"
-KEY_ZERO = "zero"
-KEY_DOT = "dot"
-KEY_EE = "!"
-KEY_ANS = "a"
-
-"""

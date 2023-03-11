@@ -18,7 +18,7 @@ If you have a question, check out the [FAQ](https://github.com/ZetaMap/Kandinsky
 
 
 ### Usable content
-***Numworks, aka basic, methods***
+#### ***Numworks, aka basic, methods***
 
 **get_pixel()**:
 * Parameters: ``x``, ``y``
@@ -40,17 +40,15 @@ If you have a question, check out the [FAQ](https://github.com/ZetaMap/Kandinsky
 **fill_rect():**
 * Parameters: ``x``, ``y``, ``width``, ``height``, ``color``
 * Description: Fill a rectangle at pixel (x, y)
-<br>
 
-***New method for this library, only on Computer***
+#### ***New method for this library, only on Computer***
 
 **quit():**
 * Parameters: **No parameters**
 * Description: Close manualy the window without notifying the user
-* Note: after that you cannot reopen the window, so a re-import of kandinsky will be required to get a new window.
-<br>
+* Note: after that you cannot reopen the window, so a re-import of kandinsky will be required to get a new window
 
-***New methods added by Omega (previous methods are also added)***
+#### ***New methods added by Omega (previous methods are also added)***
 
 **draw_line()**
 * Parameters: ``x1``, ``y1``, ``x2``, ``y2``, ``color``
@@ -63,9 +61,8 @@ If you have a question, check out the [FAQ](https://github.com/ZetaMap/Kandinsky
 **get_keys()**
 * Parameters: **No parameters**
 * Description: Get pressed keys
-<br>
 
-***New methods added by Upsilon (previous methods are also added)***
+#### ***New methods added by Upsilon (previous methods are also added except get_keys())***
 
 **draw_circle()**
 * Parameters: ``x``, ``y``, ``r``, ``color``
@@ -81,11 +78,12 @@ If you have a question, check out the [FAQ](https://github.com/ZetaMap/Kandinsky
 
 **get_palette()**
 * Parameters: **No parameters**
-* Description: Get upsilon theme palette
+* Description: Get theme palette
 
 
 ### Additional features
-A GUI to control library
+#### A GUI to control emulator
+
 * **Pause/resume:** You can pause/resume your script <br> 
 *Note:* This will just pause the calls of kandinsky. So for the script to pause, it must be called one of the functions of the library
 
@@ -100,7 +98,7 @@ A GUI to control library
 
 * **Shorcut command:** All the features mentioned have a shortcut command. More info in the "Help" button of the window
 
-Environ options <br>
+#### Environ options
 **/!\\ You must make its additions *before* importing kandinsky otherwise the changes will not take effect! /!\\**
 
 You can also change some default option of library, like the OS or model on which to start kandinsky, etc. <br> 
@@ -115,8 +113,8 @@ os.environ['KANDINSKY_ENABLE_DEBUG'] = ''
 ```python
 # '0': PC speed + Upsilon methods
 # '1': Numworks speed + Basic methods
-# '2': Omega speed + draw_line method
-# '3': Upsilon speed + draw_circle,fill_circle,fill_polygon,get_palette methods
+# '2': Omega speed + draw_line,wait_vblank,get_keys method
+# '3': Upsilon speed + draw_circle,fill_circle,fill_polygon,get_palette methods - get_keys
 os.environ['KANDINSKY_OS_MODE'] = '<number>'
 ```
 

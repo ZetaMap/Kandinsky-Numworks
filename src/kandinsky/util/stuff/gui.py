@@ -2,10 +2,10 @@ from tkinter import Tk, Frame, Menu, IntVar
 from tkinter.dialog import Dialog
 from tkinter.filedialog import asksaveasfilename
 
-from sdl2 import SDL_CreateWindowFrom, SDL_WINDOW_OPENGL
+from sdl2 import SDL_CreateWindowFrom#, SDL_WINDOW_OPENGL
 from sdl2.ext import Window, load_image
 
-from os import getcwd
+from os import getcwd, startfile
 from webbrowser import open as open_link  # To open links in help menu
 from datetime import datetime
 
@@ -19,14 +19,17 @@ __all__ = ["Gui"]
 class Gui:
   tkmaster:Tk = None
   paused = False
+  already_paused = False
 
   def created():
     if not Gui.tkmaster: raise RuntimeError("an instance must be created")
 
   def __init__(_, tkmaster, start_os, start_model):
     Gui.tkmaster = tkmaster
+    if not Constants.is_windows: Gui.tkmaster.option_add("*font", "SegoeUI 9")
+    Gui.data = StateData()
 
-    # Create frame area for sdl2
+    # Create frame area for sdl2 and pack it
     Gui.head_frame = Frame(tkmaster, width=Constants.screen[0], height=Constants.head_size)
     Gui.screen_frame = Frame(tkmaster, width=Constants.screen[0], height=Constants.screen[1])
     Gui.head_frame.pack()
@@ -44,25 +47,27 @@ class Gui:
     Gui.menu = Menu(tkmaster)
     # Menus
     ## About menu
-    new = Menu(tearoff=False)
-    new.add_command(label="GitHub project",     command=lambda: open_link("https://github.com/ZetaMap/Kandinsky-Numworks"))
-    new.add_command(label="An issue? Open one", command=lambda: open_link("https://github.com/ZetaMap/Kandinsky-Numworks/issues/new"))
-    new.add_command(label="Made by ZetaMap",    command=lambda: open_link("https://github.com/ZetaMap"))
-    Gui.menu.add_cascade(label="About", menu=new)
+    about = Menu(tearoff=False)
+    about.add_command(label="GitHub project",     command=lambda: open_link("https://github.com/ZetaMap/Kandinsky-Numworks"))
+    about.add_command(label="Documentation",      command=lambda: open_link("https://github.com/ZetaMap/Kandinsky-Numworks#usable-content"))
+    about.add_command(label="An issue? Open one", command=lambda: open_link("https://github.com/ZetaMap/Kandinsky-Numworks/issues/new"))
+    about.add_command(label="Made by ZetaMap",    command=lambda: open_link("https://github.com/ZetaMap"))
+    Gui.menu.add_cascade(label="About", menu=about)
 
     ## Help menu
-    new = Menu(tearoff=False)
-    new.add_command(label="CTRL+O: change OS",       state="disabled", activebackground="#F0F0F0")
-    new.add_command(label="CTRL+M: change Model",    state="disabled", activebackground="#F0F0F0")
-    new.add_command(label="CTRL+S: take screenshot", state="disabled", activebackground="#F0F0F0")    
-    new.add_command(label="CTRL+P: pause/resume",    state="disabled", activebackground="#F0F0F0")
-    new.add_separator()
-    new.add_command(label="Check FAQ", command=lambda: open_link("https://github.com/ZetaMap/Kandinsky-Numworks#usable-content"))
-    Gui.menu.add_cascade(label="Help", menu=new)
+    help = Menu(tearoff=False)
+    help.add_command(label="CTRL+O: change OS",       state="disabled", activebackground="#F0F0F0")
+    help.add_command(label="CTRL+M: change Model",    state="disabled", activebackground="#F0F0F0")
+    help.add_command(label="CTRL+S: take screenshot", state="disabled", activebackground="#F0F0F0")    
+    help.add_command(label="CTRL+P: pause/resume",    state="disabled", activebackground="#F0F0F0")
+    help.add_separator()
+    help.add_command(label="Ion keyboard", command=lambda: open_link("https://github.com/ZetaMap/Ion-Numworks#keys"))
+    help.add_command(label="Check FAQ",    command=lambda: open_link("https://github.com/ZetaMap/Kandinsky-Numworks/blob/main/FAQ.md"))
+    Gui.menu.add_cascade(label="Help", menu=help)
 
     ## OS menu
-    max = len(Config.os_list)-1
-    Gui.os_mode = IntVar(value=start_os[1] if start_os[0] < 0 or start_os[0] > max else start_os[0])
+    max_ = len(Config.os_list)-1
+    Gui.os_mode = IntVar(value=start_os[1] if start_os[0] < 0 or start_os[0] > max_ else start_os[0])
     new = Menu(tearoff=False)
     for i, mode in enumerate(Config.os_list): 
       new.add_radiobutton(label=mode["name"], variable=Gui.os_mode, value=i, command=Gui.update_data)
@@ -70,12 +75,12 @@ class Gui:
     Gui.menu.add_cascade(label="OS", menu=new)
 
     ## Model menu
-    max = len(Config.model_list)-1
-    Gui.model_mode = IntVar(value=start_model[1] if start_model[0] < 0 or start_model[0] > max else start_model[0])
+    max_ = len(Config.model_list)-1
+    Gui.model_mode = IntVar(value=start_model[1] if start_model[0] < 0 or start_model[0] > max_ else start_model[0])
     new = Menu(tearoff=False)
     for i, mode in enumerate(Config.model_list): 
       new.add_radiobutton(label=mode["name"], variable=Gui.model_mode, value=i, command=Gui.update_data, 
-                          **({"state": "disabled", "activebackground": "#F0F0F0"} if mode.get("disabled", False) else {}))
+        **({"state": "disabled", "activebackground": "#F0F0F0"} if mode.get("disabled", False) else {}))
     Gui.menu.add_cascade(label="Model", menu=new)
 
     ## Screenshot button
@@ -84,11 +89,9 @@ class Gui:
     ## Pause button
     def state(): 
       Gui.paused = not Gui.paused
+      Gui.already_paused = Gui.paused
       Gui.menu.entryconfig(6, label=["Pause", "Resume"][Gui.paused])
     Gui.menu.add_command(label="Pause", command=state,)
-
-    # Pack everything
-    Gui.data = StateData()
 
   def update_value(int_var, values):
     Gui.created()
@@ -116,7 +119,10 @@ class Gui:
 
     # Config main window
     Gui.tkmaster.title(Constants.app_name)
-    Gui.tkmaster.iconbitmap(default=Constants.path+"app.ico")
+    if Constants.is_windows: Gui.tkmaster.iconbitmap(default=Constants.path+"app.ico")
+    else:
+      from tkinter import PhotoImage
+      Gui.tkmaster.iconphoto(True, PhotoImage(file=Constants.path+"app.png"))
     Gui.tkmaster.resizable(False, False)
     if not no_gui: Gui.tkmaster.config(menu=Gui.menu)
     Gui.tkmaster.eval('tk::PlaceWindow . center')
@@ -154,20 +160,22 @@ class Gui:
     try: error = Config.save_image(surf, file[1]) < 0
     except: error = 1
 
-    conf = {"title": "Screenshot", "text": "Screenshot saved at: \n"+('/' if file[0][0] == '/' else '\\').join(file), "bitmap": "info", "default": 1, "strings": ("Open folder", "OK")}
+    conf = {"title": "Screenshot", "text": "Screenshot saved at: \n"+('\\' if Constants.is_windows else '/').join(file), "bitmap": "info", "default": 1, "strings": ("Open folder", "OK")}
     if error: conf.update({"text": "Error, can't write in folder: \n"+file[0], "bitmap": "error", "strings": ("Save as", "OK")})
 
     if not Dialog(Gui.tkmaster, conf).num:
       if error: 
         file = asksaveasfilename(defaultextension="png", filetypes=Constants.image_formats, initialfile=file[1], title="Save screenshot at")
-        if file != '': Config.save_image(surf, file)
-      else: open_link(file[0])
+        if file != '': 
+          try: Config.save_image(surf, file)
+          except: pass
+      else: startfile(file[0])
 
-    del surf # Use finish so destroy it
-    Gui.paused = False # Screenshot finished, unpause events
+    del surf # destroy screenshot surface
+    if not Gui.already_paused: Gui.paused = False # Screenshot finished, unpause events
 
   def askscriptend():
     return not Dialog(Gui.tkmaster, {
-      "title": "Script end", "text": "Script ended! \nClose window?".ljust(50), 
+      "title": "Script end", "text": "Script finished! \nClose window?".ljust(50), 
       "bitmap": "question", "default": 0, "strings": ("Yes", "No")
     }).num
