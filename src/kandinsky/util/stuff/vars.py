@@ -65,19 +65,20 @@ class Config:
                                       IMG_SaveJPG_RW(surface, Config.open(path), 1, 70) if Constants.is_windows and path.endswith((".jpg", ".jpeg")) else
                                       IMG_SavePNG_RW(surface, Config.open(path), 1))
 
-  font = FontManager(Constants.path+"font.ttf", 16)
+  large_font = FontManager(Constants.path+"large_font.ttf", size=16)
+  small_font = FontManager(Constants.path+"small_font.ttf", size=12)
 
   os_list = (
-    {"name": "PC",       "ratio": 0,   "color": "#4a4a4a", "head": "head1.png"},
-    {"name": "Numworks", "ratio": 1,   "color": "#ffb531", "head": "head1.png"},
-    {"name": "Omega",    "ratio": 0.8, "color": "#c53431", "head": "head2.png"},
-    {"name": "Upsilon",  "ratio": 0.9, "color": "#7ea2ce", "head": "head3.png"},
+    {"name": "PC",       "ratio": 0,   "color": "#4a4a4a", "unit": "deg",     "clock": False, "battery": "battery1.png"},
+    {"name": "Numworks", "ratio": 1,   "color": "#ffb531", "unit": "deg",     "clock": False, "battery": "battery0.png"},
+    {"name": "Omega",    "ratio": 0.8, "color": "#c53431", "unit": "sym/deg", "clock": True,  "battery": "battery0.png"},
+    {"name": "Upsilon",  "ratio": 0.9, "color": "#7ea2ce", "unit": "sym/deg", "clock": True,  "battery": "battery1.png"},
   )
 
   model_list = (
-    {"name": "n0100", "ratio": 0, "disabled": True },
+    {"name": "n0100", "ratio": 0, "disabled": True},
     {"name": "n0110", "ratio": 1},
-    {"name": "n0120", "ratio": 0, "disabled": True },
+    {"name": "n0120", "ratio": 0, "disabled": True},
   )
 
 # Class for some data

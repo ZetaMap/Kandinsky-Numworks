@@ -26,7 +26,7 @@ class Snake:
   s.lb,s.s,s.p,s.m,s.ti,s.g,s.go,s.r,s.w,s.bo=leader_board,1/speed,power,score,size,(320//size-1,220//size-1),gost,rainbow,walls,bool(walls)
  def nc(s):
   s.ch=[ri(s.bo,s.g[i]-s.bo) for i in range(2)]
-  while s.ch[0]<<12|s.ch[1] in s.b: s.c=[ri(s.bo,s.g[i]-s.bo) for i in range(2)]
+  while s.ch[0]<<12|s.ch[1] in s.b: s.ch=[ri(s.bo,s.g[i]-s.bo) for i in range(2)]
   fr(s.ch[0]*s.ti,2+s.ch[1]*s.ti,s.ti,s.ti,s.c[4])
  def dl(s):
   fr(0,2,320,220,"black")

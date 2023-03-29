@@ -2,11 +2,14 @@ from tkinter import Tk, Frame, Menu, IntVar
 from tkinter.dialog import Dialog
 from tkinter.filedialog import asksaveasfilename
 
-from sdl2 import SDL_CreateWindowFrom#, SDL_WINDOW_OPENGL
+from sdl2 import SDL_CreateWindowFrom, SDL_DestroyWindow, SDL_GetScancodeFromKey#, SDL_WINDOW_OPENGL
+from sdl2.events import SDL_Event, SDL_PushEvent, SDL_KEYDOWN, SDL_PRESSED
 from sdl2.ext import Window, load_image
 
-from os import getcwd, startfile
-from webbrowser import open as open_link  # To open links in help menu
+from os import getcwd, system
+from webbrowser import open as open_link, register_standard_browsers  # To open links in help menu
+register_standard_browsers()
+del register_standard_browsers
 from datetime import datetime
 
 # Internal
@@ -34,16 +37,21 @@ class Gui:
     Gui.screen_frame = Frame(tkmaster, width=Constants.screen[0], height=Constants.screen[1])
     Gui.head_frame.pack()
     Gui.screen_frame.pack()
-    tkmaster.update()
+    Gui.screen_frame.focus_set()
+    Gui.tkmaster.update()
 
     # OS head
     Gui.head = Window('',(0,0))
+    SDL_DestroyWindow(Gui.head.window)
     Gui.head.window = SDL_CreateWindowFrom(Gui.head_frame.winfo_id())
+    Gui.head_id = Gui.head_frame.winfo_id()
     
     # Drawable screen
     Gui.screen = Window('',(0,0))
+    SDL_DestroyWindow(Gui.screen.window)
     Gui.screen.window = SDL_CreateWindowFrom(Gui.screen_frame.winfo_id())
-    
+    Gui.screen_id = Gui.screen_frame.winfo_id()
+
     Gui.menu = Menu(tkmaster)
     # Menus
     ## About menu
@@ -71,7 +79,7 @@ class Gui:
     new = Menu(tearoff=False)
     for i, mode in enumerate(Config.os_list): 
       new.add_radiobutton(label=mode["name"], variable=Gui.os_mode, value=i, command=Gui.update_data)
-      Config.os_list[i]["head"] = load_image(Constants.path+Config.os_list[i]["head"])
+      Config.os_list[i]["battery"] = load_image(Constants.path+Config.os_list[i]["battery"])
     Gui.menu.add_cascade(label="OS", menu=new)
 
     ## Model menu
@@ -108,9 +116,15 @@ class Gui:
 
     Gui.data(**Config.os_list[Gui.os_mode.get()], model=Config.model_list[Gui.model_mode.get()]["ratio"])
     surf = Gui.head.get_surface()
+    
     Draw.rect(surf, Gui.data.color)
-    #TODO: redraw head, for moment is just an image
-    Draw.blit(surf, Gui.data.head)
+    Draw.blit(surf, Config.small_font.render(Gui.data.unit), (5, 0))
+    Draw.blit(surf, Config.small_font.render("PYTHON"), (Constants.screen[0]-181, 1))
+    x = Constants.screen[0]-20  
+    if Gui.data.clock:
+      Draw.blit(surf, Config.small_font.render(datetime.now().strftime("%H:%M")), (x-20, 1))
+      x -= 40
+    Draw.blit(surf, Gui.data.battery, (x, 4))
 
   def config(no_gui=False):
     Gui.created()
@@ -127,9 +141,6 @@ class Gui:
     if not no_gui: Gui.tkmaster.config(menu=Gui.menu)
     Gui.tkmaster.eval('tk::PlaceWindow . center')
 
-    # Clear sdl windows
-    Gui.refresh()
-
     # Bind shorcuts
     Gui.tkmaster.bind("<Control-o>", lambda _: Gui.update_value(Gui.os_mode, Config.os_list))
     Gui.tkmaster.bind("<Control-m>", lambda _: Gui.update_value(Gui.model_mode, Config.model_list))
@@ -138,6 +149,18 @@ class Gui:
       Gui.paused = not Gui.paused
       Gui.menu.entryconfig(6, label=["Pause", "Resume"][Gui.paused])
     Gui.tkmaster.bind("<Control-p>", state)
+
+    # I don't know why, but i can't get focus of keyboard, so i will push keyboard events manually
+    def on_key_press(event):
+      sdl_event = SDL_Event(type=SDL_KEYDOWN)
+      sdl_event.key.keysym.scancode = SDL_GetScancodeFromKey(event.keycode)
+      sdl_event.key.keysym.sym = event.keycode+32
+      sdl_event.key.state = SDL_PRESSED
+      SDL_PushEvent(sdl_event)
+    Gui.tkmaster.bind("<KeyPress>", on_key_press)
+
+    # Clear sdl windows and refresh Tkinter frames
+    Gui.refresh()
 
   def refresh():
     Gui.created()
@@ -169,7 +192,7 @@ class Gui:
         if file != '': 
           try: Config.save_image(surf, file)
           except: pass
-      else: startfile(file[0])
+      else: system(("explorer \"" if Constants.is_windows else "open \"")+file[0].replace('\\\\', '\\')+'"')
 
     del surf # destroy screenshot surface
     if not Gui.already_paused: Gui.paused = False # Screenshot finished, unpause events

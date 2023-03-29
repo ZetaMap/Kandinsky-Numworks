@@ -1,4 +1,6 @@
 from sdl2.keyboard import SDL_GetKeyboardState, SDL_GetScancodeFromKey
+from sdl2.ext.common import get_events
+from sdl2.events import SDL_KEYDOWN
 from sdl2.keycode import *
 from random import randint, random
 
@@ -10,16 +12,15 @@ class IonKey:
     if type(code_or_codes) in (tuple, list):
       assert len(code_or_codes), "list of codes must have minimum 1 code"
       self.codes = tuple(code_or_codes)
-    else: (code_or_codes,)
+    else: self.codes = (code_or_codes,)
     self.ion_code = ion_code
     self.display_name = display_name if display_name else name.lower()
     self.computer_name = computer_equivalent if computer_equivalent else self.display_name.title()
 
-  def is_pressed(self, index=None):
-    pressed = SDL_GetKeyboardState(None)
-    if index is None: return any([1 for i in self.codes if pressed[SDL_GetScancodeFromKey(i)]])
-    elif index < 0 or index > len(self.codes)-1: return False
-    else: return bool(pressed[SDL_GetScancodeFromKey(self.codes[index])])
+  def is_pressed(self, event):
+    for i in self.codes:
+      if event.key.keysym.sym == i: return True
+    return False
 
 
 class Ion:
@@ -81,12 +82,26 @@ class Ion:
     module.__dict__.update({k.name: k.ion_code for k in Ion.KEYS})
 
   def get_keys():
-    return set([key.display_name for key in Ion.KEYS if key.is_pressed()])
+    pressed = set()
+
+    for e in get_events():
+      if e.type == SDL_KEYDOWN: 
+        for k in Ion.KEYS:
+          if k.is_pressed(e):
+            pressed.add(k.display_name)
+            break
+
+    return pressed
 
   def keydown(key):
+    # Find the key
     for k in Ion.KEYS:
-      if k.ion_code == key: return k.is_pressed()
-    return False
+      if k.ion_code == key: 
+        key = k
+        break
+    else: return False
+
+    return any([e.type == SDL_KEYDOWN and key.is_pressed(e) for e in get_events()])
 
   def battery():
     return 4.20+randint(900, 1500)/10**5+random()/10**5
@@ -103,3 +118,27 @@ class Ion:
 
   def get_brightness():
     return Ion.brightness
+
+
+
+#import sys
+#import termios
+#import tty
+#
+#def getchr():
+#    r"""
+#    Get a single key from the terminal without printing it.
+#    Certain special keys return several "characters", all starting with the
+#    escape character '\x1b'. You could react to that by reading two more
+#    characters, but the actual escape key will only make this return a single
+#    escape character, and since it's blocking, that wouldn't be a good solution
+#    either.
+#    """
+#    fd = sys.stdin.fileno()
+#    old = termios.tcgetattr(fd)
+#    tty.setraw(sys.stdin.fileno())
+#    ch = sys.stdin.read(1)
+#    termios.tcsetattr(fd, termios.TCSADRAIN, old)
+#    if ord(ch) == 3:  # ^C
+#        raise KeyboardInterrupt
+#    return ch

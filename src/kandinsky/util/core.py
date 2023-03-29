@@ -29,7 +29,7 @@ try:
 
 except (ImportError, ModuleNotFoundError) as e:
   e.args = ("""PySDL2 or PySDL2-dll module is not installed on your system, and kandinsky depend to it.
->>> To install it follow steps on the GitHub project: https://github.com/ZetaMap/Kandinsky-Numworks
+>>> To install, follow steps on the GitHub project: https://github.com/ZetaMap/Kandinsky-Numworks
 >>> or type 'pip install pysdl2 pysdl2-dll""",)
   raise
 
@@ -37,6 +37,21 @@ try: import tkinter
 except (ImportError, ModuleNotFoundError) as e:
   e.args = ("tkinter is not installed. "+("please reinstall python with complements modules" if os.name == "nt" else "install it with 'sudo apt install python3-tk'"),)
   raise
+
+try: import ion
+except (ImportError, ModuleNotFoundError): ION_PRESENT = False
+else: 
+  # In older version i forgot to define __version__ field
+  # so if is not defined, is an outdated version
+  if not hasattr(ion, "__version__") : ION_PRESENT = False
+  
+  # Verify if version is good
+  elif tuple([int(i) for i in ion.__version__.split('.') if i.isdecimal()]) < (1, 2, 3):
+    sdl2._internal.prettywarn("outdated version of 'Ion-numworks', please update it", ImportWarning)
+    ION_PRESENT = False
+
+  # Another module is called ion, so do a little test to see if it's the right module
+  else: ION_PRESENT = hasattr(ion, "keydown") 
 
 # Cleanup namespaces
 del os, sdl2, tkinter, warnings
@@ -55,10 +70,33 @@ __all__ = [
 from tkinter import Tk
 from sdl2.ext import quit as sdl_quit
 from threading import Thread, main_thread
-from random import randint
-from time import monotonic_ns, sleep
 from math import sqrt
 from .stuff import *
+
+# Try to find an real time clock to do microseconds sleeps
+if Constants.is_windows:
+  # Try to use module win-precise-time to get more sleeps precision
+  try:
+    import win_precise_time as _wpt
+    usleep = lambda us: _wpt.sleep_until_ns(int(_wpt.time_ns()+us*1000))
+  except:
+    import time as _time, sdl2._internal
+    sdl2._internal.prettywarn("win-precise-time module is not installed. Using time module to do usleep (emulation will be less accurate)", RuntimeWarning)
+    def usleep(us):
+      t = _time.perf_counter_ns()+us*1000
+      while _time.perf_counter_ns() < t: _time.sleep(1e-9)
+    del sdl2._internal
+else:
+  try:
+    import ctypes
+    usleep = ctypes.CDLL("libc.so.6").usleep
+    del ctypes
+  except:
+    # On some linux distribution, this library is not installed by default
+    import time as _time, sdl2._internal
+    sdl2._internal.prettywarn("libc6 library is not installed. Using time module to do usleep (emulation will be less accurate)", RuntimeWarning)
+    usleep = lambda us: _time.sleep(us/10e6)
+    del sdl2._internal
 
 
 ######### Main code #########
@@ -94,24 +132,21 @@ class Core(Thread):
     self.print_debug("Event", " "+method.__name__, (*args, *[f"{k}={'v' if type(v) == str else v}" for k, v in kwargs.items()]), sep='')
 
     if Gui.paused: self.print_debug("Pause", "waiting...")
-    while Gui.paused and self.is_alive(): sleep(0.001)
+    while Gui.paused and self.is_alive(): usleep(1000)
 
     if self.stoped: raise RuntimeError("kandinsky window destroyed")
-    elif not self.is_alive(): raise RuntimeError(f"an error has occurred in thread '{self.name}'")
-    
-    self.time = monotonic_ns()//1000
+    elif not self.is_alive(): raise RuntimeError(f"an internal error has occurred. Stack trace is before this it.")
 
   def sleep(self, delay_us):
-    ratio = Gui.data.model*Gui.data.ratio*(randint(900, 1100)/1000) # multiplie random ratio between 0.9 and 1.1 to simulate speed of python
-    delay = delay_us*ratio//1
+    ratio = Gui.data.model*Gui.data.ratio
+    delay = int(delay_us*ratio)
 
     self.print_debug("Delay", "input =", delay_us, "µs, ratio ≃", str(round(ratio, 6))+", output =", delay, "µs")
-    if ratio > 0:
-      while monotonic_ns()//1000-self.time < delay: pass
+    if ratio > 0: usleep(delay)
 
 ### methods when used
   def get_pixel(self, x, y):
-    Tests.int_test(x, y)
+    Tests.int(x, y)
 
     if y < 0 or y > Constants.screen[0] or x < 0 or x > Constants.screen[1]: color = Colors.black
     else: color = Colors.convert(Draw.get_at(self.drawable, x, y))
@@ -120,7 +155,7 @@ class Core(Thread):
     return color
 
   def set_pixel(self, x, y, color):
-    Tests.int_test(x, y)
+    Tests.int(x, y)
 
     Draw.pixel(self.drawable, Colors.convert(color), x, y)
     self.sleep(130)
@@ -128,31 +163,30 @@ class Core(Thread):
   def color(self, r, g, b):
     if not g and not b: color = Colors.convert(r)
     elif g and b: 
-      Tests.int_test(r, g, b)
+      Tests.int(r, g, b)
       color = Colors.convert((r, g, b))
     else: raise TypeError("color takes 1 or 3 arguments")
 
     self.sleep(100)
     return color
 
-  def _drawString(self, text, x, y, color, background):
-    Draw.rect(self.drawable, background, (x, y, len(text)*10, 18))
-    Draw.blit(self.drawable, Config.font.render(text, color=color), (x, y-2))
-
   def draw_string(self, text, x, y, color, background, font=False):
-    Tests.str_test(text)
-    Tests.int_test(x, y)
+    Tests.str(text)
+    Tests.int(x, y)
     
     color = Colors.convert(color)
     background = Colors.convert(background)
+    bs = (7, 14) if font else (10,18)
+    font = Config.small_font if font else Config.large_font
     if '\0' in text: text = text[:text.index('\0')]
 
     for i, l in enumerate(text.replace('\r', '').replace('\f', '\x01').replace('\b', '\x01').replace('\v', '\x01').replace('\t', "    ").splitlines()): 
-      self._drawString(l, x*(not i), y+i*18, color, background)
+      Draw.rect(self.drawable, background, (x*(not i), y+i*bs[1], len(l)*bs[0], bs[1]))
+      Draw.blit(self.drawable, font.render(l, color=color), (x*(not i), y+i*bs[1]-2))
     self.sleep(86*(len(text)+(len(text)>=5)//1.2))
   
   def fill_rect(self, x, y, width, height, color):
-    Tests.int_test(x, y, width, height)
+    Tests.int(x, y, width, height)
   
     if width < 0:  x, width = x+width, -width
     if height < 0: y, height = y+height, -height
@@ -162,15 +196,17 @@ class Core(Thread):
 
   def wait_vblank(self):
     """why this?"""
-    while not self.refreshed: sleep(0.0001)
+    while not self.refreshed: usleep(100)
 
   def get_keys(self):
     """Don't tell me about this XD, it's omega"""
-    return Ion.get_keys()
+    # Raise an error if Ion-Numworks is not installed
+    if not ION_PRESENT: raise NotImplementedError("please install or update the module 'Ion-numworks' before using this method")
+    return ion.get_keys()
 
   def draw_line(self, x1, y1, x2, y2, color):
     """https://github.com/UpsilonNumworks/Upsilon/blob/upsilon-dev/kandinsky/src/context_line.cpp"""
-    Tests.int_test(x1, y1, x2, y2)
+    Tests.int(x1, y1, x2, y2)
     color = Colors.convert(color)
 
     s = abs(y2-y1) > abs(x2-x1)
@@ -186,7 +222,7 @@ class Core(Thread):
 
   def draw_circle(self, x, y, r, color):
     """https://github.com/UpsilonNumworks/Upsilon/blob/upsilon-dev/kandinsky/src/context_circle.cpp"""
-    Tests.int_test(x, y, r)
+    Tests.int(x, y, r)
     
     color = Colors.convert(color)
     xc, yc, m = 0, abs(r), 5-4*abs(r) 
@@ -208,7 +244,7 @@ class Core(Thread):
 
   def fill_circle(self, x, y, r, color):
     """https://github.com/UpsilonNumworks/Upsilon/blob/upsilon-dev/kandinsky/src/context_circle.cpp"""
-    Tests.int_test(x, y, r)
+    Tests.int(x, y, r)
     color = Colors.convert(color)
 
     r = abs(r)
@@ -220,21 +256,15 @@ class Core(Thread):
 
   def fill_polygon(self, points, color):
     """https://github.com/UpsilonNumworks/Upsilon/blob/upsilon-dev/kandinsky/src/context_polygon.cpp"""
-    Tests.list_test(points)
+    Tests.list(points)
     if len(points) < 3: raise ValueError("polygon must have least 3 points")
-    tests = [[len(i) for v in i if len(i) != 2 or not Tests.int_test(v)] for i in points if Tests.list_test(i)]
+    tests = [[len(i) for v in i if len(i) != 2 or not Tests.int(v)] for i in points if Tests.list(i)]
     if len(tests) and len(tests[0]): raise ValueError("requested length 2 but object has length "+str(tests[0][0]))
+    
     color = Colors.convert(color)
-
-    top, bottom = Constants.screen[0], 0
     points_size = len(points)
 
-    # find top of polygon
-    for _, p in points:
-      if p < top: top = p
-      if p > bottom: bottom = p
-
-    for y in range(top, bottom):
+    for y in range(min([0,Constants.screen[0]]+points, key=lambda v: v[1]), max([0,0]+points, key=lambda v: v[1])):
       switches = []
       last_point = points_size-1
 
@@ -246,9 +276,8 @@ class Core(Thread):
 
       switches.sort()
       for x in range(0, len(switches), 2):
-        point_x = switches[x]
         if switches[x] >= Constants.screen[1]*2: break
-        if switches[x+1] > 0: Draw.rect(self.drawable, color, (point_x, y, switches[x+1]-point_x, 1))
+        if switches[x+1] > 0: Draw.rect(self.drawable, color, (switches[x], y, switches[x+1]-switches[x], 1))
 
     self.sleep(444) # TODO: calculate speed
 
@@ -299,7 +328,7 @@ class Core(Thread):
       Gui.screen.refresh()
       try: Gui.refresh()
       except AttributeError: pass
-      sleep(0.001)
+      usleep(1000)
       self.refreshed = True
 
   def event_fire(self, method, *arg, **kwargs):
@@ -308,5 +337,5 @@ class Core(Thread):
       return method(*arg, **kwargs), None
     except (Exception, BaseException) as e: 
       return None, Exception.with_traceback(
-        KeyboardInterrupt(type(e).__name__+": "+' '.join(e.args)) if isinstance(e, BaseException) else e, 
+        KeyboardInterrupt(type(e).__name__+": "+' '.join(e.args)) if isinstance(e, RuntimeError) else e, 
         e.__traceback__.tb_next if DEBUG else None)

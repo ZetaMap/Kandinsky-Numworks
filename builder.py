@@ -1,21 +1,28 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+
 from setuptools import find_packages
-from os import listdir, path as os_path, remove, mkdir, system
+from os import listdir, name as os_name, path as os_path, mkdir, system
 
 # Setup files files environ
+def clear_files():
+  def clear(path):
+    try:
+      if os_path.exists(path): 
+        if os_name == "nt": system(("rd /s" if os_path.isdir(path) else "del /f") + " /q \"" + path.replace('/', '\\') + "\" 2> nul")
+        else: system("rn -rf " + path.replace('\\', '/') + "\" 2> /dev/null")
+    except: pass
+  print("Cleaning files ...")
+  
+  clear("build")
+  clear("dist")
+  clear("setup.py")
+  clear("src/kandinsky.egg-info")
+  clear("src/kandinsky/__pycache__")
+  clear("src/kandinsky/util/__pycache__")
+  clear("src/kandinsky/util/stuff/__pycache__")
 
-def clear(path):
-  try:
-    if os_path.exists(path): remove(path)
-  except: pass
-print("Cleaning files ...")
-if not os_path.exists("src/kandinsky.egg-info"): mkdir("src/kandinsky.egg-info")
-clear("build")
-clear("dist")
-clear("setup.py")
-clear("src/kandinsky/__pycache__")
-clear("src/kandinsky/util/__pycache__")
-clear("src/kandinsky/util/stuff/__pycache__")
+clear_files()
+mkdir("src/kandinsky.egg-info")
 
 DOC=""
 with open("src/kandinsky/README.md", "rt", encoding="utf-8") as f:
@@ -26,7 +33,7 @@ with open("src/kandinsky/README.md", "rt", encoding="utf-8") as f:
 print("Generating setup.py ...")
 METADATA = {
   "name": "kandinsky",
-  "version": "2.3.dev1",
+  "version": "2.4.dev1",
   "author": "ZetaMap",
   "description": "A small module allowing to link the kandinsky module, from the Numworks, to a window.",
   "license": 'MIT',
@@ -81,7 +88,17 @@ setup(**{METADATA})""")
 print("Installing build module ...")
 system("pip install build")
 print("\nBuilding library ...")
-system("python -m build")
-if input("\nWould you like to install library? [y|N]: ").lower() == 'y': system("pip install .")
+if system("python -m build") != 0: exit(1)
+if input("\nInstall library? [y|N]: ").lower() == 'y': system("pip install .")
 else: print("Installation canceled. ")
+if input("\nClear setup files? [Y|n]: ").lower() != 'n': 
+  clear_files()
+  # replace __version__ in __init__.py
+  with open("src/kandinsky/__init__.py") as f: new_content = f.readlines()
+  for i in range(len(new_content)):
+    if "__version__" in new_content[i]:
+      new_content[i] = f"__version__ = \"null\"\n"
+      break  
+  with open("src/kandinsky/__init__.py", 'w') as f: f.writelines(new_content)
+
 print("All done")

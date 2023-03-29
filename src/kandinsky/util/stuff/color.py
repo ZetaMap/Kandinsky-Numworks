@@ -35,9 +35,9 @@ class Colors:
     
     elif _type == int: raise ValueError("Int are not colors")
 
-    elif Tests.list_test(rgbOrName):
+    elif Tests.list(rgbOrName):
       if len(rgbOrName) != 3: raise ValueError("Color needs 3 components")
-      color = [int(c) for c in rgbOrName if type(c) == float or Tests.int_test(c)]
+      color = [int(c) for c in rgbOrName if type(c) == float or Tests.int(c)]
 
     if len(color) > 0: return tuple([0 if color[i] < 0 else color[i]%256//COLOR_ROUND_MULTIPLIER[i]*COLOR_ROUND_MULTIPLIER[i] for i in range(len(color))])
     else: raise ValueError("invalid syntax for number")
