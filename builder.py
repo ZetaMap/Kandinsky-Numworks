@@ -14,7 +14,7 @@ def clear_files():
   print("Cleaning files ...")
   
   clear("build")
-  clear("dist")
+  if len(listdir("dist")) and input("WARNING: dist folder is not empty, delete ? [y|N]") == 'y': clear("dist")
   clear("setup.py")
   clear("src/kandinsky.egg-info")
   clear("src/kandinsky/__pycache__")
