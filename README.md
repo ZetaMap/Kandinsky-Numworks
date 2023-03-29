@@ -1,20 +1,20 @@
 ![Visitor Badge](https://visitor-badge.laobi.icu/badge?page_id=ZetaMap.Kandinsky-Numworks) ![Downloads](https://shields.io/github/downloads/ZetaMap/Kandinsky-Numworks/total) ![pip](https://img.shields.io/pypi/dm/kandinsky?label=pip_downloads) ![GitHub Clones](https://img.shields.io/badge/dynamic/json?color=success&label=clones&query=count&url=https://gist.githubusercontent.com/ZetaMap/d3a3bcef3e64ffa553c11c173a444a97/raw/clone.json&logo=github)
 # Kandinsky-Numworks
-**This module depend to [PySDL2](https://pysdl2.readthedocs.io/en/latest/) module and sdl2 libraries, PySDL2 is just an [sdl2](https://www.libsdl.org/) wrapper with ctype and it just call methods in sdl2 library. To install both modules, click [here](https://github.com/ZetaMap/Kandinsky-Numworks/blob/main/FAQ.md#how-to-install-pysdl2) and follow steps.** <br>
+**This module depend to [PySDL2](https://pysdl2.readthedocs.io/en/latest/) module and sdl2 libraries, PySDL2 is just an [sdl2](https://www.libsdl.org/) wrapper with ctype and it just call methods in sdl2 library. To install both modules, click [here](https://github.com/ZetaMap/Kandinsky-Numworks/blob/pysdl2/FAQ.md#how-to-install-pysdl2) and follow steps.** <br>
 
 This module allowing to link the kandinsky module, from the Numworks, to a window. Useful if you want to test your program without putting it on the calculator. <br>
-In addition, this module also emulates the drawing speed, and has [many other features](https://github.com/ZetaMap/Kandinsky-Numworks/blob/main/README.md#additional-features).
+In addition, this module also emulates the drawing speed, and has [many other features](https://github.com/ZetaMap/Kandinsky-Numworks/blob/pysdl2/README.md#additional-features).
 
 
 ### Installation
-You now have the option to install this module on [pypi.org](https://pypi.org/project/kandinsky/). For that, follow the steps [here](https://github.com/ZetaMap/Kandinsky-Numworks/blob/main/FAQ.md#how-to-install-this-module).
+You now have the option to install this module on [pypi.org](https://pypi.org/project/kandinsky/). For that, follow the steps [here](https://github.com/ZetaMap/Kandinsky-Numworks/blob/pysdl2/FAQ.md#how-to-install-this-module).
 
 Or if you want, you can build the module, just run command ``python builder.py``. <br>
 This will be generate a setup.py, install module build, build library, and install it.
 
 ### More
 I also recreated the ion module of the Numworks, check it out here: [Ion module of Numworks](https://github.com/ZetaMap/Ion-numworks)<br>
-If you have a question, check out the [FAQ](https://github.com/ZetaMap/Kandinsky-Numworks/blob/main/FAQ.md). And if you have a suggestion or your question is not answered, open an [Issue](https://github.com/ZetaMap/Kandinsky-Numworks/issues/new).
+If you have a question, check out the [FAQ](https://github.com/ZetaMap/Kandinsky-Numworks/blob/pysdl2/FAQ.md). And if you have a suggestion or your question is not answered, open an [Issue](https://github.com/ZetaMap/Kandinsky-Numworks/issues/new).
 
 
 ### Usable content
@@ -33,9 +33,9 @@ If you have a question, check out the [FAQ](https://github.com/ZetaMap/Kandinsky
 * Description: Define a rgb color
 
 **draw_string():**
-* Parameters: ``text``, ``x``, ``y``, ``color`` **[default: (0,0,0)]**, ``background`` **[default: (248,252,248)]**, *(Upsilon only: ``font`` **[default: False]**)*
+* Parameters: ``text``, ``x``, ``y``, ``color`` **[default: (0,0,0)]**, ``background`` **[default: (248,252,248)]**, *(Omega & Upsilon only: ``font`` **[default: False]**)*
 * Description: Display a text from pixel (x, y)
-* Note: parameter ``font`` is only for Upsilon and it's to chose between small and large font.
+* Note: parameter ``font`` is only for Omega and Upsilon and it's to chose between small and large font.
 
 **fill_rect():**
 * Parameters: ``x``, ``y``, ``width``, ``height``, ``color``
@@ -60,7 +60,7 @@ If you have a question, check out the [FAQ](https://github.com/ZetaMap/Kandinsky
 
 **get_keys()**
 * Parameters: **No parameters**
-* Description: Get pressed keys
+* Description: Get name of pressed keys
 
 #### ***New methods added by Upsilon (previous methods are also added except get_keys())***
 
