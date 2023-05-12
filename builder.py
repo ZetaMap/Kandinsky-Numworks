@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+# If True, just setup files and exit
+JUST_SETUP = False
 
 from setuptools import find_packages
 from os import listdir, name as os_name, path as os_path, mkdir, system
@@ -22,18 +24,19 @@ def clear_files():
   clear("src/kandinsky/util/stuff/__pycache__")
 
 clear_files()
-mkdir("src/kandinsky.egg-info")
-
 DOC=""
 with open("src/kandinsky/README.md", "rt", encoding="utf-8") as f:
   with open("README.md", "wt", encoding="utf-8") as ff: ff.write(f.read())
   DOC = f.read()
 
+# For me. Just to setup files, and exit
+if JUST_SETUP: exit()
+
 # Metadata
 print("Generating setup.py ...")
 METADATA = {
   "name": "kandinsky",
-  "version": "2.4.dev1",
+  "version": "2.5.dev1",
   "author": "ZetaMap",
   "description": "A small module allowing to link the kandinsky module, from the Numworks, to a window.",
   "license": 'MIT',
@@ -49,14 +52,13 @@ METADATA = {
     'License :: OSI Approved :: MIT License',
     'Operating System :: Microsoft :: Windows',
     'Operating System :: Unix',
-    'Operating System :: MacOS :: MacOS X',
   ],
   "package_dir": {"": "src"},
   "include_dirs": find_packages(where="src", exclude="__pycache__", include="*.*"),
   "install_requires": ["pysdl2", "pysdl2-dll"],
-  "include_package_data": True
+  "include_package_data": True,
+  "python_requires": '>=3.6',
 }
-
 
 def find_all(path='', exclude=[]):
   found = []
@@ -65,6 +67,8 @@ def find_all(path='', exclude=[]):
       if os_path.isdir(path+i): found.extend(find_all(path+i+'/'))
       else: found.append(path+i) 
   return found
+
+mkdir("src/kandinsky.egg-info")
 
 # add all files in SOURCES.txt
 with open("src/kandinsky.egg-info/SOURCES.txt", 'w') as f: 

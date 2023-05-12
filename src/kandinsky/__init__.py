@@ -4,8 +4,11 @@ The [GitHub project](https://github.com/ZetaMap/Kandinsky-Numworks), and if you 
 In addition, this module also emulates the drawing speed, and has [many other features](https://github.com/ZetaMap/Kandinsky-Numworks/blob/main/README.md#additional-features).
 """
 
-try: from .util.core import DEFAULT_OS, Core as __Core
-except ImportError: from util.core import DEFAULT_OS, Core as __Core
+try: from .util.core import Core as __Core
+except ImportError as e:
+  if "relative import" not in e.msg: 
+    raise
+  from util.core import Core as __Core
 
 __name__ = "kandinsky"
 __version__ = "null"
@@ -36,8 +39,6 @@ __all__ = [
   "get_palette"
 ]
 __Core = __Core()
-try: OS_MODE = __Core.OS_MODE
-except AttributeError: OS_MODE = DEFAULT_OS
 
 
 # Numworks basic methods
@@ -62,7 +63,7 @@ def color(r, g=None, b=None, /):
   return color
 
 # Argument added by Omega
-if OS_MODE > 1:
+if __Core.OS_MODE > 1:
   def draw_string(text, x, y, color=(0,0,0), background=(248,252,248), font=False, /):
     """Display a text from pixel (x, y)"""
     _, err = __Core.event_fire(__Core.draw_string, text, x, y, color, background, font)
@@ -141,14 +142,15 @@ def get_palette():
 
 ######### Clean #########
 # delete methods according to OS
-if OS_MODE: 
+# in pc mode, do not delete anything
+if __Core.OS_MODE: 
   # upsilon moved this method and epsilon don't have this
-  if OS_MODE != 2:
+  if __Core.OS_MODE != 2:
     __all__.remove("get_keys")
     del get_keys
 
   # delete upsilon methods
-  if OS_MODE < 3: 
+  if __Core.OS_MODE < 3: 
     __all__.remove("draw_circle")
     __all__.remove("fill_circle")
     __all__.remove("fill_polygon")
@@ -156,12 +158,9 @@ if OS_MODE:
     del draw_circle, fill_circle,  fill_polygon, get_palette
  
   # delete omega methods
-  if OS_MODE < 2: 
+  if __Core.OS_MODE < 2: 
     __all__.remove("draw_line")
     __all__.remove("wait_vblank")
     __all__.remove("small_font")
     __all__.remove("large_font")
     del draw_line, wait_vblank, small_font, large_font
-        
-# Cleanup namespaces
-del OS_MODE, DEFAULT_OS

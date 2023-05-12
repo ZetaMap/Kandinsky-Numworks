@@ -104,12 +104,12 @@ If you have a question, check out the [FAQ](https://github.com/ZetaMap/Kandinsky
 You can also change some default option of library, like the OS or model on which to start kandinsky, etc. <br> 
 To do this, first import the environ of os module like this: ``import os``.
 
-* To enable debug mode, add:
+* Enable debug mode:
 ```python
 os.environ['KANDINSKY_ENABLE_DEBUG'] = '' 
 ```
 
-* To change starting OS (methods according to the selected os will be created), add:
+* Change starting OS (methods according to the selected os will be created):
 ```python
 # '0': PC speed + Upsilon methods
 # '1': Numworks speed + Basic methods
@@ -118,7 +118,7 @@ os.environ['KANDINSKY_ENABLE_DEBUG'] = ''
 os.environ['KANDINSKY_OS_MODE'] = '<number>'
 ```
 
-* To change starting Model, add:
+* Change starting Model:
 ```python
 # '0': n0100 model speed (not available for moment)
 # '1': n0110 model speed
@@ -126,8 +126,19 @@ os.environ['KANDINSKY_OS_MODE'] = '<number>'
 os.environ['KANDINSKY_MODEL_MODE'] = '<number>'
 ```
 
-* To disable user interface (menu at top of window), add:
+* Disable user interface (menu at top of window):
 ```python
 # Note: Shortcut commands are not disabled
 os.environ['KANDINSKY_NO_GUI'] = ''
+```
+
+* Change size of screen:
+```python
+os.environ['KANDINSKY_SCREEN_SIZE'] = "<width>x<height>"
+```
+
+* Zoom the screen:
+```python
+# from 1 to 4
+os.environ['KANDINSKY_ZOOM_RATIO'] = "<number>"
 ```

@@ -1,127 +1,115 @@
-######### Environ config #########
-import os
+######### Imports #########
+from os import environ, name
 
-DEBUG = 'KANDINSKY_ENABLE_DEBUG' in os.environ #or True 
+try: from tkinter import Tk
+except ImportError as e:
+  e.msg = "tkinter is not installed. "+("please reinstall python with complements modules" if name == "nt" else "install it with 'sudo apt install python3-tk'")
+  raise
 
-NO_GUI = 'KANDINSKY_NO_GUI' in os.environ
-
-DEFAULT_OS = 1
-# '0': PC, '1': Numworks, '2': Omega, '3': Upsilon
-try: OS_MODE = int(os.environ.get('KANDINSKY_OS_MODE', DEFAULT_OS)) 
-except ValueError: OS_MODE = DEFAULT_OS
-
-DEFAULT_MODEL = 1
-# '0': n0100, '1': n0110, '2': n0120
-try: MODEL_MODE = int(os.environ.get('KANDINSKY_MODEL_MODE', DEFAULT_MODEL))
-except ValueError: MODEL_MODE = DEFAULT_MODEL
-
-
-######### Init #########
 import warnings
 warnings.filterwarnings('ignore', category=UserWarning) # Disable SDL warning 
 try:
-  import sdl2
-  import sdl2.ext
+  import sdl2dll
+  from sdl2.ext import init, quit as sdl_quit, ttf, image
+  from sdl2._internal import prettywarn
 
-  sdl2.ext.init()
-  sdl2.ext.ttf._ttf_init()
-  sdl2.ext.image._sdl_image_init()
+  init()
+  ttf._ttf_init()
+  image._sdl_image_init()
 
-except (ImportError, ModuleNotFoundError) as e:
-  e.args = ("""PySDL2 or PySDL2-dll module is not installed on your system, and kandinsky depend to it.
+except (ImportError, RuntimeError) as e:
+  e.msg = """PySDL2 or PySDL2-dll module is not installed on your system, and kandinsky depend to it.
 >>> To install, follow steps on the GitHub project: https://github.com/ZetaMap/Kandinsky-Numworks
->>> or type 'pip install pysdl2 pysdl2-dll""",)
-  raise
-
-try: import tkinter
-except (ImportError, ModuleNotFoundError) as e:
-  e.args = ("tkinter is not installed. "+("please reinstall python with complements modules" if os.name == "nt" else "install it with 'sudo apt install python3-tk'"),)
+>>> or type 'pip install -U pysdl2 pysdl2-dll"""
   raise
 
 try: import ion
-except (ImportError, ModuleNotFoundError): ION_PRESENT = False
+except ImportError: ION_PRESENT = False
 else: 
   # In older version i forgot to define __version__ field
-  # so if is not defined, is an outdated version
-  if not hasattr(ion, "__version__") : ION_PRESENT = False
-  
-  # Verify if version is good
-  elif tuple([int(i) for i in ion.__version__.split('.') if i.isdecimal()]) < (1, 2, 3):
-    sdl2._internal.prettywarn("outdated version of 'Ion-numworks', please update it", ImportWarning)
+  # so if is not defined, is an outdated version.
+  # Or verify if version is good
+  if not hasattr(ion, "__version__") or tuple([int(i) for i in ion.__version__.split('.') if i.isdecimal()]) < (1, 2, 3):
+    # idk why but warning don't print, so will show it manually
+    print("ImportWarning: outdated version of 'Ion-numworks', please update it")
     ION_PRESENT = False
 
   # Another module is called ion, so do a little test to see if it's the right module
   else: ION_PRESENT = hasattr(ion, "keydown") 
 
-# Cleanup namespaces
-del os, sdl2, tkinter, warnings
-
-
-__all__ = [
-  "Core",
-  "OS_MODE",
-  "DEFAULT_OS",
-  "MODEL_MODE"
-  "DEFAULT_MODE",
-  "NO_GUI"
-]
-
-######### Imports #########
-from tkinter import Tk
-from sdl2.ext import quit as sdl_quit
 from threading import Thread, main_thread
 from math import sqrt
 from .stuff import *
 
-# Try to find an real time clock to do microseconds sleeps
-if Constants.is_windows:
-  # Try to use module win-precise-time to get more sleeps precision
-  try:
-    import win_precise_time as _wpt
-    usleep = lambda us: _wpt.sleep_until_ns(int(_wpt.time_ns()+us*1000))
-  except:
-    import time as _time, sdl2._internal
-    sdl2._internal.prettywarn("win-precise-time module is not installed. Using time module to do usleep (emulation will be less accurate)", RuntimeWarning)
-    def usleep(us):
-      t = _time.perf_counter_ns()+us*1000
-      while _time.perf_counter_ns() < t: _time.sleep(1e-9)
-    del sdl2._internal
-else:
-  try:
-    import ctypes
-    usleep = ctypes.CDLL("libc.so.6").usleep
-    del ctypes
-  except:
-    # On some linux distribution, this library is not installed by default
-    import time as _time, sdl2._internal
-    sdl2._internal.prettywarn("libc6 library is not installed. Using time module to do usleep (emulation will be less accurate)", RuntimeWarning)
-    usleep = lambda us: _time.sleep(us/10e6)
-    del sdl2._internal
+
+######### Environ config #########
+DEBUG = 'KANDINSKY_ENABLE_DEBUG' in environ #or True 
+
+NO_GUI = 'KANDINSKY_NO_GUI' in environ
+
+# '0': PC, '1': Numworks, '2': Omega, '3': Upsilon
+os = environ.get('KANDINSKY_OS_MODE')
+if os and os.isdecimal(): Vars.selected_os = int(os) if 0 <= int(os) < len(Config.os_list) else Config.default_os
+
+# '0': n0100, '1': n0110, '2': n0120
+model = environ.get('KANDINSKY_MODEL_MODE')
+if model and model.isdecimal(): Vars.selected_model = int(model) if 0 <= int(model) < len(Config.model_list) else Config.default_model
+
+if 'KANDINSKY_SCREEN_SIZE' in environ:
+  screen = environ['KANDINSKY_SCREEN_SIZE'].split('x')
+  
+  if len(screen) != 2: 
+    raise \
+      ValueError("invalid screen format. format to use: '<width>x<height>'")
+  
+  for i in range(2):
+    if not screen[i].isdecimal() or int(screen[i]) < 0: 
+      raise \
+        ValueError("screen dimensions must be positive integers")
+    screen[i] = int(screen[i])
+    
+  screen[1] -= Vars.head_size
+  if screen[0] < Vars.screen[0] or screen[1] < Vars.screen[1]:
+    raise \
+      ValueError(f"screen dimensions must be greater than {Vars.screen[0]}x{Vars.screen[1]+Vars.head_size}")
+  
+  Vars.screen = tuple(screen)
+
+zoom = environ.get('KANDINSKY_ZOOM_RATIO')
+if zoom and zoom.isdecimal() and 1 <= int(zoom) <= Config.zoom_max: Vars.zoom_ratio = int(zoom)
+
+# Experimental way to get more real emulation of numworks
+import threading
+USE_HEAP = 'KANDINSKY_USE_HEAP' in environ and hasattr(threading, "get_native_id")
+# same problem than warning of ion
+if USE_HEAP: print("ResourceWarning: python heap limitator is an experimental feature, so it can crach python several times")
+
+######### Cleanup #########
+del environ, name, os, model, zoom, init, sdl2dll, ttf, image, warnings, threading, #prettywarn
 
 
 ######### Main code #########
+__all__ = ["Core"]
+
 class Core(Thread): 
   stoped = False
-  drawable = None
   asknoclose = False
+  OS_MODE = Config.default_os
 
   def __init__(self):
-    Gui.paused = True # Pause events to give the time of thread to initialize
+    Gui.paused = Gui.already_paused = True # Pause events to give the time of thread to initialize
 
-    super().__init__(None, self.event_loop, Constants.app_name.replace(' ', '')+self.__class__.__name__)
+    super().__init__(None, self.event_loop, Vars.app_name.replace(' ', '')+self.__class__.__name__)
     self.start()
-    while Gui.paused and self.is_alive(): pass # Wait a little to synchronize it
+    while Gui.paused and self.is_alive(): usleep(100) # Wait a little to synchronize it
 
-  def quit_app(self):
+  def quit_app(self, *_):
     if not self.stoped:
       self.stoped = True 
-      self.paused = False # Now all calls of kandinsky raise an error
+      Gui.paused = False # Now all calls of kandinsky raise an error
 
-      Gui.head.close()
-      Gui.screen.close()
-      
+      Gui.destroy()
       sdl_quit()
-      self.root.quit()
 
   def print_debug(self, type, *messages, type_length=5, **args):
     if DEBUG: 
@@ -138,18 +126,20 @@ class Core(Thread):
     elif not self.is_alive(): raise RuntimeError(f"an internal error has occurred. Stack trace is before this it.")
 
   def sleep(self, delay_us):
+    if USE_HEAP and Gui.heap_set: return # No need to sleep
+
     ratio = Gui.data.model*Gui.data.ratio
     delay = int(delay_us*ratio)
 
     self.print_debug("Delay", "input =", delay_us, "µs, ratio ≃", str(round(ratio, 6))+", output =", delay, "µs")
     if ratio > 0: usleep(delay)
 
-### methods when used
+### methods
   def get_pixel(self, x, y):
     Tests.int(x, y)
 
-    if y < 0 or y > Constants.screen[0] or x < 0 or x > Constants.screen[1]: color = Colors.black
-    else: color = Colors.convert(Draw.get_at(self.drawable, x, y))
+    if y < 0 or y > Vars.screen[0] or x < 0 or x > Vars.screen[1]: color = Colors.black
+    else: color = Colors.convert(Draw.get_at(Gui.drawable, x, y))
 
     self.sleep(77)
     return color
@@ -157,12 +147,12 @@ class Core(Thread):
   def set_pixel(self, x, y, color):
     Tests.int(x, y)
 
-    Draw.pixel(self.drawable, Colors.convert(color), x, y)
+    Draw.pixel(Gui.drawable, Colors.convert(color), x, y)
     self.sleep(130)
 
   def color(self, r, g, b):
-    if not g and not b: color = Colors.convert(r)
-    elif g and b: 
+    if g is None and b is None: color = Colors.convert(r)
+    elif g is not None and b is not None: 
       Tests.int(r, g, b)
       color = Colors.convert((r, g, b))
     else: raise TypeError("color takes 1 or 3 arguments")
@@ -181,8 +171,8 @@ class Core(Thread):
     if '\0' in text: text = text[:text.index('\0')]
 
     for i, l in enumerate(text.replace('\r', '').replace('\f', '\x01').replace('\b', '\x01').replace('\v', '\x01').replace('\t', "    ").splitlines()): 
-      Draw.rect(self.drawable, background, (x*(not i), y+i*bs[1], len(l)*bs[0], bs[1]))
-      Draw.blit(self.drawable, font.render(l, color=color), (x*(not i), y+i*bs[1]-2))
+      Draw.rect(Gui.drawable, background, (x*(not i), y+i*bs[1], len(l)*bs[0], bs[1]))
+      Draw.string(Gui.drawable, font, l, x*(not i), y+i*bs[1]-2, color)
     self.sleep(86*(len(text)+(len(text)>=5)//1.2))
   
   def fill_rect(self, x, y, width, height, color):
@@ -191,7 +181,7 @@ class Core(Thread):
     if width < 0:  x, width = x+width, -width
     if height < 0: y, height = y+height, -height
     
-    Draw.rect(self.drawable, Colors.convert(color), (x, y, width, height))
+    Draw.rect(Gui.drawable, Colors.convert(color), (x, y, width, height))
     self.sleep(130+width*height/20+width*height*0.02)
 
   def wait_vblank(self):
@@ -216,7 +206,7 @@ class Core(Thread):
 
     for x in range(x1, x2):
       ty = int(y1+g*(x-x1))
-      Draw.pixel(self.drawable, color, *((ty, x) if s else (x, ty)))
+      Draw.pixel(Gui.drawable, color, *((ty, x) if s else (x, ty)))
 
     self.sleep(111) # TODO: calculate speed
 
@@ -228,14 +218,14 @@ class Core(Thread):
     xc, yc, m = 0, abs(r), 5-4*abs(r) 
 
     while xc <= yc:
-      Draw.pixel(self.drawable, color, xc+x, yc+y)
-      Draw.pixel(self.drawable, color, yc+x, xc+y)
-      Draw.pixel(self.drawable, color, -xc+x, yc+y)
-      Draw.pixel(self.drawable, color, -yc+x, xc+y)
-      Draw.pixel(self.drawable, color, xc+x, -yc+y)
-      Draw.pixel(self.drawable, color, yc+x, -xc+y)
-      Draw.pixel(self.drawable, color, -xc+x, -yc+y)
-      Draw.pixel(self.drawable, color, -yc+x, -xc+y)
+      Draw.pixel(Gui.drawable, color, xc+x, yc+y)
+      Draw.pixel(Gui.drawable, color, yc+x, xc+y)
+      Draw.pixel(Gui.drawable, color, -xc+x, yc+y)
+      Draw.pixel(Gui.drawable, color, -yc+x, xc+y)
+      Draw.pixel(Gui.drawable, color, xc+x, -yc+y)
+      Draw.pixel(Gui.drawable, color, yc+x, -xc+y)
+      Draw.pixel(Gui.drawable, color, -xc+x, -yc+y)
+      Draw.pixel(Gui.drawable, color, -yc+x, -xc+y)
       
       if m > 0: yc, m = yc-1, m-8*yc
       xc, m = xc+1, m+8*xc+4 
@@ -250,7 +240,7 @@ class Core(Thread):
     r = abs(r)
     for i in range(x-r, x+r):
       semi = int(sqrt(r**2-(x-i)**2))
-      Draw.rect(self.drawable, color, (i, y-semi, 1, semi*2))
+      Draw.rect(Gui.drawable, color, (i, y-semi, 1, semi*2))
 
     self.sleep(333) # TODO: calculate speed
 
@@ -264,7 +254,7 @@ class Core(Thread):
     color = Colors.convert(color)
     points_size = len(points)
 
-    for y in range(min([0,Constants.screen[0]]+points, key=lambda v: v[1]), max([0,0]+points, key=lambda v: v[1])):
+    for y in range(min([0,Vars.screen[0]]+points, key=lambda v: v[1]), max([0,0]+points, key=lambda v: v[1])):
       switches = []
       last_point = points_size-1
 
@@ -276,13 +266,13 @@ class Core(Thread):
 
       switches.sort()
       for x in range(0, len(switches), 2):
-        if switches[x] >= Constants.screen[1]*2: break
-        if switches[x+1] > 0: Draw.rect(self.drawable, color, (switches[x], y, switches[x+1]-switches[x], 1))
+        if switches[x] >= Vars.screen[1]*2: break
+        if switches[x+1] > 0: Draw.rect(Gui.drawable, color, (switches[x], y, switches[x+1]-switches[x], 1))
 
     self.sleep(444) # TODO: calculate speed
 
   def get_palette():
-    return {"Toolbar":        Colors.convert(Gui.data.color), 
+    return {"Toolbar":        Gui.data.color, 
             "AccentText":     (0, 132, 120), 
             "HomeBackground": Colors.white, 
             "PrimaryText":    Colors.black,
@@ -290,30 +280,26 @@ class Core(Thread):
 ###
 
   def event_loop(self):
-    self.root = Tk()
+    root = Tk()
+    if USE_HEAP: Gui._main_thread_pid = self.native_id
     
     try:
-      Gui(self.root, (OS_MODE, DEFAULT_OS), (MODEL_MODE, DEFAULT_MODEL))
-      Gui.config(NO_GUI)
-      self.OS_MODE = Gui.os_mode.get()
-      self.root.protocol("WM_DELETE_WINDOW", self.quit_app)
+      Gui(root)
+      Gui.config(not NO_GUI)
     except RuntimeError as e:
       # Handle multiple import of library
       # Library cannot open new tkinter root windows while another is opened but it can open another if previous is destroyed
       # Note: no data from the previous window can be restored to new one
-      if "main thread is not in main loop" in e.args:
-        import warnings
-        warnings.warn("multiple creation of window is not permitted", ImportWarning)
-        del warnings
+      if "main thread is not in main loop" in e.args[0]: prettywarn("multiple creation of window is not permitted", ImportWarning)
       else: self.print_debug("ERROR", type(e).__name__+": "+e.args[0])
       return
-      
-    # Set surfaces
-    self.drawable = Gui.screen.get_surface()
-    Draw.rect(self.drawable, Colors.white)
-    Gui.update_data()
 
-    Gui.paused = False # Initialization finished, unpause events
+    self.OS_MODE = Gui.os_mode.get()
+    # Bind more event
+    root.protocol("WM_DELETE_WINDOW", self.quit_app)
+    root.bind("<Control-q>", self.quit_app)
+
+    Gui.paused = Gui.already_paused = False # Initialization finished, unpause events
 
     while True:
       if self.stoped:
@@ -324,10 +310,9 @@ class Core(Thread):
         else: self.asknoclose = True
       
       self.refreshed = False
-      Gui.head.refresh()
-      Gui.screen.refresh()
       try: Gui.refresh()
       except AttributeError: pass
+      except RuntimeError: self.stoped = True
       usleep(1000)
       self.refreshed = True
 

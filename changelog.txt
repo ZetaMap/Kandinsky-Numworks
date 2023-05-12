@@ -1,22 +1,5 @@
-### last version in development before the official release of the stable version
 
-fixed errors raise not properly
-optimised fill_polygon() method
-remove the added random sleep ratio because not useful
-try to get more precision for microseconds sleeps
-> Note for Windows users: if you don't have a good computer, install the library "win-precise-time" to get a real timer.
-> Because by default this library do a hotloop sleep
-fixed the freeze bug in demo game (I forgot the lettre 'h' in line 29 xD, so the new cherry is in other variable)
-added possibility to delete all build file at end building of library
-fixed clear files not work in builder.py
-finnaly i moved the ion ingreation into Ion-Numworks, now get_keys() raise an error if it's not installed
-i forgot some field for Omega and Upsilon OS
-fixed bug, all methods are normally positional-only arguments
-added parameter ``font`` of draw_string() for omega and Upsilon
-changed head drawing
-fixed on some linux distribution, after take screenshot, opening folder start web browser
 
 TODO:
-at random time, error loop when window closed in python shell mode on Windows 10
-screen refresh stops when user interact with the GUI on Windows
+library don't work on MacOS
 calculate speed for upsilon and omega methods
