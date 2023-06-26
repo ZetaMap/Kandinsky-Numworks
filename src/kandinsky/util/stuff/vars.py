@@ -49,8 +49,8 @@ class Vars:
   if not os.path.exists(path): path = __file__[:__file__.rindex(base_name)]+"data/"
 
   is_windows = sys.platform == "win32"
-  is_linux = sys.platform == "linux"
   is_macos = sys.platform == "darwin"
+  is_linux = sys.platform == "linux" or (not is_windows and not is_macos)
   app_name = "Kandinsky Emulator"
   head_size = 18
   screen = (320, 222)
