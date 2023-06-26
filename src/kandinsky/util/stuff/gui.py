@@ -116,7 +116,7 @@ class Gui:
     Gui.increase_font.trace_add("write", Gui.set_zoom)
     new = Menu(tearoff=False)
     for i in range(Config.zoom_max): Gui._add_radiobutton(new, label=f"x{i+1}", variable=Gui.zoom, value=i+1)
-    if not Vars.is_windows: new.add_checkbutton(label="Increase font size", variable=Gui.increase_font)
+    if Vars.is_linux: new.add_checkbutton(label="Increase font size", variable=Gui.increase_font)
     Gui.options.add_cascade(accelerator="CTRL+Z", label="Zoom", menu=new)
 
     Gui.options.add_separator()
