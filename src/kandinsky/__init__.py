@@ -1,24 +1,30 @@
-"""A small module allowing to link the kandinsky module, from the Numworks, to a Windows window. 
+"""A small module allowing to link the kandinsky module, from the Numworks, to a Windows window.
 Useful if you want to test your program without putting it on the calculator.
 The [GitHub project](https://github.com/ZetaMap/Kandinsky-Numworks), and if you have any questions, check out the [FAQ](https://github.com/ZetaMap/Kandinsky-Numworks/blob/main/FAQ.md)
 In addition, this module also emulates the drawing speed, and has [many other features](https://github.com/ZetaMap/Kandinsky-Numworks/blob/main/README.md#additional-features).
 """
 
-try: from .util.core import Core as __Core
+import sys # test is macos to patch the module
+try:
+  if sys.platform == 'darwin': from .util.mac_patcher import Core as __Core, display
+  else: from .util.core import Core as __Core
 except ImportError as e:
-  if "relative import" not in e.msg: 
+  if "relative import" not in e.msg:
     raise
-  from util.core import Core as __Core
+  if sys.platform == 'darwin': from util.mac_patcher import Core as __Core, display
+  else: from util.core import Core as __Core
 
 __name__ = "kandinsky"
 __version__ = "null"
-try: __doc__ = open("README.md").read()
+try: 
+  with open("README.md") as f: __doc__ = f.read()
+  del f
 except (FileNotFoundError, OSError): __doc__ = "<unknown>"
-__all__ = [ 
-  #numworks 
-  "get_pixel", 
-  "set_pixel", 
-  "color", 
+__all__ = [
+  #numworks
+  "get_pixel",
+  "set_pixel",
+  "color",
   "draw_string",
   "fill_rect",
 
@@ -38,8 +44,11 @@ __all__ = [
   "fill_polygon",
   "get_palette"
 ]
+if sys.platform == 'darwin': __all__.append("display")
 __Core = __Core()
 
+# No more need of this
+del sys
 
 # Numworks basic methods
 def get_pixel(x, y, /):
@@ -48,7 +57,7 @@ def get_pixel(x, y, /):
   if err != None:
     raise err
   return pixel
-  
+
 def set_pixel(x, y, color, /):
   """Color pixel (x, y)"""
   _, err = __Core.event_fire(__Core.set_pixel, x, y, color)
@@ -68,13 +77,13 @@ if __Core.OS_MODE > 1:
     """Display a text from pixel (x, y)"""
     _, err = __Core.event_fire(__Core.draw_string, text, x, y, color, background, font)
     if err != None:
-      raise err  
+      raise err
 else :
   def draw_string(text, x, y, color=(0,0,0), background=(248,252,248), /):
     """Display a text from pixel (x, y)"""
     _, err = __Core.event_fire(__Core.draw_string, text, x, y, color, background)
     if err != None:
-      raise err  
+      raise err
 
 def fill_rect(x, y, width, height, color, /):
   """Fill a rectangle at pixel (x, y)"""
@@ -143,22 +152,22 @@ def get_palette():
 ######### Clean #########
 # delete methods according to OS
 # in pc mode, do not delete anything
-if __Core.OS_MODE: 
+if __Core.OS_MODE:
   # upsilon moved this method and epsilon don't have this
   if __Core.OS_MODE != 2:
     __all__.remove("get_keys")
     del get_keys
 
   # delete upsilon methods
-  if __Core.OS_MODE < 3: 
+  if __Core.OS_MODE < 3:
     __all__.remove("draw_circle")
     __all__.remove("fill_circle")
     __all__.remove("fill_polygon")
     __all__.remove("get_palette")
     del draw_circle, fill_circle,  fill_polygon, get_palette
- 
+
   # delete omega methods
-  if __Core.OS_MODE < 2: 
+  if __Core.OS_MODE < 2:
     __all__.remove("draw_line")
     __all__.remove("wait_vblank")
     __all__.remove("small_font")

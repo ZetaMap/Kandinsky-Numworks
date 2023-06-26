@@ -19,7 +19,7 @@ class Snake:
   if inf_snake: power=float("inf")
   if not darkmode: s.c[0],s.c[1]=s.c[1],s.c[0]
   try: from kandinsky import get_keys
-  except ImportError: 
+  except ImportError:
    try: from ion import get_keys
    except ImportError: s.c[6]="#ffb531"
    else: s.c[6]="#c53431"
@@ -105,7 +105,7 @@ class Snake:
      if kd(4) or kd(17): break
      ds(i,20,52,s.c[6],s.c[0])
   except KeyboardInterrupt: pass
-  
+
 Snake(( # Leader board: ("name", score),
  ("Alteur",38),
  ("ZetaMap",30),

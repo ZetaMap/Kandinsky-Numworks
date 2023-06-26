@@ -5,7 +5,7 @@ from tkinter.filedialog import asksaveasfilename
 from tkinter.font import Font
 
 from sdl2 import SDL_CreateWindowFrom, SDL_DestroyWindow, SDL_FreeSurface#, SDL_WINDOW_OPENGL
-from sdl2.ext import Window, load_img
+from sdl2.ext import Window, load_img, init
 
 from os import getcwd, system
 from webbrowser import open as open_link, register_standard_browsers  # To open links in help menu
@@ -37,7 +37,7 @@ class Gui:
     def _wrap(*a, **k):
       method(*a, **k)
       if not Gui.already_paused: Gui.paused = False
-    
+
     _wrap.__name__ = method.__name__
     return _wrap
 
@@ -46,8 +46,11 @@ class Gui:
   _add_radiobutton = lambda menu, **kwargs: menu.add_radiobutton(**dict([(k, Gui._unpause_after_wrapper(v)) if "command" in k else (k, v) for k, v in kwargs.items()]))
 
   def __init__(_, tkmaster):
+    # This is now, the video subsystem of SDL will be initialized
+    init(video=True)
+
     Gui.tkmaster = tkmaster
-    if Vars.is_linux: 
+    if Vars.is_linux:
       Gui.linux_menu_font = Font(tkmaster, family="SegoeUI", size=9)
       Gui.tkmaster.option_add("*font", Gui.linux_menu_font)
     Gui.data = StateData()
@@ -78,13 +81,13 @@ class Gui:
     Gui._add_command(sortcut, label="CTRL+Q: Close window",    state="disabled", activebackground="#F0F0F0")
     Gui._add_command(sortcut, label="CTRL+O: change OS",       state="disabled", activebackground="#F0F0F0")
     Gui._add_command(sortcut, label="CTRL+M: change Model",    state="disabled", activebackground="#F0F0F0")
-    Gui._add_command(sortcut, label="CTRL+S: take screenshot", state="disabled", activebackground="#F0F0F0")    
+    Gui._add_command(sortcut, label="CTRL+S: take screenshot", state="disabled", activebackground="#F0F0F0")
     Gui._add_command(sortcut, label="CTRL+P: pause/resume",    state="disabled", activebackground="#F0F0F0")
     Gui._add_command(sortcut, label="CTRL+Z: change zoom",     state="disabled", activebackground="#F0F0F0")
     help.add_cascade(label="Shortcut", menu=sortcut)
 
     help.add_separator()
-    Gui._add_command(help, label="Ion keyboard", command=lambda: open_link("https://github.com/ZetaMap/Ion-Numworks#keys"))
+    Gui._add_command(help, label="Ion keyboard", command=lambda: open_link("https://github.com/ZetaMap/Ion-Numworks#associated-keyboard-keys"))
     Gui._add_command(help, label="Check FAQ",    command=lambda: open_link("https://github.com/ZetaMap/Kandinsky-Numworks/blob/main/FAQ.md"))
     Gui.menu.add_cascade(label="Help", menu=help)
 
@@ -94,7 +97,7 @@ class Gui:
     ## OS menu
     Gui.os_mode = IntVar(value=Vars.selected_os)
     new = Menu(tearoff=False)
-    for i, mode in enumerate(Config.os_list): 
+    for i, mode in enumerate(Config.os_list):
       Gui._add_radiobutton(new, label=mode["name"], variable=Gui.os_mode, value=i, command=Gui.update_data)
       Config.os_list[i]["battery"] = load_img(Vars.path+Config.os_list[i]["battery"])
     Gui.options.add_cascade(accelerator="CTRL+O", label="OS", menu=new)
@@ -102,8 +105,8 @@ class Gui:
     ## Model menu
     Gui.model_mode = IntVar(value=Vars.selected_model)
     new = Menu(tearoff=False)
-    for i, mode in enumerate(Config.model_list): 
-      Gui._add_radiobutton(new, label=mode["name"], variable=Gui.model_mode, value=i, command=Gui.update_data, 
+    for i, mode in enumerate(Config.model_list):
+      Gui._add_radiobutton(new, label=mode["name"], variable=Gui.model_mode, value=i, command=Gui.update_data,
         **({"state": "disabled", "activebackground": "#F0F0F0"} if mode.get("disabled", False) else {}))
     Gui.options.add_cascade(accelerator="CTRL+M", label="Model", menu=new)
 
@@ -119,10 +122,10 @@ class Gui:
     Gui.options.add_separator()
 
     ## Screenshot button
-    Gui.options.add_command(accelerator="CTRL+S", label="Screenshot", command=Gui.screenshot)
+    Gui.options.add_command(accelerator="CTRL+S", label="Screenshot", command=Gui.askscreenshot)
 
     ## Pause button
-    def state(states=["Pause", "Resume"]): 
+    def state(states=["Pause", "Resume"]):
       Gui.already_paused = not Gui.already_paused
       Gui.paused = Gui.already_paused
       Gui.options.entryconfig(states[not Gui.already_paused], label=states[Gui.already_paused])
@@ -151,9 +154,10 @@ class Gui:
     Gui.head.window = SDL_CreateWindowFrom(Gui.head_frame.winfo_id())
     Gui.screen.window = SDL_CreateWindowFrom(Gui.screen_frame.winfo_id())
     Gui.screen_surf = Gui.screen.get_surface()
-    
+
     last_drawable = Gui.drawable
     Gui.drawable = Draw.new_surface(*Vars.screen)
+    Draw.rect(Gui.drawable, Colors.convert(Colors.white))
     Draw.blit_scaled(Gui.drawable, last_drawable)
     Gui.update_data()
 
@@ -198,7 +202,7 @@ class Gui:
     except: pass
 
     # Set new heap of python
-    if Gui._main_thread_pid: 
+    if Gui._main_thread_pid:
       try: limiter.set_heap(Gui._main_thread_pid, Gui.data.heap)
       except (AssertionError, OSError): raise #Gui.heap_set = False
       else: Gui.heap_set = True
@@ -220,8 +224,8 @@ class Gui:
     # Bind shorcuts
     Gui.tkmaster.bind("<Control-o>", lambda _: Gui.update_value(Gui.os_mode, Config.os_list))
     Gui.tkmaster.bind("<Control-m>", lambda _: Gui.update_value(Gui.model_mode, Config.model_list))
-    Gui.tkmaster.bind("<Control-s>", lambda _: Gui.screenshot())
-    def state(*_, states=["Pause", "Resume"]): 
+    Gui.tkmaster.bind("<Control-s>", lambda _: Gui.askscreenshot())
+    def state(*_, states=["Pause", "Resume"]):
       Gui.already_paused = not Gui.already_paused
       Gui.paused = Gui.already_paused
       Gui.options.entryconfig(states[not Gui.already_paused], label=states[Gui.already_paused])
@@ -233,7 +237,7 @@ class Gui:
       # Bind events to pause, if dragged or user interact with gui
       def drag_event(e):
         if e.widget is Gui.tkmaster:
-          if Gui._drag_window_event_id: 
+          if Gui._drag_window_event_id:
             Gui.tkmaster.after_cancel(Gui._drag_window_event_id)
             Gui.paused = True
           Gui._drag_window_event_id = Gui.tkmaster.after(200, drag_event_stop)
@@ -260,27 +264,27 @@ class Gui:
     Gui.created()
     Gui.tkmaster.geometry(f"+{max(0, Gui.tkmaster.winfo_screenwidth() //2-Gui.tkmaster.winfo_width() //2)}"
                           f"+{max(0, Gui.tkmaster.winfo_screenheight()//2-Gui.tkmaster.winfo_height()//2)}")
-    
+
   def refresh():
     Gui.created()
-    
+
     Gui.head.refresh()
     Draw.rect(Gui.screen_surf, Colors.black)
     Draw.blit(Gui.screen_surf, Gui.drawable)
     Gui.screen.refresh()
-    Gui.tkmaster.update_idletasks()  
+    Gui.tkmaster.update_idletasks()
     Gui.tkmaster.update()
 
-  def screenshot():
+  def askscreenshot():
     Gui.created()
-    Gui.paused = True # Pause events 
+    Gui.paused = True # Pause events
     file = (getcwd().replace("\\\\", "\\"), datetime.now().strftime("Screenshot_%Y%m%d-%H%M%S.png"))
 
     # Create new surface to blit head and screen into
     surf = Draw.new_surface(Vars.screen[0], Vars.head_size+Vars.screen[1])
     Draw.blit(surf, Gui.head_surface)
     Draw.blit(surf, Gui.drawable, (0, Vars.head_size))
-    
+
     try: error = Config.save_image(surf, file[1]) < 0
     except: error = 1
 
@@ -288,9 +292,9 @@ class Gui:
     if error: conf.update({"text": "Error, can't write in folder: \n"+file[0], "bitmap": "error", "strings": ("Save as", "OK")})
 
     if not Dialog(Gui.tkmaster, conf).num:
-      if error: 
+      if error:
         file = asksaveasfilename(defaultextension="png", filetypes=Vars.image_formats, initialfile=file[1], title="Save screenshot at")
-        if file != '': 
+        if file != '':
           try: Config.save_image(surf, file)
           except: pass
       else: system(f"{'explorer' if Vars.is_windows else 'open' if Vars.is_macos else 'xdg-open'} \"{file[0]}\" 2> {'nul' if Vars.is_windows else '/dev/null'}")
@@ -300,6 +304,6 @@ class Gui:
 
   def askscriptend():
     return not Dialog(Gui.tkmaster, {
-      "title": "Script end", "text": "Script finished! \nClose window?".ljust(50), 
+      "title": "Script end", "text": "Script finished! \nClose window?".ljust(50),
       "bitmap": "question", "default": 0, "strings": ("Yes", "No")
     }).num

@@ -7,7 +7,7 @@ import sys, os
 __all__ = [
   "Vars",
   "Config",
-  "StateData" 
+  "StateData"
 ]
 
 """
@@ -62,7 +62,7 @@ class Vars:
 
 class Config:
   open = lambda path, mode='w': SDL_RWFromFile(path.encode("utf-8"), bytes(mode, "utf-8"))
-  save_image = lambda surface, path: (SDL_SaveBMP_RW(surface, Config.open(path), 1) if path.endswith(".bmp") else 
+  save_image = lambda surface, path: (SDL_SaveBMP_RW(surface, Config.open(path), 1) if path.endswith(".bmp") else
                                       IMG_SaveJPG_RW(surface, Config.open(path), 1, 70) if not Vars.is_macos and path.endswith((".jpg", ".jpeg")) else
                                       IMG_SavePNG_RW(surface, Config.open(path), 1))
 

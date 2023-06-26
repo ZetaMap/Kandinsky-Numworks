@@ -19,8 +19,32 @@ You can find the fonts used [here](https://github.com/numworks/epsilon/tree/mast
 ### Why recreate the Numworks interface?
 This can be useful, to help drawing or immersion.
 
-### Why all functions are linked to a class?
-To make the program more readable ("putting away your books allows you to find them more quickly"), and then I got used to programming like that (because of Java XD).
+### Why the library works differently than MacOS?
+Because MacOS doesn't allow management of GUI by another Thread than the main Thread of program. <br>
+Except precisely I need, not to occupy it, because otherwise that would block the program during importation of library, which thus does not have any more great interest. (¬_¬")<br>
+**So for people on macOS, the ``display()`` function will have to be called regularly on operations not using library functions, to keep the window alive.**
+
+*(but if you noticed this, you're lucky, because i never got the library to work on mac due to [this error](#why-segfault-on-macos))*
+
+### Why segfault on MacOS?
+....Dude, idk....(* ￣︿￣) <br>
+The error occurs when creating the SDL window from identifier of frame where it will be placed. <br>
+So for the moment no MacOS support, even if I prepared the library for it ...
+
+<details>
+<summary>More details about error</summary>
+
+The error occurs at line 154/155 in gui.py: <br>
+![error1](https://github.com/ZetaMap/zetamap.github.io/blob/main/kandinsky-numworks/FAQ/error1.png?raw=true)
+
+And the BackTrace from lldb: <br>
+![error2](https://github.com/ZetaMap/zetamap.github.io/blob/main/kandinsky-numworks/FAQ/error2.png?raw=true)
+
+So here is the information about the error for those who would like to help me fix it. <br>
+You can offer me your fixs by creating a Pull Request.
+<br>
+
+</details>
 
 ### Are you French ?
 Yes, I'm French and my English is bad, that's why I use a translator XD.

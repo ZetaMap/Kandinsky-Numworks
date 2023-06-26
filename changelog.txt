@@ -1,4 +1,6 @@
-
+fix warnings not printing on some cases of use
+added warning if installed 'ion' is not the right library
+fixed bug in builder.py and somes changes
 
 TODO:
 library don't work on MacOS
