@@ -158,7 +158,7 @@ class Core(Thread):
     Tests.int(x, y)
 
     Draw.pixel(Gui.drawable, Colors.convert(color), x, y)
-    self.sleep(130)
+    self.sleep(200)
 
   def color(self, r, g, b):
     if g is None and b is None: color = Colors.convert(r)
@@ -240,7 +240,7 @@ class Core(Thread):
       if m > 0: yc, m = yc-1, m-8*yc
       xc, m = xc+1, m+8*xc+4
 
-    self.sleep(222) # TODO: calculate speed
+    self.sleep(sqrt(r)*(10*sqrt(10)*sqrt(r)-r))
 
   def fill_circle(self, x, y, r, color):
     """https://github.com/UpsilonNumworks/Upsilon/blob/upsilon-dev/kandinsky/src/context_circle.cpp"""
@@ -252,7 +252,7 @@ class Core(Thread):
       semi = int(sqrt(r**2-(x-i)**2))
       Draw.rect(Gui.drawable, color, (i, y-semi, 1, semi*2))
 
-    self.sleep(333) # TODO: calculate speed
+    self.sleep(sqrt(r)*(r+10*sqrt(10)*sqrt(r)-10))
 
   def fill_polygon(self, points, color):
     """https://github.com/UpsilonNumworks/Upsilon/blob/upsilon-dev/kandinsky/src/context_polygon.cpp"""

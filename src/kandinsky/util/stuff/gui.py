@@ -157,7 +157,7 @@ class Gui:
 
     last_drawable = Gui.drawable
     Gui.drawable = Draw.new_surface(*Vars.screen)
-    Draw.rect(Gui.drawable, Colors.convert(Colors.white))
+    Draw.rect(Gui.drawable, Colors.fix2(Colors.white))
     Draw.blit_scaled(Gui.drawable, last_drawable)
     Gui.update_data()
 

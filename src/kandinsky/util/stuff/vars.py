@@ -10,37 +10,6 @@ __all__ = [
   "StateData"
 ]
 
-"""
-benchmarks:
- - epsilon:
-   - set_pixel: 130 µs
-   - 100*100: fill_rect: 750 µs
-   - 1*1: fill_rect: 130 µs
-   - draw_string: 640 µs
-   - get_pixel: 77 µs
-   - color: 180 µs
-
- - omega:
-   - set_pixel: 63 µs
-   - 100*100: fill_rect: 740 µs
-   - 1*1: fill_rect: 67 µs
-   - draw_string: 443 µs
-   - get_pixel: 60 µs
-   - color: 168 µs
-
- - upsilon:
-   - set_pixel: 80 µs
-   - 100*100: fill_rect: 753 µs
-   - 1*1: fill_rect: 109 µs
-   - draw_string: 426 µs
-   - get_pixel: 76 µs
-   - color: 210 µs
-
-magic draw ratio (first draw):
-  - epsilon: 02:17.713
-  - omega: 02:07.797
-  - upsilon: 02:22.141
-"""
 
 class Vars:
   base_name = __module__.split('.')[1]

@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
-# If True, just setup files and exit
-JUST_SETUP = False
 
 from setuptools import find_packages
 from os import listdir, name as os_name, path as os_path, mkdir, system
+from sys import argv
+
+# If True, just setup files and exit
+JUST_SETUP = "-s" in argv
+
 
 # Setup files files environ
 def clear_files():
@@ -39,7 +42,7 @@ if JUST_SETUP: exit()
 print("Generating setup.py ...")
 METADATA = {
   "name": "kandinsky",
-  "version": "2.5.dev1",
+  "version": "2.5",
   "author": "ZetaMap",
   "description": "A small module allowing to link the kandinsky module, from the Numworks, to a window.",
   "license": 'MIT',

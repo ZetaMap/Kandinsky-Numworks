@@ -26,13 +26,16 @@ class Colors:
   magenta = (248, 4,   136)
   COLORS = {k: v for k, v in locals().items() if not k.startswith('_')}
 
-  fix = lambda r, g, b: (((r>>3)&0x1f)<<3 if Vars.selected_os > 1 else Colors.expand((r>>3)&0x1f, 5),
-                            ((g>>2)&0x3f)<<2 if Vars.selected_os > 1 else Colors.expand((g>>2)&0x3f, 6),
-                            ((b>>3)&0x1f)<<3 if Vars.selected_os > 1 else Colors.expand((b>>3)&0x1f, 5))
-  expand = lambda v, nBits: (v<<(8-nBits)) | (v>>(nBits-(8-nBits)))
-  #TODO: make a __get_attribute__ to do invisible expand for numworks
-
-
+  fix = lambda r, g, b, expand=Vars.selected_os <= 1: (
+    (Colors.expand((r>>3)&0x1f, 5) if expand else ((r>>3)&0x1f)<<3),
+    (Colors.expand((g>>2)&0x3f, 6) if expand else ((g>>2)&0x3f)<<2),
+    (Colors.expand((b>>3)&0x1f, 5) if expand else ((b>>3)&0x1f)<<3))
+  fix2 = lambda *values, expand=Vars.selected_os <= 1: (
+    tuple(Colors.expand(Colors.contract(c, i%2, 3), 5+i%2) for i, c in enumerate(*values)) 
+      if expand else
+    tuple(Colors.contract(c, i%2, 3)<<(3-i%2) for i, c in enumerate(values)))
+  contract = lambda v, nBits, length=8: (v>>(length-nBits))&(2**(4+length-nBits)-1)
+  expand = lambda v, nBits, length=8: (v<<(length-nBits))|(v>>(nBits-(length-nBits)))
 
   def convert(rgbOrName):
     _type = type(rgbOrName)

@@ -8,9 +8,10 @@ To install this module, it's simple: open tan shell and run ``pip install kandin
 And if you want to run the [module demo](demo.py), run ``python -m kandinsky``. Normally a Snake game will launch and you could play it. =)
 
 ### Why convert colors?
-Numworks works differently in color management, as its screen can only display **65,536** *(256/8\*256/4\*256/8)* colors compared to **16,000,000** colors for a regular screen. <br>
+Numworks works differently in color management, as its screen can only display **65,536** *(256/8\*256/4\*256/8, 16 bits)* colors compared to **16,777,216** *(24 bits)* colors for a regular screen. <br>
 It is therefore necessary to make a conversion. To convert a color, you can use the function ``color()`` but you don't have to, by default the all methods does the conversions directly. <br>
-**Example:** ``color(255, 255, 255) [White color] --> Return (248, 252, 248)``
+**Example:** ``color(255, 255, 255) [White color] --> Return (248, 252, 248)`` <br>
+***Note for 'Numworks' mode:*** **Numworks added a feature to artificially expand color values, to make it look more natural. This feature has also been added, but the calculator screen can't show more colors, it's just a visual. Also feature not added for Omega and Upsilon**
 
 ### Why use external fonts?
 To be as identical as possible to a result on the Numworks. <br>

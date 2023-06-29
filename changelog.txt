@@ -1,7 +1,26 @@
+### ALL NEW!!!
+New dependencies, now use PySDL2 instead of PyGame and Tkinter.
+A GUI with some options to control script execution, to zoom the screen or take a screenshot.
+New shortcuts commands.
+Now the window is autonomous, the problem of freezing during long operations has been fixed.
+A popup to notify the end of script.
+Methods of Omega and Upsilon has been added.
+Numworks runtime emulation has been improved.
+Added button in the GUI to see the keyboard keys associated with Ion
+Full support of colors (with name, hex format, list, gray ratio)
+**For developers:** Environ variables has been added to modify options of libary before importing it. [More informations here](https://github.com/ZetaMap/Kandinsky-Numworks/tree/pysdl2#environ-options)
+
+### How upgrade?
+run the command ``pip install -U kandinsky``
+
+---
+
+Changes compared to last dev version:
 fix warnings not printing on some cases of use
 added warning if installed 'ion' is not the right library
 fixed bug in builder.py and somes changes
+fixed somes other bugs
+added speed for upsilon and omega methods
 
 TODO:
-library don't work on MacOS
-calculate speed for upsilon and omega methods
+library don't work on MacOS (probably no future support, [details about this](https://github.com/ZetaMap/Kandinsky-Numworks/blob/pysdl2/FAQ.md#why-segfault-on-macos))
