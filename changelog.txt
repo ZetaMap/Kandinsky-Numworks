@@ -1,5 +1,5 @@
 ### ALL NEW!!!
-New dependencies, now use PySDL2 instead of PyGame and Tkinter.
+New dependencies, now use PySDL2 instead of PyGame, and Tkinter.
 A GUI with some options to control script execution, to zoom the screen or take a screenshot.
 New shortcuts commands.
 Now the window is autonomous, the problem of freezing during long operations has been fixed.
@@ -15,12 +15,13 @@ run the command ``pip install -U kandinsky``
 
 ---
 
-Changes compared to last dev version:
+### Changes compared to last dev version:
 fix warnings not printing on some cases of use
 added warning if installed 'ion' is not the right library
 fixed bug in builder.py and somes changes
 fixed somes other bugs
 added speed for upsilon and omega methods
+somes changes in StateData and Tests classes
 
-TODO:
+#### TODO:
 library don't work on MacOS (probably no future support, [details about this](https://github.com/ZetaMap/Kandinsky-Numworks/blob/pysdl2/FAQ.md#why-segfault-on-macos))

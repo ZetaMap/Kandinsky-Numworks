@@ -22,7 +22,6 @@ try:
   init(video=False)
   ttf._ttf_init()
   image._sdl_image_init()
-  warnings.filters = [] # Another time, reset warning filters
 
 except (ImportError, RuntimeError) as e:
   e.msg = """PySDL2 or PySDL2-dll module is not installed on your system, and kandinsky depend to it.
@@ -92,7 +91,8 @@ if zoom and zoom.isdecimal() and 1 <= int(zoom) <= Config.zoom_max: Vars.zoom_ra
 import threading
 USE_HEAP = 'KANDINSKY_USE_HEAP' in os.environ and hasattr(threading, "get_native_id")
 # same problem than warning of ion
-if USE_HEAP: prettywarn("python heap limitator is an experimental feature, so it can crach python several times", UserWarning)
+if USE_HEAP: prettywarn("python heap limitator is an experimental feature, so it can crach python several times", ImportWarning)
+
 
 ######### Cleanup #########
 del mode, model, zoom, init, sys, os, sdl2dll, ttf, image, warnings, threading, #prettywarn
@@ -127,7 +127,7 @@ class Core(Thread):
       print(type+' '*(type_length-len(type))+':', *messages, **args)
 
   def verify(self, method, *args, **kwargs):
-    self.print_debug("Event", " "+method.__name__, (*args, *[f"{k}={'v' if type(v) == str else v}" for k, v in kwargs.items()]), sep='')
+    self.print_debug("Event", " "+method.__name__, (*args, *[f"{k}={repr(v)}" for k, v in kwargs.items()]), sep='')
 
     if Gui.paused: self.print_debug("Pause", "waiting...")
     while Gui.paused and self.is_alive(): usleep(1000)
@@ -180,7 +180,7 @@ class Core(Thread):
     font = Config.small_font if font else Config.large_font
     if '\0' in text: text = text[:text.index('\0')]
 
-    for i, l in enumerate(text.replace('\r', '').replace('\f', '\x01').replace('\b', '\x01').replace('\v', '\x01').replace('\t', "    ").splitlines()):
+    for i, l in enumerate(text.replace('\r', '').replace('\f', '\x01').replace('\b', '\x01').replace('\v', '\x01').replace('\t', "    ").split('\n')):
       Draw.rect(Gui.drawable, background, (x*(not i), y+i*bs[1], len(l)*bs[0], bs[1]))
       Draw.string(Gui.drawable, font, l, x*(not i), y+i*bs[1]-2, color)
     self.sleep(86*(len(text)+(len(text)>=5)//1.2))
@@ -216,9 +216,9 @@ class Core(Thread):
 
     for x in range(x1, x2):
       ty = int(y1+g*(x-x1))
-      Draw.pixel(Gui.drawable, color, *((ty, x) if s else (x, ty)))
+      Draw.pixel(Gui.drawable, color, *((ty, x) if s else (x, ty)))  
 
-    self.sleep(111) # TODO: calculate speed
+    self.sleep(111) # TODO: calculatwe speed
 
   def draw_circle(self, x, y, r, color):
     """https://github.com/UpsilonNumworks/Upsilon/blob/upsilon-dev/kandinsky/src/context_circle.cpp"""

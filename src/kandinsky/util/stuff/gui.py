@@ -9,7 +9,7 @@ from sdl2.ext import Window, load_img, init
 
 from os import getcwd, system
 from webbrowser import open as open_link, register_standard_browsers  # To open links in help menu
-register_standard_browsers() # register now to avoid a long wait when links open
+register_standard_browsers() # register now to avoid a long wait when opening a link
 del register_standard_browsers
 from datetime import datetime
 

@@ -17,9 +17,9 @@ class Vars:
   # Test if path is correct
   if not os.path.exists(path): path = __file__[:__file__.rindex(base_name)]+"data/"
 
-  is_windows = sys.platform == "win32"
-  is_macos = sys.platform == "darwin"
-  is_linux = sys.platform == "linux" or (not is_windows and not is_macos)
+  is_windows = sys.platform.startswith("win")
+  is_macos = sys.platform.startswith("darwin")
+  is_linux = sys.platform.startswith("linux") or (not is_windows and not is_macos)
   app_name = "Kandinsky Emulator"
   head_size = 18
   screen = (320, 222)
@@ -54,25 +54,21 @@ class Config:
   default_model = 1
   zoom_max = 4
 
-# Class for some data
+# Class to store some data
 class StateData:
-  __field_name__ = ""
-
   def __init__(self, **content):
     self(**content)
 
   def __call__(self, **content):
-    for k, v in content.items(): setattr(self, k, v)
+    self.__dict__.update(content)
     return self
 
   def __str__(self):
-    return "<{} ({})>".format(__class__.__name__, self.__dict__)
+    return "{}({})".format(__class__.__name__, ', '.join(f"{k}={repr(v)}" for k, v in self.__dict__.items() if not k.startswith("__")))
 
-  def __repr__(self):
-    return self.__str__()
+  __repr__ = __str__
 
-  def has(self, name):
-    return hasattr(self, name)
-
-  def get(self, name, default=None):
-    return getattr(self, name, default)
+  def __contains__(self, name):
+    if type(name) != str: raise TypeError("attribute name must be an str")
+    if not name: raise ValueError("empty attribute name")
+    return name in self.__dict__

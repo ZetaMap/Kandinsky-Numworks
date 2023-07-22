@@ -33,7 +33,7 @@ class Colors:
   fix2 = lambda *values, expand=Vars.selected_os <= 1: (
     tuple(Colors.expand(Colors.contract(c, i%2, 3), 5+i%2) for i, c in enumerate(*values)) 
       if expand else
-    tuple(Colors.contract(c, i%2, 3)<<(3-i%2) for i, c in enumerate(values)))
+    tuple(Colors.contract(c, i%2, 3)<<(3-i%2) for i, c in enumerate(*values)))
   contract = lambda v, nBits, length=8: (v>>(length-nBits))&(2**(4+length-nBits)-1)
   expand = lambda v, nBits, length=8: (v<<(length-nBits))|(v>>(nBits-(length-nBits)))
 
