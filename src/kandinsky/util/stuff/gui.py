@@ -76,15 +76,15 @@ class Gui:
 
     ## Help menu
     help = Menu(tearoff=False)
-    sortcut = Menu(tearoff=False)
+    shortcuts = Menu(tearoff=False)
 
-    Gui._add_command(sortcut, label="CTRL+Q: Close window",    state="disabled", activebackground="#F0F0F0")
-    Gui._add_command(sortcut, label="CTRL+O: change OS",       state="disabled", activebackground="#F0F0F0")
-    Gui._add_command(sortcut, label="CTRL+M: change Model",    state="disabled", activebackground="#F0F0F0")
-    Gui._add_command(sortcut, label="CTRL+S: take screenshot", state="disabled", activebackground="#F0F0F0")
-    Gui._add_command(sortcut, label="CTRL+P: pause/resume",    state="disabled", activebackground="#F0F0F0")
-    Gui._add_command(sortcut, label="CTRL+Z: change zoom",     state="disabled", activebackground="#F0F0F0")
-    help.add_cascade(label="Shortcut", menu=sortcut)
+    Gui._add_command(shortcuts, label="CTRL+Q: Close window",    state="disabled", activebackground="#F0F0F0")
+    Gui._add_command(shortcuts, label="CTRL+O: change OS",       state="disabled", activebackground="#F0F0F0")
+    Gui._add_command(shortcuts, label="CTRL+M: change Model",    state="disabled", activebackground="#F0F0F0")
+    Gui._add_command(shortcuts, label="CTRL+S: take screenshot", state="disabled", activebackground="#F0F0F0")
+    Gui._add_command(shortcuts, label="CTRL+P: pause/resume",    state="disabled", activebackground="#F0F0F0")
+    Gui._add_command(shortcuts, label="CTRL+Z: change zoom",     state="disabled", activebackground="#F0F0F0")
+    help.add_cascade(label="Shortcuts", menu=shortcuts)
 
     help.add_separator()
     Gui._add_command(help, label="Ion keyboard", command=lambda: open_link("https://github.com/ZetaMap/Ion-Numworks#associated-keyboard-keys"))
@@ -151,8 +151,8 @@ class Gui:
     Gui.head_frame.config(width=Vars.screen[0]*Vars.zoom_ratio, height=Vars.head_size*Vars.zoom_ratio)
     Gui.screen_frame.config(width=Vars.screen[0]*Vars.zoom_ratio, height=Vars.screen[1]*Vars.zoom_ratio)
     Gui.tkmaster.update()
-    Gui.head.window = SDL_CreateWindowFrom(Gui.head_frame.winfo_id())
-    Gui.screen.window = SDL_CreateWindowFrom(Gui.screen_frame.winfo_id())
+    Gui.head.window = SDL_CreateWindowFrom(Gui.get_widget_id(Gui.head_frame))
+    Gui.screen.window = SDL_CreateWindowFrom(Gui.get_widget_id(Gui.screen_frame))
     Gui.screen_surf = Gui.screen.get_surface()
 
     last_drawable = Gui.drawable
@@ -163,6 +163,10 @@ class Gui:
 
     Gui.center_window()
     if not Gui.already_paused: Gui.paused = False
+
+  def get_widget_id(widget):
+    """Method to get id of widget, will be replaced by mac_patcher.py if needed"""
+    return widget.winfo_id()
 
   def destroy():
     Gui.created()
@@ -204,7 +208,7 @@ class Gui:
     # Set new heap of python
     if Gui._main_thread_pid:
       try: limiter.set_heap(Gui._main_thread_pid, Gui.data.heap)
-      except (AssertionError, OSError): raise #Gui.heap_set = False
+      except (AssertionError, OSError): Gui.heap_set = False
       else: Gui.heap_set = True
 
   def config(create_gui=False):

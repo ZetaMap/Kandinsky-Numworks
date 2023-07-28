@@ -1,4 +1,4 @@
-### ALL NEW!!!
+## ALL NEW!!!
 New dependencies, now use PySDL2 instead of PyGame, and Tkinter.
 A GUI with some options to control script execution, to zoom the screen or take a screenshot.
 New shortcuts commands.
@@ -10,18 +10,19 @@ Added button in the GUI to see the keyboard keys associated with Ion
 Full support of colors (with name, hex format, list, gray ratio)
 **For developers:** Environ variables has been added to modify options of libary before importing it. [More informations here](https://github.com/ZetaMap/Kandinsky-Numworks/tree/pysdl2#environ-options)
 
-### How upgrade?
+## How upgrade?
 run the command ``pip install -U kandinsky``
 
 ---
 
-### Changes compared to last dev version:
+### Changes since the last dev version:
 fix warnings not printing on some cases of use
 added warning if installed 'ion' is not the right library
 fixed bug in builder.py and somes changes
 fixed somes other bugs
 added speed for upsilon and omega methods
 somes changes in StateData and Tests classes
-
-#### TODO:
-library don't work on MacOS (probably no future support, [details about this](https://github.com/ZetaMap/Kandinsky-Numworks/blob/pysdl2/FAQ.md#why-segfault-on-macos))
+fixed bug with fill_polygon()
+added method display() (only for macos) in README.md
+found a patch for macos with 'pyobjc' to embed SDL2 windows in a Tkinter frame ([source](https://github.com/cztomczak/cefpython/issues/308))
+removed test.py because will no longer be used

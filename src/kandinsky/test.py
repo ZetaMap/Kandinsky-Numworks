@@ -1,3 +1,25 @@
+import os
+os.environ["KANDINSKY_OS_MODE"]="3"
+from time import *
+from __init__ import *
+from random import *
+from math import *
+from test import *
+
+b=[[[[321, 155], [-12, 170], [232, 265]], [[112, 164], [327, -24], [167, 300]], [[168, -21], [323, 126], [346, -44]], [[128, 245], [281, 102], [17, 165]], [[23, 164], [110, 162], [355, 35]], [[-26, 245], [75, 65], [221, 152]], [[239, 283], [9, -27], [203, -30]], [[165, 275], [366, 4], [345, 101]], [[30, 233], [121, -18], [167, 292]], [[-97, 219], [147, 221], [-85, 131]], [[9, 163], [-49, 286], [295, 10]], [[306, 205], [313, 276], [25, 98]], [[24, 76], [4, 257], [206, -51]], [[-82, 299], [372, 103], [385, 47]], [[32, 8], [284, 214], [18, 162]], [[269, 47], [279, 115], [261, 257]], [[244, -10], [209, 280], [370, 177]], [[207, -33], [217, 53], [75, 82]], [[237, -80], [-2, 131], [297, 230]], [[196, 32], [203, 20], [129, -98]], [[112, 66], [394, 77], [353, 194]], [[395, 62], [311, 168], [-1, -55]], [[90, 118], [-12, 138], [340, 38]], [[297, 170], [374, 24], [210, 3]], [[-16, 124], [388, 221], [-55, 265]], [[219, -78], [185, -47], [310, 289]], [[-4, 203], [90, 12], [210, 217]], [[31, 94], [174, 100], [337, 22]], [[285, -6], [338, 41], [208, 181]], [[37, 163], [56, 149], [123, 108]], [[354, 81], [266, 158], [-96, 104]], [[151, -54], [224, -25], [338, 67]], [[346, 250], [363, 263], [-20, -13]], [[142, 22], [271, 107], [-57, 37]], [[119, 273], [-89, 268], [144, 263]], [[133, 186], [131, 24], [-61, -1]], [[-5, 18], [161, 291], [276, 213]], [[169, 189], [323, 216], [-91, -60]], [[166, -16], [-87, -21], [59, -61]], [[383, 145], [-26, 48], [271, 42]], [[320, 143], [178, 41], [327, -12]], [[-60, 186], [71, 264], [-16, -45]], [[94, 47], [78, -50], [227, 258]], [[263, 6], [-60, -92], [370, -87]], [[307, -39], [274, -100], [101, 246]], [[151, 275], [289, 7], [313, 164]], [[17, 23], [165, 23], [40, 95]], [[-32, 199], [18, 188], [110, 81]], [[51, -43], [166, 196], [374, 20]], [[195, 264], [340, 130], [58, -27]], [[90, -36], [116, 130], [-98, -61]], [[100, 23], [38, 24], [-7, 24]], [[162, 145], [273, 157], [346, 60]], [[248, 21], [272, 238], [259, 109]], [[288, 184], [-63, 46], [396, 21]], [[77, 67], [223, -41], [334, 80]], [[246, -21], [135, 48], [395, 113]], [[161, -76], [308, -75], [382, 90]], [[-39, 245], [300, -24], [263, 34]], [[359, 291], [109, 134], [277, 91]], [[24, -95], [-45, 96], [304, -23]], [[300, 214], [352, 195], [1, 274]], [[339, -38], [-36, -5], [322, 73]], [[70, 274], [268, 182], [139, 283]], [[337, 111], [221, -94], [-87, -39]], [[212, -74], [38, 16], [139, 176]], [[218, 267], [215, 100], [-31, 153]], [[41, 91], [84, 140], [62, 209]], [[41, 40], [-42, 195], [387, 47]], [[-75, 276], [184, -95], [186, 235]], [[216, -79], [-45, 268], [371, 35]], [[169, 8], [-46, 245], [135, 260]], [[21, 68], [143, 159], [-96, 67]], [[165, 274], [-41, 207], [6, 35]], [[-84, 115], [377, -18], [156, 55]], [[-20, 221], [26, 45], [-34, 120]], [[172, 123], [-96, 215], [238, 23]], [[-13, 107], [166, -98], [320, 293]], [[-71, 170], [249, -78], [174, 230]], [[322, 87], [289, 202], [211, 119]], [[220, 92], [38, -95], [315, 131]], [[154, 207], [150, -89], [-21, 112]], [[143, 154], [360, 212], [16, 175]], [[-14, 108], [-95, 169], [260, 68]], [[81, 204], [367, -28], [248, 135]], [[97, 159], [303, 65], [90, 289]], [[325, 162], [154, 270], [90, 74]], [[245, 82], [361, 78], [-50, 64]], [[310, -5], [37, 228], [203, 72]], [[-40, -5], [-1, 194], [315, 187]], [[186, 231], [19, 139], [100, -65]], [[63, 287], [97, -21], [381, 7]], [[-4, 209], [52, 218], [6, -82]], [[-65, 55], [300, 115], [63, 23]], [[395, -94], [269, 91], [-90, 39]], [[380, 86], [14, 6], [231, -78]], [[-60, 4], [203, 135], [343, 205]], [[-29, 111], [58, 220], [-38, 156]], [[167, -60], [365, 177], [236, 184]], [[207, 286], [50, 268], [239, 46]]]]
+
+values = []
+for i in range(len(b[0])):
+  time_is = perf_counter()
+  fill_polygon(b[0][i],(cos(i)*1000, sin(i)*1000, log10(i+1)*1000))
+  values.append(perf_counter()-time_is)
+  fill_rect(0, 0, 320, 222, "white")
+print("fill_polygon", "speed:", sum(values)/len(values)*10**6, "μs")
+o=sum([sum([sum(y) for y in x]) for x in b[0]])
+print((o/sqrt(o)/0.15)*2)
+
+exit()
+
 #import os
 ##os.environ["KANDINSKY_ENABLE_DEBUG"]=''
 ##os.environ["KANDINSKY_OS_MODE"]='4'
@@ -83,68 +105,64 @@
 #
 #exit()
 #
-#import os
-#os.environ["KANDINSKY_OS_MODE"]="3"
-#import __init__ as kandinsky
-#from ion import keydown
-#from time import perf_counter_ns
-#from math import cos, sin, log10
-#
-#def wait_key():
-#  while True:
-#    for i in range(53):
-#      if keydown(i):
-#        while keydown(i): pass
-#        return i
-#
-#def test(method, *args):
-#  func = getattr(kandinsky, method)
-#  values = []
-#  for i in range(300):
-#    time_is = perf_counter_ns()
-#    func(*args)
-#    values.append((perf_counter_ns()-time_is)/1000)
-#    kandinsky.fill_rect(0, 0, 320, 220, "white")
-#
-#  #print(values)
-#  print(method, "speed:", sum(values)/len(values), "µs; min:", min(values), "max:", max(values))
-#
-#kandinsky.draw_string("Welcome to kandinsky speed test program", 5, 50)
-#kandinsky.draw_string("Press a key to start test ...", 15, 70)
+import os
+os.environ["KANDINSKY_OS_MODE"]="3"
+import __init__ as kandinsky
+from ion import keydown
+from time import perf_counter_ns
+from math import cos, sin, log10
+
+def wait_key():
+  while True:
+    for i in range(53):
+     if keydown(i):
+        while keydown(i): pass
+        return i
+
+def test(method, *args):
+  func = getattr(kandinsky, method)
+  values = []
+  for i in range(300):
+    time_is = perf_counter_ns()
+    func(*args)
+    values.append((perf_counter_ns()-time_is)/1000)
+    kandinsky.fill_rect(0, 0, 320, 220, "white")
+
+  #print(values)
+  print(method, "speed:", sum(values)/len(values), "µs; min:", min(values), "max:", max(values))
+
+kandinsky.draw_string("Welcome to kandinsky speed test program", 5, 50)
+kandinsky.draw_string("Press a key to start test ...", 15, 70)
 #wait_key()
-#kandinsky.fill_rect(0, 0, 320, 220, "white")
-#
-#test("set_pixel", 10, 10, "black")
-#print("100*100: ", end='')
-#test("fill_rect", 10, 10, 100, 100, "black")
-#print("1*1: ", end='')
-#test("fill_rect", 10, 10, 1, 1, "black")
-#print("200*200: ", end='')
-#test("fill_rect", 10, 10, 200, 200, "black")
-#test("draw_string", "test string", 10, 10)
-#print("100*100: ", end='')
-#test("draw_circle", 110, 110, 100, "black")
-#print("10*10: ", end='')
-#test("draw_circle", 110, 110, 10, "black")
-#print("100*100: ", end='')
-#test("fill_circle", 110, 110, 100, "black")
-#print("10*10: ", end='')
-#test("fill_circle", 110, 110, 10, "black")
-#for i in range(300): kandinsky.set_pixel(10+i, 10, (cos(i)*1000, sin(i)*1000, log10(i+1)*1000))
-#values = []
-#for i in range(300):
-#  time_is = perf_counter_ns()
-#  kandinsky.get_pixel(10+i, 10)
-#  values.append((perf_counter_ns()-time_is)/1000)
-#print("get_pixel speed:", sum(values)/len(values), "µs")
-#for i in range(300):
-#  time_is = perf_counter_ns()
-#  kandinsky.color((cos(i)*1000, sin(i)*1000, log10(i+1)*1000))
-#  values.append((perf_counter_ns()-time_is)/1000)
-#print("color speed:", sum(values)/len(values), "µs")
-#input(">>> ")
-#
-#exit()
+input()
+kandinsky.fill_rect(0, 0, 320, 220, "white")
+
+test("set_pixel", 10, 10, "black")
+print("100*100: ", end='')
+test("draw_line", 10, 10, 150, 100, "black")
+print("10*10: ", end='')
+test("draw_line", 20, 20, 50, 30, "black")
+print("1*1: ", end='')
+test("draw_line", 20, 20, 21, 21, "black")
+print("30*30: ", end='')
+test("draw_line", 20, 20, 40, 20, "black")
+test("draw_line", 20, 20, 20, 40, "black")
+test("draw_string", "test string", 10, 10)
+for i in range(300): kandinsky.set_pixel(10+i, 10, (cos(i)*1000, sin(i)*1000, log10(i+1)*1000))
+values = []
+for i in range(300):
+  time_is = perf_counter_ns()
+  kandinsky.get_pixel(10+i, 10)
+  values.append((perf_counter_ns()-time_is)/1000)
+print("get_pixel speed:", sum(values)/len(values), "µs")
+for i in range(300):
+  time_is = perf_counter_ns()
+  kandinsky.color((cos(i)*1000, sin(i)*1000, log10(i+1)*1000))
+  values.append((perf_counter_ns()-time_is)/1000)
+print("color speed:", sum(values)/len(values), "µs")
+input(">>> ")
+
+exit()
 
 """This is a demo code
 Source: https://my.numworks.com/python/zetamap/snake_lite

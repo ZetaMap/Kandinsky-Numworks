@@ -48,6 +48,12 @@ If you have a question, check out the [FAQ](https://github.com/ZetaMap/Kandinsky
 * Description: Close manualy the window without notifying the user
 * Note: after that you cannot reopen the window, so a re-import of kandinsky will be required to get a new window
 
+**display():**
+* Parameters: **No parameters**
+* Description: Refresh manually the window and display changes
+* Note: **⚠️Method added only for MacOS, because library cannot refresh automatically the window in another Thread. <br>
+It will be necessary to call this method from time to time to keep it alive.⚠️**
+
 #### ***New methods added by Omega (previous methods are also added)***
 
 **draw_line()**

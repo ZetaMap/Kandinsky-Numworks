@@ -25,9 +25,9 @@ Because MacOS doesn't allow management of GUI by another Thread than the main Th
 Except precisely I need, not to occupy it, because otherwise that would block the program during importation of library, which thus does not have any more great interest. (¬_¬")<br>
 **So for people on macOS, the ``display()`` function will have to be called regularly on operations not using library functions, to keep the window alive.**
 
-*(but if you noticed this, you're lucky, because i never got the library to work on mac due to [this error](#why-segfault-on-macos))*
-
 ### Why segfault on MacOS?
+**Note: ignore that, it's solved! (the problem came from tkinter which gave false pointers)**
+
 ....Dude, idk....(* ￣︿￣) <br>
 The error occurs when creating the SDL window from identifier of frame where it will be placed. <br>
 So for the moment no MacOS support, even if I prepared the library for it ...

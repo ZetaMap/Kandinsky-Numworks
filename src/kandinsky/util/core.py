@@ -158,7 +158,7 @@ class Core(Thread):
     Tests.int(x, y)
 
     Draw.pixel(Gui.drawable, Colors.convert(color), x, y)
-    self.sleep(200)
+    self.sleep(96)
 
   def color(self, r, g, b):
     if g is None and b is None: color = Colors.convert(r)
@@ -218,7 +218,7 @@ class Core(Thread):
       ty = int(y1+g*(x-x1))
       Draw.pixel(Gui.drawable, color, *((ty, x) if s else (x, ty)))  
 
-    self.sleep(111) # TODO: calculatwe speed
+    self.sleep(1)
 
   def draw_circle(self, x, y, r, color):
     """https://github.com/UpsilonNumworks/Upsilon/blob/upsilon-dev/kandinsky/src/context_circle.cpp"""
@@ -262,9 +262,10 @@ class Core(Thread):
     if len(tests) and len(tests[0]): raise ValueError("requested length 2 but object has length "+str(tests[0][0]))
 
     color = Colors.convert(color)
+    points = list(points)
     points_size = len(points)
 
-    for y in range(min([0,Vars.screen[0]]+points, key=lambda v: v[1]), max([0,0]+points, key=lambda v: v[1])):
+    for y in range(min([[0,Vars.screen[0]]]+points, key=lambda v: v[1])[1], max([[0,0]]+points, key=lambda v: v[1])[1]):
       switches = []
       last_point = points_size-1
 
@@ -279,7 +280,7 @@ class Core(Thread):
         if switches[x] >= Vars.screen[1]*2: break
         if switches[x+1] > 0: Draw.rect(Gui.drawable, color, (switches[x], y, switches[x+1]-switches[x], 1))
 
-    self.sleep(444) # TODO: calculate speed
+    self.sleep(len(points))
 
   def get_palette():
     return {"Toolbar":        Gui.data.color,

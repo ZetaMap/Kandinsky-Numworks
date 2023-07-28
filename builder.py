@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 from setuptools import find_packages
-from os import listdir, name as os_name, path as os_path, mkdir, system
-from sys import argv
+from os import listdir, path as os_path, mkdir, system
+from sys import argv, platform
 
 # If True, just setup files and exit
 JUST_SETUP = "-s" in argv
@@ -13,7 +13,7 @@ def clear_files():
   def clear(path):
     try:
       if os_path.exists(path):
-        if os_name == "nt": system(("rd /s" if os_path.isdir(path) else "del /f") + " /q \"" + path.replace('/', '\\') + "\" 2> nul")
+        if platform.startswith("win"): system(("rd /s" if os_path.isdir(path) else "del /f") + " /q \"" + path.replace('/', '\\') + "\" 2> nul")
         else: system("rm -rf \"" + path.replace('\\', '/') + "\" 2> /dev/null")
     except: pass
   print("Cleaning files ...")
@@ -66,6 +66,8 @@ METADATA = {
   "include_package_data": True,
   "python_requires": '>=3.6',
 }
+# This is needed for MacOS because Tkinter give wrong widget id, so will get it manually
+if platform == "darwin": METADATA["install_requires"].extend(["pyobjc-core", "pyobjc-framework-Cocoa"])
 
 def find_all(path='', exclude=[]):
   found = []
