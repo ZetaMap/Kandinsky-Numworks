@@ -1,5 +1,5 @@
 """
-Patch the module for MacOS. Redefine some methods of Core.
+Patch the module for MacOS. Redefine some methods of Core and Gui classes.
 
 Since it's the only bone that doesn't accept the method I use to make a GUI,
 it will try to patch the module to do a manual refresh.
@@ -85,9 +85,9 @@ def Gui_refresh():
   """Offset drawable surface on screen"""
   Gui.created()
 
-  Gui.head.refresh()
-  Draw.rect(Gui.screen_surf, Colors.black, (0, Vars.head_size+1))
-  Draw.blit(Gui.screen_surf, Gui.drawable, (0, Vars.head_size+1))
+  Draw.rect(Gui.screen_surf, Colors.black)
+  Draw.blit(Gui.screen_surf, Gui.head_surface)
+  Draw.blit(Gui.screen_surf, Gui.drawable, (0, Vars.head_size))
   Gui.screen.refresh()
   Gui.tkmaster.update_idletasks()
   Gui.tkmaster.update()

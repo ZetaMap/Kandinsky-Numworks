@@ -191,7 +191,7 @@ class Gui:
     if Gui.head.window is None: return
 
     Gui.data(**Config.os_list[Gui.os_mode.get()], model=Config.model_list[Gui.model_mode.get()]["ratio"])
-    Gui.head_surface = Draw.new_surface(Vars.screen[0],Vars.head_size)
+    Gui.head_surface = Draw.new_surface(Vars.screen[0], Vars.head_size)
 
     Draw.rect(Gui.head_surface, Gui.data.color)
     Draw.string(Gui.head_surface, Config.small_font, Gui.data.unit, 5, 0)

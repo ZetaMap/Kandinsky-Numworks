@@ -26,3 +26,5 @@ fixed bug with fill_polygon()
 added method display() (only for macos) in README.md
 found a patch for macos with 'pyobjc' to embed SDL2 windows in a Tkinter frame ([source](https://github.com/cztomczak/cefpython/issues/308))
 removed test.py because will no longer be used
+
+**Thanks to @adriweb for helping me a lot with testing the library on MacOS**
