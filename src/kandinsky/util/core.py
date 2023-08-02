@@ -149,7 +149,7 @@ class Core(Thread):
   def get_pixel(self, x, y):
     Tests.int(x, y)
 
-    if y < 0 or y > Vars.screen[0] or x < 0 or x > Vars.screen[1]: color = Colors.black
+    if x < 0 or x > Vars.screen[0] or y < 0 or y > Vars.screen[1]: color = Colors.black
     else: color = Colors.convert(Draw.get_at(Gui.drawable, x, y))
 
     self.sleep(77)

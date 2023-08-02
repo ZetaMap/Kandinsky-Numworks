@@ -1,6 +1,6 @@
 from sdl2 import SDL_Rect, SDL_FillRect, SDL_BlitSurface, SDL_BlitScaled, SDL_CreateRGBSurfaceWithFormat, SDL_PIXELFORMAT_RGB888
 from sdl2.ext import prepare_color
-from ctypes import cast, byref, POINTER, c_uint, c_uint8
+from ctypes import cast, byref, POINTER, c_uint32, c_uint8
 from .vars import Vars
 
 __all__ = ["Draw"]
@@ -16,5 +16,5 @@ class Draw:
   string = lambda dest, font, text, x, y, color=None: Draw.blit_scaled(dest, font.render(text, color=color), (x, y))
 
   def get_at(source, x, y):
-    pixel = cast(byref(cast(source.pixels, POINTER(c_uint8)).contents, (source.w*y+x)*source.format.contents.BytesPerPixel), POINTER(c_uint)).contents.value
+    pixel = cast(byref(cast(source.pixels, POINTER(c_uint8)).contents, source.pitch*y+x*source.format.contents.BytesPerPixel), POINTER(c_uint32)).contents.value
     return (pixel&0xff0000)>>8, (pixel&0x00ff00)>>4, (pixel&0x0000ff)>>0

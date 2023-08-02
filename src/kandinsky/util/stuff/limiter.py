@@ -132,3 +132,27 @@ else:
   # MacOS don't have libc6 library and idk for other OS so just do a normal sleep
   import time as _time
   usleep = lambda us: _time.sleep(us/10e6)
+
+
+
+# Other stuff, 
+# because there is a bug when window changing monitor 
+# (only on macos... again... this is a poor platform)
+def get_monitors():
+  import ctypes
+  class RECT(ctypes.Structure):
+    _fields_ = [
+      ('left', ctypes.c_long),
+      ('top', ctypes.c_long),
+      ('right', ctypes.c_long),
+      ('bottom', ctypes.c_long)
+      ]
+    def dump(self):
+      return [int(val) for val in (self.left, self.top, self.right, self.bottom)]
+
+  retval = {}
+  def cb(hMonitor, hdcMonitor, lprcMonitor, dwData):
+    retval.update({hMonitor: lprcMonitor.contents.dump()})
+    return True
+  ctypes.windll.user32.EnumDisplayMonitors(0, 0, ctypes.WINFUNCTYPE(ctypes.c_int, ctypes.c_ulong, ctypes.c_ulong, ctypes.POINTER(RECT), ctypes.c_double)(cb), 0)
+  return retval
