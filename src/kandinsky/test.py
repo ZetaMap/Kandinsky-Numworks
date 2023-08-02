@@ -1,36 +1,3 @@
-
-try:
-  import ti_graphics as scr
-  getPixel = scr.getPixel
-  setPixel = scr.setPixel
-except ImportError:
-  try:
-    import casioplot as scr
-  except ImportError:
-    import __init__ as scr
-  getPixel = scr.get_pixel
-  setPixel = scr.set_pixel
-
-def isPixelOK(c):
-  return c is not None and c != (0, 0, 0)
-
-def getscreen():
-  x, y, dx, dy = 0, 0, 1, 1
-  while(dx or dy):
-    setPixel(x - (dx==0), y - (dy==0), "blue")
-    c = getPixel(x - (dx==0), y - (dy==0))
-    if not isPixelOK(c):
-      if isPixelOK(getPixel(x,y - 1)): dy = 0
-      else: dx = 0
-    print(x, y, dx, dy)
-    x += dx
-    y += dy
-  return (x, y)
-
-print(getscreen())
-print(getPixel(223,200))
-exit()
-
 import os
 os.environ["KANDINSKY_OS_MODE"]='0'
 #os.environ['KANDINSKY_SCREEN_SIZE'] = '520x240'
@@ -57,6 +24,9 @@ def cube3d(x1,y1,z1,x2,y2,z2):
   line3d(x2,y1,z1,x2,y1,z2)
   line3d(x1,y2,z1,x1,y2,z2)
   line3d(x2,y2,z1,x2,y2,z2)
+
+def sphere3d(x1,y1,z1,x2,y2,z2):
+  ...
 
 def line3d(x1,y1,z1,x2,y2,z2):
   point3d(x1,y1,z1)
@@ -114,7 +84,8 @@ def yturn(x,z,cosy,siny):
 def zturn(x,y,cosz,sinz):
   return x*cosz-y*sinz,x*sinz+y*cosz
 
-cube3d(-100,-100,-100,100,100,100)
+#cube3d(-100,-100,-100,100,100,100)
+sphere3d(-100,-100,-100,100,100,100)
 
 xrot=0
 yrot=0
