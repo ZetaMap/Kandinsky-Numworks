@@ -1,3 +1,14 @@
+from math import *
+from kandinsky import *
+
+x, y = 100, 100
+fill_rect(0,0,320,222,(0,)*3)
+
+def s(a): return 105 * sin(a / 10)
+
+for a in range(9999):
+  set_pixel(x+int(s(a)), y+int(cos(a / 10) * s(a * .95)), "red")
+exit()
 import os
 os.environ["KANDINSKY_OS_MODE"]="3"
 from time import *

@@ -118,6 +118,7 @@ class Core(Thread):
       self.stopped = True
       Gui.paused = False # Now all calls of kandinsky raise an error
 
+      usleep(10**4) # Wait a little to give time to draw methods finished
       Gui.destroy()
       sdl_quit()
 
