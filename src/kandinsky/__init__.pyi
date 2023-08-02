@@ -1,7 +1,7 @@
 from typing import Tuple, List, Union, Optional, Dict, MutableSet
 import sys
 
-ColorInput = Union[Tuple[int, int, int], List[int, int, int], str]
+ColorInput = Union[Tuple[int, int, int], List[int, int, int], str, float]
 ColorOutput = Tuple[int, int, int]
 
 def get_pixel(x: int, y: int) -> ColorOutput: ...
