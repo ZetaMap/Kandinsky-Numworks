@@ -3,37 +3,41 @@ os.environ["KANDINSKY_OS_MODE"]='0'
 #os.environ['KANDINSKY_SCREEN_SIZE'] = '520x240'
 os.environ['KANDINSKY_ZOOM_RATIO'] = '2'
 from math import cos,sin,pi
-from kandinsky import *
+from __init__ import *
+from util.core import Gui, Draw, Config
 from time import sleep
 from ion import *
 
 
 MODEL=[]
 COLORS=[(255,0,0),(255,255,0),(0,255,0),(0,255,255),(0,0,255),(255,0,255)]
+FILL_MODEL=False
 
 def cube3d(x1,y1,z1,x2,y2,z2):
-  line3d(x1,y1,z1,x1,y2,z1)
-  line3d(x1,y1,z1,x2,y1,z1)
-  line3d(x2,y1,z1,x2,y2,z1)
-  line3d(x1,y2,z1,x2,y2,z1)
-  line3d(x1,y1,z2,x1,y2,z2)
-  line3d(x1,y1,z2,x2,y1,z2)
-  line3d(x2,y1,z2,x2,y2,z2)
-  line3d(x1,y2,z2,x2,y2,z2)
-  line3d(x1,y1,z1,x1,y1,z2)
-  line3d(x2,y1,z1,x2,y1,z2)
-  line3d(x1,y2,z1,x1,y2,z2)
-  line3d(x2,y2,z1,x2,y2,z2)
+  if FILL_MODEL:
+    points3d([[x1,y1,z1],[x1,y2,z1],[x2,y2,z1],[x2,y1,z1]])
+    points3d([[x1,y2,z1],[x1,y2,z2],[x2,y2,z2],[x2,y2,z1]])
+    points3d([[x1,y1,z2],[x1,y2,z2],[x2,y2,z2],[x2,y1,z2]])
+    points3d([[x1,y1,z2],[x1,y2,z2],[x1,y2,z1],[x1,y1,z1]])
+    points3d([[x2,y1,z2],[x2,y1,z1],[x2,y2,z1],[x2,y2,z2]])
+    points3d([[x2,y1,z2],[x2,y1,z1],[x1,y1,z1],[x1,y1,z2]])
 
-def sphere3d(x1,y1,z1,x2,y2,z2):
-  ...
+  else:
+    points3d([[x1,y1,z1],[x1,y2,z1]])
+    points3d([[x1,y1,z1],[x2,y1,z1]])
+    points3d([[x2,y1,z1],[x2,y2,z1]])
+    points3d([[x1,y2,z1],[x2,y2,z1]])
+    points3d([[x1,y1,z2],[x1,y2,z2]])
+    points3d([[x1,y1,z2],[x2,y1,z2]])
+    points3d([[x2,y1,z2],[x2,y2,z2]])
+    points3d([[x1,y2,z2],[x2,y2,z2]])
+    points3d([[x1,y1,z1],[x1,y1,z2]])
+    points3d([[x2,y1,z1],[x2,y1,z2]])
+    points3d([[x1,y2,z1],[x1,y2,z2]])
+    points3d([[x2,y2,z1],[x2,y2,z2]])
 
-def line3d(x1,y1,z1,x2,y2,z2):
-  point3d(x1,y1,z1)
-  point3d(x2,y2,z2)
-
-def point3d(x,y,z):
-  MODEL.append([x,y,z])
+def points3d(XYZpoints):
+  MODEL.append(XYZpoints)
 
 def line(x1,y1,x2,y2,c):
   w=x2-x1
@@ -55,24 +59,27 @@ except:
 
 def render(cosx,sinx,cosy,siny,cosz,sinz):
   fill_rect(0,0,320,200,(0,0,0))
-  for i in range(0,len(MODEL),2):
-    x1,y1,z1=MODEL[i]
-    x2,y2,z2=MODEL[i+1]
 
-    #Rotations
-    y1,z1=yturn(y1,z1,cosx,sinx)
-    y2,z2=yturn(y2,z2,cosx,sinx)
-    x1,z1=yturn(x1,z1,cosy,siny)
-    x2,z2=yturn(x2,z2,cosy,siny)
-    x1,y1=zturn(x1,y1,cosz,sinz)
-    x2,y2=zturn(x2,y2,cosz,sinz)
+  for i in range(len(MODEL)):
+    polygon = []
+    
+    for p in MODEL[i]:
+      #Rotations
+      x,y,z=p
+      y, z = xturn(y,z,cosx,sinx)
+      x, z = yturn(x,z,cosy,siny)
+      x, y = zturn(x,y,cosz,sinz)
+      
+      #Projections
+      px,py=int(x*100/(z+300))+160, int(y*100/(z+300))+100
+      polygon.append([px,py])
 
-    #Projections
-    px1=int(x1*100/(z1+300))
-    py1=int(y1*100/(z1+300))
-    px2=int(x2*100/(z2+300))
-    py2=int(y2*100/(z2+300))
-    line(px1+160,py1+100,px2+160,py2+100,COLORS[i//2%6])
+      #debug
+      Draw.string(Gui.drawable, Config.small_font, f"{px},{py}", px, py, (255,255,255))
+      #draw_string("{px},{py}", "white", "black")
+
+    if FILL_MODEL: fill_polygon(polygon,COLORS[i%6])
+    else: line(*polygon[0],*polygon[1],COLORS[i//2%6])
 
 # ???
 def xturn(y,z,cosx,sinx):
@@ -84,20 +91,24 @@ def yturn(x,z,cosy,siny):
 def zturn(x,y,cosz,sinz):
   return x*cosz-y*sinz,x*sinz+y*cosz
 
-#cube3d(-100,-100,-100,100,100,100)
-sphere3d(-100,-100,-100,100,100,100)
+cube3d(-100,-100,-100,100,100,100)
 
 xrot=0
 yrot=0
 zrot=0
 
 fill_rect(0,0,320,222,(0,)*3)
-draw_string("Full engine coming soon...",30,202,(255,255,255),(0,0,0))
+draw_string("OK: fill on/off",5,207,"white","black",True)
 while True:
   xrot+=pi/90*(keydown(KEY_UP)-keydown(KEY_DOWN))
   yrot+=pi/90*(keydown(KEY_LEFT)-keydown(KEY_RIGHT))
 
-#  wait_vblank()
+  if keydown(KEY_OK):
+    FILL_MODEL = not FILL_MODEL
+    MODEL.clear()
+    cube3d(-100,-100,-100,100,100,100)
+    sleep(0.2)
+
   render(cos(xrot),sin(xrot),cos(yrot),sin(yrot),cos(zrot),sin(zrot))
   sleep(0.01)
 exit()

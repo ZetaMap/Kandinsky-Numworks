@@ -99,7 +99,10 @@ class Gui:
     new = Menu(tearoff=False)
     for i, mode in enumerate(Config.os_list):
       Gui._add_radiobutton(new, label=mode["name"], variable=Gui.os_mode, value=i, command=Gui.update_data)
-      Config.os_list[i]["battery"] = load_img(Vars.path+Config.os_list[i]["battery"])
+      mode["battery"] = load_img(Vars.path+mode["battery"])
+    new.add_separator()
+    Gui._add_command(new, label="Initial mode: "+Config.os_list[Vars.selected_os]["name"],
+                          state="disabled", activebackground="#F0F0F0")
     Gui.options.add_cascade(accelerator="CTRL+O", label="OS", menu=new)
 
     ## Model menu
@@ -109,6 +112,9 @@ class Gui:
       Gui._add_radiobutton(new, label=mode["name"], variable=Gui.model_mode, value=i, command=Gui.update_data,
         **({"state": "disabled", "activebackground": "#F0F0F0"} if mode.get("disabled", False) else {}))
     Gui.options.add_cascade(accelerator="CTRL+M", label="Model", menu=new)
+    new.add_separator()
+    Gui._add_command(new, label="Initial model: "+Config.model_list[Vars.selected_model]["name"],
+                          state="disabled", activebackground="#F0F0F0")
 
     Gui.zoom = IntVar(value=Vars.zoom_ratio)
     Gui.increase_font = IntVar()

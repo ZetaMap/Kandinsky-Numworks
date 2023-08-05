@@ -72,7 +72,7 @@ def color(r, g=None, b=None, /):
   return color
 
 # Argument added by Omega
-if __Core.OS_MODE > 1:
+if __Core.OS_MODE != 1:
   def draw_string(text, x, y, color=(0,0,0), background=(248,252,248), font=False, /):
     """Display a text from pixel (x, y)"""
     _, err = __Core.event_fire(__Core.draw_string, text, x, y, color, background, font)

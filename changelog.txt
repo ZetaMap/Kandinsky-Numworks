@@ -28,5 +28,7 @@ found a patch for macos with 'pyobjc' to embed SDL2 windows in a Tkinter frame (
 removed test.py because will no longer be used
 fixed bug when reading the color of a pixel (I swapped X and Y axes, by mistake)
 changed the equation to get a pixel (I forgot to take into account the zoom and equation was not correct)
+PC mode have now the new argument of upsilon version of draw_string()
+added a button to GUI to know on which OS or model, the library was launched
 
 **Thanks to @adriweb for helping me a lot with testing the library on MacOS**
