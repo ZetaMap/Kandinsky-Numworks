@@ -71,7 +71,15 @@ class Gui:
     Gui._add_command(about, label="GitHub project",     command=lambda: open_link("https://github.com/ZetaMap/Kandinsky-Numworks"))
     Gui._add_command(about, label="Documentation",      command=lambda: open_link("https://github.com/ZetaMap/Kandinsky-Numworks#usable-content"))
     Gui._add_command(about, label="An issue? Open one", command=lambda: open_link("https://github.com/ZetaMap/Kandinsky-Numworks/issues/new"))
-    Gui._add_command(about, label="Made by ZetaMap",    command=lambda: open_link("https://github.com/ZetaMap"))
+    Gui._secret_var = 0
+    def secret():
+      Gui._secret_var += 1
+      open_link("https://github.com/ZetaMap")
+      if Gui._secret_var == 3:
+        about.add_separator()
+        the_secret = lambda: system(f"start pythonw {Vars.path}../3d_demo.py") if Vars.is_windows else system(f"python3 {Vars.path}../3d_demo.py &")
+        Gui._add_command(about, label="3D engine demo", command=the_secret)
+    Gui._add_command(about, label="Made by ZetaMap",    command=secret)
     Gui.menu.add_cascade(label="About", menu=about)
 
     ## Help menu
