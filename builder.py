@@ -30,8 +30,8 @@ def clear_files():
 clear_files()
 DOC="<unknown>"
 with open("src/kandinsky/README.md", "rt", encoding="utf-8") as f:
-  with open("README.md", "wt", encoding="utf-8") as ff: ff.write(f.read())
   DOC = f.read()
+  with open("README.md", "wt", encoding="utf-8") as ff: ff.write(DOC)
 with open("src/kandinsky/FAQ.md", "rt", encoding="utf-8") as f:
   with open("FAQ.md", "wt", encoding="utf-8") as ff: ff.write(f.read())
 
@@ -92,10 +92,12 @@ for i in range(len(new_content)):
 with open("src/kandinsky/__init__.py", 'w') as f: f.writelines(new_content)
 
 # auto gen setup file
-with open("setup.py", 'w') as f:
-  f.write(f"""# AUTO GENERATED FILE. DO NOT EDIT!
+with open("setup.py", 'w', encoding="utf-8") as f:
+  f.write("""# AUTO GENERATED FILE. DO NOT EDIT!
 from setuptools import setup
-setup(**{METADATA})""")
+setup(
+{}
+)""".format('\n'.join([f"\t{k}={repr(v)}," for k, v in METADATA.items()])))
 
 # install build module, build, install, and clean
 print("Installing 'build' module ...")
