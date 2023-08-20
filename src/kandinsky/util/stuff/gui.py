@@ -186,8 +186,10 @@ class Gui:
     Gui.created()
 
     SDL_FreeSurface(Gui.drawable)
+    SDL_FreeSurface(Gui.head_surface)
     Gui.head.close()
     Gui.screen.close()
+    Gui.tkmaster.destroy()
     Gui.tkmaster.quit()
     Gui.tkmaster = None
 

@@ -42,7 +42,7 @@ if JUST_SETUP: exit()
 print("Generating setup.py ...")
 METADATA = {
   "name": "kandinsky",
-  "version": "2.5",
+  "version": "2.6",
   "author": "ZetaMap",
   "description": "A small module allowing to link the kandinsky module, from the Numworks, to a window.",
   "license": 'MIT',

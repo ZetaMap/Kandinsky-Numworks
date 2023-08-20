@@ -11,7 +11,7 @@ except ImportError as e:
 
 import warnings
 warnings.filters = [] # Reset filters because some default appear in, and HIS DON'T PRINT MY WARNINGS!!
-warnings.filterwarnings('ignore', category=UserWarning) # Disable SDL warning
+warnings.simplefilter('ignore', UserWarning) # Disable SDL warning
 try:
   import sdl2dll
   from sdl2.ext import init, quit as sdl_quit, ttf, image
@@ -29,22 +29,8 @@ except (ImportError, RuntimeError) as e:
 >>> or type 'pip3 install -U pysdl2 pysdl2-dll"""
   raise
 
-try: import ion
-except ImportError: ION_PRESENT = False
-else:
-  # Another module is called ion, so verify default function to see if it's the right module
-  ION_PRESENT = hasattr(ion, "keydown")
-  if not ION_PRESENT:
-    prettywarn("ion is installed but no basic methods found. "
-               "Are you sure you have installed the correct module? "
-               "His pypi name is 'ion-numworks'.", ImportWarning)
-
-  # In older version i forgot to define __version__ field
-  # so if is not defined, is an outdated version.
-  # Or verify if version is good
-  elif not hasattr(ion, "__version__") or tuple([int(i) for i in ion.__version__.split('.') if i.isdecimal()]) < (2, 0):
-    prettywarn("outdated version of 'ion-numworks', please update it", ImportWarning)
-    ION_PRESENT = False
+# import of ion moved
+ION_PRESENT = False
 
 from threading import Thread, main_thread
 from math import sqrt
@@ -92,6 +78,27 @@ import threading
 USE_HEAP = 'KANDINSKY_USE_HEAP' in os.environ and hasattr(threading, "get_native_id")
 # same problem than warning of ion
 if USE_HEAP: prettywarn("python heap limitator is an experimental feature, so it can crach python several times", ImportWarning)
+
+# We need to more the import of ion here, to not import it if os mode isn't Omega
+if Vars.selected_os == 2:
+  try: 
+    with warnings.catch_warnings(record=True):
+      import ion
+  except ImportError: pass
+  else:
+    # Another module is called ion, so verify default function to see if it's the right module
+    ION_PRESENT = hasattr(ion, "keydown")
+    if not ION_PRESENT:
+      prettywarn("ion is installed but no basic methods found. "
+                 "Are you sure you have installed the correct module? "
+                 "His pypi name is 'ion-numworks'.", ImportWarning)
+
+    # In older version i forgot to define __version__ field
+    # so if is not defined, is an outdated version.
+    # Or verify if version is good
+    elif not hasattr(ion, "__version__") or tuple([int(i) for i in ion.__version__.split('.') if i.isdecimal()]) < (2, 0):
+      prettywarn("outdated version of 'ion-numworks', please update it", ImportWarning)
+      ION_PRESENT = False
 
 
 ######### Cleanup #########
@@ -203,7 +210,8 @@ class Core(Thread):
     """Don't tell me about this XD, it's omega"""
     # Raise an error if Ion-Numworks is not installed
     if not ION_PRESENT: raise NotImplementedError("please install or upgrade 'ion-numworks' before using this method")
-    return ion.get_keys()
+    # Use the internal API because method doesn't exist with OS_MODE=2
+    return getattr(ion, "__Ion").get_keys() # use getattr() because '__Ion' will be replaced by '_Core__Ion'
 
   def draw_line(self, x1, y1, x2, y2, color):
     """https://github.com/UpsilonNumworks/Upsilon/blob/upsilon-dev/kandinsky/src/context_line.cpp"""
