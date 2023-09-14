@@ -110,9 +110,11 @@ It will be necessary to call this method from time to time to keep it alive.тЪая
 You can also change some default option of library, like the OS or model on which to start kandinsky, etc. <br> 
 To do this, first import the environ of os module and add a compatibility check, like this: 
 ```python
-import os
-if hasattr(os, "environ"):
-  "<environ options here>"
+try:
+  import os
+  if hasattr(os, "environ"):
+    "<environ options here>"
+except: pass
 ```
 
 * Enable debug mode:
