@@ -1,4 +1,4 @@
-fixed window not close on linux
-fixed unintended warnings with new version of ion
-fixed unnecessary import of ion for other os mode
-fixed bug with get_keys() for Omega (using the internal API)
+remaked setup.py properly
+fixed dependencies not installing on mac
+added automatic setup scripts instead of builder.py
+updated 3d_demo.py

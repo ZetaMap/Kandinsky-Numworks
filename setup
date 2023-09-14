@@ -1,0 +1,36 @@
+# Just clean build files if '-c' argument is present
+[[ "$@" == *"-c"* ]] && JUST_CLEAN=true || JUST_CLEAN=false
+
+# Somes methods
+ask() {
+  [[ "$1" == "" ]] && echo "ask: a question must be specified" && exit 1
+  [[ "$2" == "1" ]] && default="Y/n" || default="y/N"
+
+  echo -ne "$1? [$default]: "
+  read choise
+  [[ "$choise" == "y" ]] || [[ "$choise" == "yes" ]] || [[ "$choise" == "" && "$2" == "1" ]] && return 1 || return 0
+}
+
+clean() {
+  echo "Cleaning build files ..."
+  rm -rf build src/kandinsky.egg-info
+  [[ -d "dist" && "$(ls -A dist)" ]] && ask "'dist' folder not empty, remove" || rm -rf dist 
+}
+
+# Remove previous build files
+clean
+$JUST_CLEAN && exit
+# Check and install build dependencies
+echo -e "\nInstalling build dependencies ..."
+pip3 install -U build
+# Build module
+echo -e "\nBuilding library ..."
+python3 -m build
+# Ask install
+ask "\nInstall library" || pip3 install .
+# Ask clear files
+ask "\nClear setup files" 1 || clean
+# Re-change library version to 'null'
+python3 setup.py --version-null
+# Finished
+echo "All done"
