@@ -99,14 +99,15 @@ It will be necessary to call this method from time to time to keep it alive.тЪая
 
 * **Change model:** Change the model of numworks. You have chose of **n0100**, **n0110**, and the new model **n0120** <br>
 *Note:* This change the speed python execution emulation of numworks
+*Note2:* n0100 and n0120 models are not available for moment. 
 
-* **Shorcut command:** All the features mentioned have a shortcut command. More info in the "Help" button of the window
+* **Shorcut command:** All the features mentioned have a shortcut command. More info in "Help > Shortcuts" menu of window.
 
 #### Environ options
 **/!\\ You must make its additions *before* importing kandinsky otherwise the changes will not take effect! /!\\**
 
 You can also change some default option of library, like the OS or model on which to start kandinsky, etc. <br> 
-To do this, first import the environ of os module and add a compatibility check, like this: 
+To do this, first import os module and add a compatibility check, like this: 
 ```python
 try:
   import os
@@ -122,7 +123,7 @@ os.environ['KANDINSKY_ENABLE_DEBUG'] = ''
 
 * Change starting OS (methods according to the selected os will be created):
 ```python
-# '0': PC speed + Upsilon methods
+# '0': PC speed + all methods
 # '1': Numworks speed + Basic methods
 # '2': Omega speed + draw_line,wait_vblank,get_keys method
 # '3': Upsilon speed + draw_circle,fill_circle,fill_polygon,get_palette methods - get_keys
@@ -137,7 +138,7 @@ os.environ['KANDINSKY_OS_MODE'] = '<number>'
 os.environ['KANDINSKY_MODEL_MODE'] = '<number>'
 ```
 
-* Disable user interface (menu at top of window):
+* Remove the user interface of window (GUI):
 ```python
 # Note: Shortcut commands are not disabled
 os.environ['KANDINSKY_NO_GUI'] = ''
@@ -148,7 +149,7 @@ os.environ['KANDINSKY_NO_GUI'] = ''
 os.environ['KANDINSKY_SCREEN_SIZE'] = "<width>x<height>"
 ```
 
-* Zoom the screen:
+* Zoom the window:
 ```python
 # from 1 to 4
 os.environ['KANDINSKY_ZOOM_RATIO'] = "<number>"

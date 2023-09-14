@@ -10,11 +10,15 @@ VERSION = "2.6.5"
 # Get the absolute path
 PATH = __file__[:__file__.rfind('\\')+1 or __file__.rfind('/')+1]
 
-# Copy documentation
+# Copy README and FAQ
 with open(PATH+"src/kandinsky/README.md", "rt", encoding="utf-8") as new:
   DOC = new.read()
   with open(PATH+"README.md", "wt", encoding="utf-8") as old:
     old.write(DOC)
+
+with open(PATH+"src/kandinsky/FAQ.md", "rt", encoding="utf-8") as new:
+  with open(PATH+"FAQ.md", "wt", encoding="utf-8") as old:
+    old.write(new.read())
 
 # Set the version in __init__.py
 with open(PATH+"src/kandinsky/__init__.py", "r+t", encoding="utf-8") as f:

@@ -1,10 +1,10 @@
 # FAQ
 
 ### How to install PySDL2?
-To install Pysdl2 and sdl2 library, open an sell and run: ``pip install pysdl2 pysdl2-dll``. If doesn't work, follow steps [here](https://pysdl2.readthedocs.io/en/latest/install.html).
+To install Pysdl2 and sdl2 library, open a sell and run: ``pip install pysdl2 pysdl2-dll``. If doesn't work, follow steps [here](https://pysdl2.readthedocs.io/en/latest/install.html).
 
 ### How to install this module?
-To install this module, it's simple: open tan shell and run ``pip install kandinsky``. <br>
+To install this module, it's simple: open a shell and run ``pip install kandinsky``. <br>
 And if you want to run the [module demo](demo.py), run ``python -m kandinsky``. Normally a Snake game will launch and you could play it. =)
 
 ### Why convert colors?
