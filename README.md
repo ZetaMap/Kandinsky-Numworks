@@ -108,7 +108,12 @@ It will be necessary to call this method from time to time to keep it alive.тЪая
 **/!\\ You must make its additions *before* importing kandinsky otherwise the changes will not take effect! /!\\**
 
 You can also change some default option of library, like the OS or model on which to start kandinsky, etc. <br> 
-To do this, first import the environ of os module like this: ``import os``.
+To do this, first import the environ of os module and add a compatibility check, like this: 
+```python
+import os
+if hasattr(os, "environ"):
+  "<environ options here>"
+```
 
 * Enable debug mode:
 ```python
