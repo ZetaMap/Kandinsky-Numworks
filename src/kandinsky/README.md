@@ -7,7 +7,7 @@ In addition, this module also emulates the drawing speed, and has [many other fe
 
 
 ### Installation
-You now have the option to install this module on [pypi.org](https://pypi.org/project/kandinsky/). For that, follow the steps [here](https://github.com/ZetaMap/Kandinsky-Numworks/blob/pysdl2/FAQ.md#how-to-install-this-module).
+You now have the option to install this module on [pypi.org](https://pypi.org/project/kandinsky/). For that, follow the steps [here](https://github.com/ZetaMap/Kandinsky-Numworks/blob/pysdl2/FAQ.md#how-to-install-this-module). <br>
 
 Or if you want, you can build it yourself, just run the command ``./setup``. <br>
 
