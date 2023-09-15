@@ -80,9 +80,10 @@ def polygone(p,c):
 
 try:
   line=draw_line
-  polygone=fill_polygon
   string=draw_string
 except: string=lambda t,x,y,c,bg,f: draw_string(t,x,y,c,bg)
+try: polygone=fill_polygon
+except: pass
 
 # 3d to 2d render
 def render(cosx,sinx,cosy,siny,cosz,sinz):
