@@ -87,33 +87,39 @@ except: pass
 
 # 3d to 2d render
 def render(cosx,sinx,cosy,siny,cosz,sinz):
-  fill_rect(0,0,320,200,(0,0,0))
+  fill_rect(0,0,320,200,"black")
+  rended_poly = []
 
   for i in range(len(MODEL)):
     polygon = []
-    
+
     for p in MODEL[i]:
       #Rotations
       x,y,z=p
       y, z = xturn(y,z,cosx,sinx)
       x, z = yturn(x,z,cosy,siny)
       x, y = zturn(x,y,cosz,sinz)
-      
+
       #Projections
       px,py=int(x*100/(z+300))+160, int(y*100/(z+300))+100
       polygon.append([px,py])
 
       #debug
-      string("%d,%d"%(px,py), px, py, "white", "black", 1)
-    string("%f,%f,%f"%(cosx,cosy,cosz), 5, 0, "white", "black", 1)
-    string("%f,%f,%f"%(sinx,siny,sinz), 5, 12, "white", "black", 1)
-      
-    if FILL_MODEL: 
-      if True:
-        polygone(polygon,COLORS[i%6])
-    else:
-      x1,y1=polygon[0]
-      x2,y2=polygon[1]
+      string("%d,%d,%d"%(x,y,z), px,py, "white", "black",1)
+      #string("%d,%d"%(px,py), px, py, "white", "black", 1)
+
+    rended_poly.append(polygon)
+  string("%f,%f,%f"%(cosx,cosy,cosz), 5, 0, "white", "black", 1)
+  string("%f,%f,%f"%(sinx,siny,sinz), 5, 12, "white", "black", 1)
+
+  if FILL_MODEL:
+    for i,poly in enumerate(rended_poly):
+      if poly:
+        polygone(poly,COLORS[i%6])
+  else:
+    for i,poly in enumerate(rended_poly):
+      x1,y1=poly[0]
+      x2,y2=poly[1]
       line(x1,y1,x2,y2,COLORS[i//2%6])
 
 # ???
@@ -144,4 +150,4 @@ while True:
     sleep(0.2)
 
   render(cos(xrot),sin(xrot),cos(yrot),sin(yrot),cos(zrot),sin(zrot))
-#  sleep(0.01)
+  sleep(0.01)
