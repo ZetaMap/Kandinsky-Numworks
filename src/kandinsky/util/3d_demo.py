@@ -105,8 +105,8 @@ def render(cosx,sinx,cosy,siny,cosz,sinz):
       polygon.append([px,py])
 
       #debug
-      string("%d,%d,%d"%(x,y,z), px,py, "white", "black",1)
-      #string("%d,%d"%(px,py), px, py, "white", "black", 1)
+      #string("%d,%d,%d"%(x,y,z), px,py, "white", "black",1)
+      string("%d,%d"%(px,py), px, py, "white", "black", 1)
 
     rended_poly.append(polygon)
   string("%f,%f,%f"%(cosx,cosy,cosz), 5, 0, "white", "black", 1)
@@ -115,7 +115,9 @@ def render(cosx,sinx,cosy,siny,cosz,sinz):
   if FILL_MODEL:
     for i,poly in enumerate(rended_poly):
       if poly:
-        polygone(poly,COLORS[i%6])
+        # Do a back-face culling to avoid faces overlap, i think?
+        ...
+      polygone(poly,COLORS[i%6])
   else:
     for i,poly in enumerate(rended_poly):
       x1,y1=poly[0]
