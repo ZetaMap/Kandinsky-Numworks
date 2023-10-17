@@ -189,8 +189,9 @@ class Core(Thread):
     if '\0' in text: text = text[:text.index('\0')]
 
     for i, l in enumerate(text.replace('\r', '').replace('\f', '\x01').replace('\b', '\x01').replace('\v', '\x01').replace('\t', "    ").split('\n')):
-      Draw.rect(Gui.drawable, background, (x*(not i), y+i*bs[1], len(l)*bs[0], bs[1]))
-      Draw.string(Gui.drawable, font, l, x*(not i), y+i*bs[1]-2, color)
+      if l:
+        Draw.rect(Gui.drawable, background, (x*(not i), y+i*bs[1], len(l)*bs[0], bs[1]))
+        Draw.string(Gui.drawable, font, l, x*(not i), y+i*bs[1]-2, color)
     self.sleep(86*(len(text)+(len(text)>=5)//1.2))
 
   def fill_rect(self, x, y, width, height, color):

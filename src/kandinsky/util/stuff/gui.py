@@ -29,11 +29,15 @@ class Gui:
   drawable = None
   _main_thread_pid = None # because thread.native_pid don't exist in python<3.8, so use the other way
   heap_set = False
+  resizable = False
 
   def created():
     if not Gui.tkmaster: raise RuntimeError("Gui: an instance must be created")
 
   def _unpause_after_wrapper(method):
+    # Avoid wrapping method if is not windows, because on other platform the refresh is not "paused"
+    if not Vars.is_windows: return method
+
     def _wrap(*a, **k):
       method(*a, **k)
       if not Gui.already_paused: Gui.paused = False
@@ -145,6 +149,14 @@ class Gui:
       Gui.options.entryconfig(states[not Gui.already_paused], label=states[Gui.already_paused])
     Gui.options.add_command(accelerator="CTRL+P", label="Pause", command=state)
 
+    ## Resizing
+    def enable_resizing():
+      Gui.tkmaster.resizable(Gui.can_resize.get(), Gui.can_resize.get())
+      Gui.resizable = Gui.can_resize.get()
+    Gui.can_resize = IntVar(value=0)
+    # Disabled for moment
+    #Gui.options.add_checkbutton(label="Allow resizing", command=enable_resizing, variable=Gui.can_resize)
+
     Gui.menu.add_cascade(label="Options", menu=Gui.options)
 
   def set_zoom(*_, force=False):
@@ -165,6 +177,7 @@ class Gui:
     Gui.head_frame.config(width=Vars.screen[0]*Vars.zoom_ratio, height=Vars.head_size*Vars.zoom_ratio)
     Gui.screen_frame.config(width=Vars.screen[0]*Vars.zoom_ratio, height=Vars.screen[1]*Vars.zoom_ratio)
     Gui.tkmaster.update()
+    Vars.window_size = (Gui.tkmaster.winfo_width(), Gui.tkmaster.winfo_height())
     Gui.head.window = SDL_CreateWindowFrom(Gui.get_widget_id(Gui.head_frame))
     Gui.screen.window = SDL_CreateWindowFrom(Gui.get_widget_id(Gui.screen_frame))
     Gui.screen_surf = Gui.screen.get_surface()
@@ -276,6 +289,28 @@ class Gui:
       Gui.screen_frame.bind("<Button-1>", unpause)
     ###
 
+    # Resizing ratio fix
+    def resize_event(e):
+      if Gui.resizable and e.widget == Gui.tkmaster:
+        if Gui._resize_window_event_id:
+          Gui.tkmaster.after_cancel(Gui._resize_window_event_id)
+          Gui.paused = True
+        Gui._resize_window_event_id = Gui.tkmaster.after(50, resize_event_stop, e)
+
+    def resize_event_stop(e=None):
+      Gui._resize_window_event_id = ''
+      if not e: return
+      w, h = e.width, e.height
+      if w != Vars.window_size[0] or h != Vars.window_size[1]:
+        Gui.tkmaster.geometry(f"{w//Vars.zoom_ratio*Vars.zoom_ratio}x{h//Vars.zoom_ratio*Vars.zoom_ratio}")
+        Gui.tkmaster.update()
+        Vars.window_size = (w, h)
+        Gui.set_zoom(True)
+        Gui.refresh()   
+      if not Gui.already_paused: Gui.paused = False   
+    resize_event_stop()
+
+    Gui.tkmaster.bind("<Configure>", resize_event, Vars.is_windows or None)
     Gui.set_zoom(force=True) # Force set zoom of window
     Gui.update_data() # Set default data
     Gui.refresh() # Refresh SDL windows and Tkinter frames

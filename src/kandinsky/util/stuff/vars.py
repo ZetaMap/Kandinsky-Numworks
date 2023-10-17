@@ -23,6 +23,7 @@ class Vars:
   app_name = "Kandinsky Emulator"
   head_size = 18
   screen = (320, 222)
+  window_size = (screen[0], screen[1]+head_size)
   zoom_ratio = selected_os = selected_model = 1
 
   image_formats = [("PNG", ".png"), ("Bitmap", ".bmp"), ("All files", ".*")]

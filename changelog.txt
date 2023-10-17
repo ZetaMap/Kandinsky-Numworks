@@ -1,4 +1,4 @@
-remaked setup.py properly
-fixed dependencies not installing on mac
-added automatic setup scripts instead of builder.py
-updated 3d_demo.py
+Added GUI option to enable window resizing
+Updated demo game
+Fixed SDLError when draw_string() has an empty line
+Fixed ambiguous definition of typed methods (in \_\_init\_\_.pyi)
