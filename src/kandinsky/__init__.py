@@ -173,5 +173,3 @@ if __Core.OS_MODE:
     __all__.remove("small_font")
     __all__.remove("large_font")
     del draw_line, wait_vblank, small_font, large_font
-
-

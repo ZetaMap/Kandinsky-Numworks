@@ -46,8 +46,10 @@ class Gui:
     return _wrap
 
   # Patched menu buttons to unpause script when is clicked
-  _add_command = lambda menu, **kwargs: menu.add_command(**dict([(k, Gui._unpause_after_wrapper(v)) if "command" in k else (k, v) for k, v in kwargs.items()]))
-  _add_radiobutton = lambda menu, **kwargs: menu.add_radiobutton(**dict([(k, Gui._unpause_after_wrapper(v)) if "command" in k else (k, v) for k, v in kwargs.items()]))
+  _wrap_args = lambda kwargs: dict([(k, Gui._unpause_after_wrapper(v)) if "command" in k else (k, v) for k, v in kwargs.items()])
+  _add_command = lambda menu, **kwargs: menu.add_command(**Gui._wrap_args(kwargs))
+  _add_radiobutton = lambda menu, **kwargs: menu.add_radiobutton(**Gui._wrap_args(kwargs))
+  _add_checkbutton = lambda menu, **kwargs: menu.add_checkbutton(**Gui._wrap_args(kwargs))
 
   def __init__(_, tkmaster):
     # This is now, the video subsystem of SDL will be initialized
@@ -155,7 +157,7 @@ class Gui:
       Gui.resizable = Gui.can_resize.get()
     Gui.can_resize = IntVar(value=0)
     # Disabled for moment
-    #Gui.options.add_checkbutton(label="Allow resizing", command=enable_resizing, variable=Gui.can_resize)
+    Gui._add_checkbutton(Gui.options, label="Allow resizing", command=enable_resizing, variable=Gui.can_resize)
 
     Gui.menu.add_cascade(label="Options", menu=Gui.options)
 
@@ -253,6 +255,12 @@ class Gui:
     if create_gui: Gui.tkmaster.config(menu=Gui.menu)
     Gui.tkmaster.eval('tk::PlaceWindow . center') # I must keep this otherwise the SDL windows do not configure correctly
     Gui.center_window()
+
+    if Vars.is_linux:
+      # Linux patch for ion, to be able to get the window by the python PID
+      import socket
+      Gui.tkmaster.client(socket.gethostname())
+      del socket
 
     # Bind shorcuts
     Gui.tkmaster.bind("<Control-o>", lambda _: Gui.update_value(Gui.os_mode, Config.os_list))

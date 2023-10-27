@@ -1,4 +1,2 @@
 Added GUI option to enable window resizing
-Updated demo game
-Fixed SDLError when draw_string() has an empty line
-Fixed ambiguous definition of typed methods (in \_\_init\_\_.pyi)
+Added a little patch for linux to help Ion to locate the window
