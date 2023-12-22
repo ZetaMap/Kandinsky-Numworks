@@ -17,4 +17,4 @@ class Draw:
 
   def get_at(source, x, y):
     pixel = cast(byref(cast(source.pixels, POINTER(c_uint8)).contents, source.pitch*Vars.zoom_ratio*y+x*Vars.zoom_ratio*source.format.contents.BytesPerPixel), POINTER(c_uint32)).contents.value
-    return (pixel&0xff0000)>>8, (pixel&0x00ff00)>>4, (pixel&0x0000ff)>>0
+    return (pixel&0xff0000)>>16, (pixel&0x00ff00)>>8, (pixel&0x0000ff)>>0

@@ -41,11 +41,11 @@ class Colors:
     _type = type(rgbOrName)
 
     if _type == str:
-      if rgbOrName in Colors.COLORS: return Colors.fix(*Colors.COLORS[rgbOrName])
+      if rgbOrName in Colors.COLORS: return Colors.fix(*Colors.COLORS[rgbOrName], Vars.selected_os <= 1)
       elif rgbOrName.startswith('#'):
         if len(rgbOrName) != 7: raise ValueError("RGB hex values are 6 bytes long")
 
-        try: return Colors.fix(*[int(rgbOrName[i:i+2], 16) for i in range(1, len(rgbOrName), 2)])
+        try: return Colors.fix(*[int(rgbOrName[i:i+2], 16) for i in range(1, len(rgbOrName), 2)], Vars.selected_os <= 1)
         except ValueError as e:
           e.args = (f"invalid literal for int() with base 16: '{rgbOrName[1:]}'",)
           raise
@@ -62,4 +62,4 @@ class Colors:
 
     Tests.list(rgbOrName)
     if len(rgbOrName) != 3: raise ValueError("Color needs 3 components")
-    return Colors.fix(*[int(c) for c in rgbOrName if type(c) == float or Tests.int(c)])
+    return Colors.fix(*[int(c) for c in rgbOrName if type(c) == float or Tests.int(c)], Vars.selected_os <= 1)

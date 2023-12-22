@@ -157,7 +157,7 @@ class Gui:
       Gui.resizable = Gui.can_resize.get()
     Gui.can_resize = IntVar(value=0)
     # Disabled for moment
-    Gui._add_checkbutton(Gui.options, label="Allow resizing", command=enable_resizing, variable=Gui.can_resize)
+    #Gui._add_checkbutton(Gui.options, label="Allow resizing", command=enable_resizing, variable=Gui.can_resize)
 
     Gui.menu.add_cascade(label="Options", menu=Gui.options)
 
@@ -186,7 +186,7 @@ class Gui:
 
     last_drawable = Gui.drawable
     Gui.drawable = Draw.new_surface(*Vars.screen)
-    Draw.rect(Gui.drawable, Colors.fix2(Colors.white))
+    Draw.rect(Gui.drawable, Colors.fix2(Colors.white, expand=Vars.selected_os <= 1))
     Draw.blit_scaled(Gui.drawable, last_drawable)
     Gui.update_data()
 
@@ -258,6 +258,7 @@ class Gui:
 
     if Vars.is_linux:
       # Linux patch for ion, to be able to get the window by the python PID
+      # Source: https://stackoverflow.com/a/62431454
       import socket
       Gui.tkmaster.client(socket.gethostname())
       del socket
@@ -314,8 +315,8 @@ class Gui:
         Gui.tkmaster.update()
         Vars.window_size = (w, h)
         Gui.set_zoom(True)
-        Gui.refresh()   
-      if not Gui.already_paused: Gui.paused = False   
+        Gui.refresh()
+      if not Gui.already_paused: Gui.paused = False
     resize_event_stop()
 
     Gui.tkmaster.bind("<Configure>", resize_event, Vars.is_windows or None)
