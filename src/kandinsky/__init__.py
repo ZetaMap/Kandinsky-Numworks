@@ -94,7 +94,7 @@ def fill_rect(x, y, width, height, color, /):
 # new method of kandinsky, only on PC
 def quit():
   """Close manualy the window without notifying the user"""
-  _, err = __Core.event_fire(__Core.quit_app)
+  _, err = __Core.event_fire(__Core.request_stop)
   if err != None:
     raise err
 

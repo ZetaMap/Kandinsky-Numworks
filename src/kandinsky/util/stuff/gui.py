@@ -57,20 +57,21 @@ class Gui:
 
     Gui.tkmaster = tkmaster
     if Vars.is_linux:
-      Gui.linux_menu_font = Font(tkmaster, family="SegoeUI", size=9)
+      Gui.linux_menu_font = Font(Gui.tkmaster, family="SegoeUI", size=9)
       Gui.tkmaster.option_add("*font", Gui.linux_menu_font)
     Gui.data = StateData()
 
     # Create frame area, sdl2 windows and pack everything
-    Gui.head_frame = Frame(tkmaster)
-    Gui.screen_frame = Frame(tkmaster)
+    Gui.head_frame = Frame(Gui.tkmaster)
+    Gui.screen_frame = Frame(Gui.tkmaster)
     Gui.head_frame.pack()
     Gui.screen_frame.pack()
+    Gui.tkmaster.geometry(f"{Vars.screen[0]}x{Vars.screen[1]}") # default size
     Gui.tkmaster.update()
     Gui.head = Window('',(0,0))
     Gui.screen = Window('',(0,0))
 
-    Gui.menu = Menu(tkmaster)
+    Gui.menu = Menu(Gui.tkmaster)
     # Menus
     ## Help menu
     about = Menu(tearoff=False)
@@ -176,8 +177,10 @@ class Gui:
 
     SDL_DestroyWindow(Gui.head.window)
     SDL_DestroyWindow(Gui.screen.window)
-    Gui.head_frame.config(width=Vars.screen[0]*Vars.zoom_ratio, height=Vars.head_size*Vars.zoom_ratio)
-    Gui.screen_frame.config(width=Vars.screen[0]*Vars.zoom_ratio, height=Vars.screen[1]*Vars.zoom_ratio)
+    width, height = Vars.screen[0]*Vars.zoom_ratio, Vars.screen[1]*Vars.zoom_ratio
+    Gui.head_frame.config(width=width, height=Vars.head_size*Vars.zoom_ratio)
+    Gui.screen_frame.config(width=width, height=height)
+    Gui.tkmaster.geometry(f"{width}x{height}") # fix for KDE
     Gui.tkmaster.update()
     Vars.window_size = (Gui.tkmaster.winfo_width(), Gui.tkmaster.winfo_height())
     Gui.head.window = SDL_CreateWindowFrom(Gui.get_widget_id(Gui.head_frame))
@@ -194,7 +197,7 @@ class Gui:
     if not Gui.already_paused: Gui.paused = False
 
   def get_widget_id(widget):
-    """Method to get id of widget, will be replaced by mac_patcher.py if needed"""
+    """Method to get id of widget, will be overrided by mac_patcher.py if needed"""
     return widget.winfo_id()
 
   def destroy():
@@ -204,8 +207,9 @@ class Gui:
     SDL_FreeSurface(Gui.head_surface)
     Gui.head.close()
     Gui.screen.close()
-    Gui.tkmaster.destroy()
-    Gui.tkmaster.quit()
+    if Gui.tkmaster.winfo_exists():
+      Gui.tkmaster.destroy()
+      Gui.tkmaster.quit()
     Gui.tkmaster = None
 
   def update_value(int_var, values, min=0):
@@ -282,7 +286,8 @@ class Gui:
           if Gui._drag_window_event_id:
             Gui.tkmaster.after_cancel(Gui._drag_window_event_id)
             Gui.paused = True
-          Gui._drag_window_event_id = Gui.tkmaster.after(200, drag_event_stop)
+          if Gui.tkmaster.winfo_exists():
+            Gui._drag_window_event_id = Gui.tkmaster.after(200, drag_event_stop)
       def drag_event_stop():
         Gui._drag_window_event_id = ''
         if not Gui.already_paused: Gui.paused = False

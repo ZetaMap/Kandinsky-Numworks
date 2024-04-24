@@ -112,7 +112,7 @@ if platform == "win32":
     usleep = lambda us: _wpt.sleep_until_ns(int(_wpt.time_ns()+us*1000))
   except:
     import time as _time
-    prettywarn("win-precise-time module is not installed. Using time module to do usleep (emulation will be less accurate)", RuntimeWarning)
+    prettywarn("win-precise-time module not installed. Fallback to time module, emulation will be less accurate", RuntimeWarning)
     def usleep(us):
       t = _time.perf_counter_ns()+us*1000
       while _time.perf_counter_ns() < t: _time.sleep(1e-9)
@@ -125,34 +125,10 @@ elif platform == "linux":
   except:
     # On some linux distribution, this library is not installed by default
     import time as _time
-    prettywarn("libc6 library is not installed. Using time module to do usleep (emulation will be less accurate)", RuntimeWarning)
+    prettywarn("libc6 library not installed. Fallback to time module, emulation will be less accurate", RuntimeWarning)
     usleep = lambda us: _time.sleep(us/10e6)
 
 else:
   # MacOS don't have libc6 library and idk for other OS so just do a normal sleep
   import time as _time
   usleep = lambda us: _time.sleep(us/10e6)
-
-
-
-# Other stuff, 
-# because there is a bug when window changing monitor 
-# (only on macos... again... this is a poor platform)
-def get_monitors():
-  import ctypes
-  class RECT(ctypes.Structure):
-    _fields_ = [
-      ('left', ctypes.c_long),
-      ('top', ctypes.c_long),
-      ('right', ctypes.c_long),
-      ('bottom', ctypes.c_long)
-      ]
-    def dump(self):
-      return [int(val) for val in (self.left, self.top, self.right, self.bottom)]
-
-  retval = {}
-  def cb(hMonitor, hdcMonitor, lprcMonitor, dwData):
-    retval.update({hMonitor: lprcMonitor.contents.dump()})
-    return True
-  ctypes.windll.user32.EnumDisplayMonitors(0, 0, ctypes.WINFUNCTYPE(ctypes.c_int, ctypes.c_ulong, ctypes.c_ulong, ctypes.POINTER(RECT), ctypes.c_double)(cb), 0)
-  return retval

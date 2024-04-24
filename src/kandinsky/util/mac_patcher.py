@@ -40,7 +40,7 @@ def Core_event_fire(self: Core, method, *args, **kwargs):
   return value, err
 
 def Core_is_alive(self: Core):
-  """Redefine Thread.is_alive() to return always True, because the Thread never started and doesn't want errors about this"""
+  """Redefine Thread.is_alive() to return always True, because the Thread never started and we don't want errors about this"""
   return True
 
 

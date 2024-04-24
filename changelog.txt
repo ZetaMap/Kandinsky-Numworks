@@ -1,7 +1,6 @@
-Added a little patch for linux to help Ion to locate the window
-fixed incorrect mask right shift when decoding color of pixel
-fixed incorrect color convertion between numworks and upsilon/omega os
-
+fixed tkinter 'drag_event_stop' error when closing window
+updated demo game
+fixed invalid window size on some linux distro
 
 TODO:
 Add GUI option to enable window resizing

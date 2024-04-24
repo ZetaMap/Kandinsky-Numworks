@@ -5,7 +5,7 @@ from setuptools import setup
 RESTORE_VERSION = "--version-null" in sys.argv
 
 # Version of library
-VERSION = "2.7.1"
+VERSION = "2.7.2"
 
 # Get the absolute path
 PATH = __file__[:__file__.rfind('\\')+1 or __file__.rfind('/')+1]

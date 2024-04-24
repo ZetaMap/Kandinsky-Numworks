@@ -79,7 +79,7 @@ USE_HEAP = 'KANDINSKY_USE_HEAP' in os.environ and hasattr(threading, "get_native
 # same problem than warning of ion
 if USE_HEAP: prettywarn("python heap limitator is an experimental feature, so it can crach python several times", ImportWarning)
 
-# We need to more the import of ion here, to not import it if os mode isn't Omega
+# We need to move the import of ion here, to not import it if os mode isn't Omega
 if Vars.selected_os == 2:
   try: 
     with warnings.catch_warnings(record=True):
@@ -110,6 +110,7 @@ __all__ = ["Core"]
 
 class Core(Thread):
   stopped = False
+  stopping = False
   asknoclose = False
   OS_MODE = Config.default_os
 
@@ -120,8 +121,12 @@ class Core(Thread):
     self.start()
     while Gui.paused and self.is_alive(): usleep(100) # Wait a little to synchronize it
 
+  def request_stop(self):
+    self.stopped = True
+
   def quit_app(self, *_):
-    if not self.stopped:
+    if not self.stopping:
+      self.stopping = True
       self.stopped = True
       Gui.paused = False # Now all calls of kandinsky raise an error
 
@@ -326,13 +331,13 @@ class Core(Thread):
         self.quit_app()
         return
       elif not self.asknoclose and not main_thread().is_alive():
-        if Gui.askscriptend(): self.stopped = True
+        if Gui.askscriptend(): self.request_stop()
         else: self.asknoclose = True
 
       self.refreshed = False
       try: Gui.refresh()
       except AttributeError: pass
-      except RuntimeError: self.stopped = True
+      except RuntimeError: self.request_stop()
       usleep(1000)
       self.refreshed = True
 

@@ -55,6 +55,7 @@ class Config:
   default_model = 1
   zoom_max = 4
 
+
 # Class to store some data
 class StateData:
   def __init__(self, **content):
