@@ -180,7 +180,7 @@ class Gui:
     width, height = Vars.screen[0]*Vars.zoom_ratio, Vars.screen[1]*Vars.zoom_ratio
     Gui.head_frame.config(width=width, height=Vars.head_size*Vars.zoom_ratio)
     Gui.screen_frame.config(width=width, height=height)
-    Gui.tkmaster.geometry(f"{width}x{height}") # fix for KDE
+    #Gui.tkmaster.geometry(f"{width}x{height}") # fix for KDE
     Gui.tkmaster.update()
     Vars.window_size = (Gui.tkmaster.winfo_width(), Gui.tkmaster.winfo_height())
     Gui.head.window = SDL_CreateWindowFrom(Gui.get_widget_id(Gui.head_frame))
