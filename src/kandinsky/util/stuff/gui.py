@@ -67,7 +67,8 @@ class Gui:
     Gui.screen_frame = Frame(Gui.tkmaster)
     Gui.head_frame.pack()
     Gui.screen_frame.pack()
-    Gui.tkmaster.geometry(f"{Vars.screen[0]}x{Vars.screen[1]+Vars.head_size}") # default size
+    if Vars.is_linux:
+      Gui.tkmaster.geometry(f"{Vars.screen[0]}x{Vars.screen[1]+Vars.head_size}") # default size
     Gui.tkmaster.update()
     Gui.head = Window('',(0,0))
     Gui.screen = Window('',(0,0))
@@ -178,13 +179,17 @@ class Gui:
 
     SDL_DestroyWindow(Gui.head.window)
     SDL_DestroyWindow(Gui.screen.window)
-    width = Vars.screen[0]*Vars.zoom_ratio
+    width = Vars.window_size[0] if Gui.resizable else Vars.screen[0]*Vars.zoom_ratio
+    height = Vars.window_size[1]-Vars.head_size if Gui.resizable else Vars.screen[1]*Vars.zoom_ratio
     Gui.head_frame.config(width=width, height=Vars.head_size*Vars.zoom_ratio)
-    Gui.screen_frame.config(width=width, height=Vars.screen[1]*Vars.zoom_ratio)
+    Gui.screen_frame.config(width=width, height=height)
+    
+    # fix for KDE
     if Vars.is_linux:
       Gui.tkmaster.resizable(True, True)
-      Gui.tkmaster.geometry(f"{width}x{(Vars.screen[1]+Vars.head_size)*Vars.zoom_ratio}") # fix for KDE
+      Gui.tkmaster.geometry(f"{width}x{height if Gui.resizable else (Vars.screen[1]+Vars.head_size)*Vars.zoom_ratio}") 
       Gui.tkmaster.resizable(Gui.resizable, Gui.resizable)
+      
     Gui.tkmaster.update()
     Vars.window_size = (Gui.tkmaster.winfo_width(), Gui.tkmaster.winfo_height())
     Gui.head.window = SDL_CreateWindowFrom(Gui.get_widget_id(Gui.head_frame))

@@ -15,7 +15,7 @@ except ImportError as e:
   else: from util.core import Core as __Core
 
 __name__ = "kandinsky"
-__version__ = "null"
+__version__ = "2.7.2"
 try: 
   with open("README.md", encoding="utf-8") as f: __doc__ = f.read()
   del f

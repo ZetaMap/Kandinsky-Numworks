@@ -7,6 +7,9 @@ __all__ = []
 
 #############################################################
 
+import os
+os.environ['KANDINSKY_ENABLE_RESIZING'] = ''
+
 from random import randint as ri
 from kandinsky import fill_rect as fr,draw_string as ds
 from ion import keydown as kd
