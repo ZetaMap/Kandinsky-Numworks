@@ -1,4 +1,4 @@
-import sys, os
+import sys, os, shutil
 from setuptools import setup
 
 # Used by setup script to restore the version to 'null' in __init__.py after builded the library
@@ -11,29 +11,21 @@ VERSION = "2.7.2"
 PATH = __file__[:__file__.rfind('\\')+1 or __file__.rfind('/')+1]
 
 # Copy README and FAQ
-with open(PATH+"src/kandinsky/README.md", "rt", encoding="utf-8") as new:
-  DOC = new.read()
-  with open(PATH+"README.md", "wt", encoding="utf-8") as old:
-    old.write(DOC)
-
-with open(PATH+"src/kandinsky/FAQ.md", "rt", encoding="utf-8") as new:
-  with open(PATH+"FAQ.md", "wt", encoding="utf-8") as old:
-    old.write(new.read())
+shutil.copy(PATH+"src/kandinsky/README.md", PATH+"README.md")
+with open(PATH+"README.md", "rt", encoding="utf-8") as f: DOC = f.read()
+shutil.copy(PATH+"src/kandinsky/FAQ.md", PATH+"FAQ.md")
 
 # Set the version in __init__.py
-with open(PATH+"src/kandinsky/__init__.py", "r+t", encoding="utf-8") as f:
-  lines = f.readlines()
-  for i in range(len(lines)):
-    if "__version__" in lines[i]:
-      if RESTORE_VERSION:
-        if VERSION in lines[i]: lines[i] = lines[i].replace(VERSION, "null")
-        else: lines[i] = f"__version__ = \"null\"\n"
-      elif "null" in lines[i]: lines[i] = lines[i].replace("null", VERSION)  
-      else: lines[i] = f"__version__ = \"{VERSION}\"\n"
-
-      f.seek(0)
-      f.writelines(lines)      
-      break
+with open(PATH+"src/kandinsky/__init__.py", "rt", encoding="utf-8") as f: buffer = f.readlines()
+for i, l in enumerate(buffer):
+  if "__version__" in l:
+    if RESTORE_VERSION:
+      if VERSION in l: buffer[i] = l.replace(VERSION, "null")
+      else: buffer[i] = f"__version__ = \"null\"\n"
+    elif "null" in l: buffer[i] = l.replace("null", VERSION)  
+    else: buffer[i] = f"__version__ = \"{VERSION}\"\n"
+    break
+with open(PATH+"src/kandinsky/__init__.py", "wt", encoding="utf-8") as f: f.writelines(buffer)
 
 # Stop here if restore version to 'null'
 if RESTORE_VERSION: exit()
