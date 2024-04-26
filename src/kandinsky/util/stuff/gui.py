@@ -180,6 +180,10 @@ class Gui:
     width = Vars.screen[0]*Vars.zoom_ratio
     Gui.head_frame.config(width=width, height=Vars.head_size*Vars.zoom_ratio)
     Gui.screen_frame.config(width=width, height=Vars.screen[1]*Vars.zoom_ratio)
+    if Vars.is_linux:
+      Gui.tkmaster.resizable(True, True)
+      Gui.tkmaster.geometry(f"{width}x{(Vars.screen[1]+Vars.head_size)*Vars.zoom_ratio}") # fix for KDE
+      Gui.tkmaster.resizable(Gui.resizable, Gui.resizable)
     Gui.tkmaster.update()
     Vars.window_size = (Gui.tkmaster.winfo_width(), Gui.tkmaster.winfo_height())
     Gui.head.window = SDL_CreateWindowFrom(Gui.get_widget_id(Gui.head_frame))
