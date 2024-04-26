@@ -1,20 +1,20 @@
 # Just clean build files if '-c' argument is present
-[[ "$@" == *"-c"* ]] && JUST_CLEAN=true || JUST_CLEAN=false
+[ "$@" == *"-c"* ] && JUST_CLEAN=true || JUST_CLEAN=false
 
 # Somes methods
 ask() {
-  [[ "$1" == "" ]] && echo "ask: a question must be specified" && exit 1
-  [[ "$2" == "1" ]] && default="Y/n" || default="y/N"
+  [ "$1" == "" ] && echo "ask: a question must be specified" && exit 1
+  [ "$2" == "1" ] && default="Y/n" || default="y/N"
 
   echo -ne "$1? [$default]: "
   read choise
-  [[ "$choise" == "y" ]] || [[ "$choise" == "yes" ]] || [[ "$choise" == "" && "$2" == "1" ]] && return 1 || return 0
+  [ "$choise" == "y" ] || [ "$choise" == "yes" ] || [ "$choise" == "" && "$2" == "1" ] && return 1 || return 0
 }
 
 clean() {
   echo "Cleaning build files ..."
   rm -rf build src/kandinsky.egg-info
-  [[ -d "dist" && "$(ls -A dist)" ]] && ask "'dist' folder not empty, remove" || rm -rf dist 
+  [ -d "dist" && "$(ls -A dist)" ] && ask "'dist' folder not empty, remove" || rm -rf dist 
 }
 
 # Remove previous build files
