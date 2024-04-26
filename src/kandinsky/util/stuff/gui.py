@@ -29,6 +29,7 @@ class Gui:
   drawable = None
   _main_thread_pid = None # because thread.native_pid don't exist in python<3.8, so use the other way
   heap_set = False
+  resizing_enabled = False # experimental feature
   resizable = False
 
   def created():
@@ -157,8 +158,8 @@ class Gui:
       Gui.tkmaster.resizable(Gui.can_resize.get(), Gui.can_resize.get())
       Gui.resizable = Gui.can_resize.get()
     Gui.can_resize = IntVar(value=0)
-    # Disabled for moment
-    #Gui._add_checkbutton(Gui.options, label="Allow resizing", command=enable_resizing, variable=Gui.can_resize)
+    if Gui.resizing_enabled:
+      Gui._add_checkbutton(Gui.options, label="Allow resizing", command=enable_resizing, variable=Gui.can_resize)
 
     Gui.menu.add_cascade(label="Options", menu=Gui.options)
 
@@ -312,7 +313,8 @@ class Gui:
         if Gui._resize_window_event_id:
           Gui.tkmaster.after_cancel(Gui._resize_window_event_id)
           Gui.paused = True
-        Gui._resize_window_event_id = Gui.tkmaster.after(50, resize_event_stop, e)
+        if Gui.tkmaster.winfo_exists():
+          Gui._resize_window_event_id = Gui.tkmaster.after(50, resize_event_stop, e)
 
     def resize_event_stop(e=None):
       Gui._resize_window_event_id = ''

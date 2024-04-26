@@ -154,3 +154,17 @@ os.environ['KANDINSKY_SCREEN_SIZE'] = "<width>x<height>"
 # from 1 to 4
 os.environ['KANDINSKY_ZOOM_RATIO'] = "<number>"
 ```
+
+
+**Experiental features:**
+
+* Will try to limit the thread heap to get a better emulation:
+```python
+# Note: Cannot be enabled on some python versions
+os.environ['KANDINSKY_USE_HEAP'] = ''
+```
+
+* Add a button in GUI to allow window resising:
+```python
+os.environ['KANDINSKY_ENABLE_RESIZING'] = ''
+```

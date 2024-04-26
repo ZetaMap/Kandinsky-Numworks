@@ -79,6 +79,9 @@ USE_HEAP = 'KANDINSKY_USE_HEAP' in os.environ and hasattr(threading, "get_native
 # same problem than warning of ion
 if USE_HEAP: prettywarn("python heap limitator is an experimental feature, so it can crach python several times", ImportWarning)
 
+# Enable resizing feature. this feature is experimental for moment
+ENABLE_RESIZING = 'KANDINSKY_ENABLE_RESIZING' in os.environ
+
 # We need to move the import of ion here, to not import it if os mode isn't Omega
 if Vars.selected_os == 2:
   try: 
@@ -307,6 +310,7 @@ class Core(Thread):
 
   def event_loop(self):
     if USE_HEAP: Gui._main_thread_pid = self.native_id
+    if ENABLE_RESIZING: Gui.resizing_enabled = True
 
     try:
       Gui(Tk())

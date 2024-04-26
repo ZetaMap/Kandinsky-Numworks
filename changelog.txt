@@ -1,6 +1,8 @@
 fixed tkinter 'drag_event_stop' error when closing window
 updated demo game
 fixed invalid window size on some linux distro
+added environ variable to enable window resizing
+documented experimental features
 
 TODO:
 Add GUI option to enable window resizing
