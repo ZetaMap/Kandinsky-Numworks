@@ -8,7 +8,7 @@ In addition, this module also emulates the drawing speed, and has [many other fe
 
 ### Installation
 You now have the option to install this module on [pypi.org](https://pypi.org/project/kandinsky/). For that, follow the steps [here](https://github.com/ZetaMap/Kandinsky-Numworks/blob/pysdl2/FAQ.md#how-to-install-this-module). <br>
-Or if you want, you can build it yourself, just run the command ``./setup``. <br>
+Or if you want, you can build it yourself, just clone the repo and run the command ``./setup``. <br>
 
 ### More
 I also recreated the ion module of the Numworks, check it out here: [Ion module of Numworks](https://github.com/ZetaMap/Ion-numworks)<br>

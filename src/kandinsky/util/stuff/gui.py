@@ -177,7 +177,7 @@ class Gui:
 
     SDL_DestroyWindow(Gui.head.window)
     SDL_DestroyWindow(Gui.screen.window)
-    width = Vars.screen[0]*Vars.zoom_ratio,
+    width = Vars.screen[0]*Vars.zoom_ratio
     Gui.head_frame.config(width=width, height=Vars.head_size*Vars.zoom_ratio)
     Gui.screen_frame.config(width=width, height=Vars.screen[1]*Vars.zoom_ratio)
     if Vars.is_linux:
